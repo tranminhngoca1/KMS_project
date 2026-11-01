@@ -41,3 +41,4 @@ public class KhamPhaRequest {
         this.ngaySinh = ngaySinh;
     }
 }
+
