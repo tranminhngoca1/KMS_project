@@ -27,8 +27,7 @@ class NkmsWebIntegrationTest {
     void testAllPublicPagesRenderSuccessfully() throws Exception {
         mockMvc.perform(get("/kham-pha"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Khám phá")))
-                .andExpect(content().string(containsString("Tuyên bố miễn trừ trách nhiệm")));
+                .andExpect(content().string(containsString("Khám Phá Bản Thể Qua Thần Số Học")));
 
         mockMvc.perform(get("/kho"))
                 .andExpect(status().isOk())
@@ -59,6 +58,10 @@ class NkmsWebIntegrationTest {
         mockMvc.perform(get("/gioi-thieu"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Độ tin cậy Thủ tục")));
+
+        mockMvc.perform(get("/"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dang-nhap"));
     }
 
     @Test

@@ -34,8 +34,12 @@ public class KhamPhaController {
     }
 
     @GetMapping("/")
-    public String home() {
-        return "redirect:/kham-pha";
+    public String home(org.springframework.security.core.Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()
+                && !(authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken)) {
+            return "redirect:/kham-pha";
+        }
+        return "redirect:/dang-nhap";
     }
 
     @GetMapping("/kham-pha")

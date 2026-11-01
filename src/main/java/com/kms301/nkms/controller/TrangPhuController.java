@@ -61,7 +61,11 @@ public class TrangPhuController {
     }
 
     @GetMapping("/dang-nhap")
-    public String showDangNhap(Model model) {
+    public String showDangNhap(org.springframework.security.core.Authentication authentication, Model model) {
+        if (authentication != null && authentication.isAuthenticated()
+                && !(authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken)) {
+            return "redirect:/kham-pha";
+        }
         model.addAttribute("activeNav", "dang-nhap");
         return "dang-nhap";
     }

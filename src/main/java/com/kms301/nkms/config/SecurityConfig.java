@@ -40,7 +40,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
         http
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/kham-pha/**", "/api/ai-analysis"))
                 .authorizeHttpRequests(auth -> auth
@@ -56,12 +56,19 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/dang-nhap")
-                        .defaultSuccessUrl("/kho", false)
+                        .defaultSuccessUrl("/kham-pha", true)
                         .permitAll()
+                )
+                .rememberMe(remember -> remember
+                        .key("nkms-remember-me-key-301")
+                        .tokenValiditySeconds(86400 * 30) // 30 ngày lưu đăng nhập qua cookie
+                        .rememberMeParameter("remember-me")
+                        .userDetailsService(userDetailsService)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/dang-xuat")
-                        .logoutSuccessUrl("/kho?logout=true")
+                        .logoutSuccessUrl("/dang-nhap?logout=true")
+                        .deleteCookies("JSESSIONID", "remember-me")
                         .permitAll()
                 );
         return http.build();
