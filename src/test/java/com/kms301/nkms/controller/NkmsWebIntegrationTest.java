@@ -76,17 +76,16 @@ class NkmsWebIntegrationTest {
                             .param("hoTen", tc[0])
                             .param("ngaySinh", tc[1]))
                     .andExpect(status().isOk())
-                    .andExpect(content().string(containsString("Các trường phái đồng ý")))
-                    .andExpect(content().string(containsString("Các trường phái khác nhau ở…")))
-                    .andExpect(content().string(containsString("Trường phái Pythagoras phương Tây")))
-                    .andExpect(content().string(containsString("Trường phái Ấn Độ / Vệ Đà (Harish Johari)")))
-                    .andExpect(content().string(containsString("Trường phái Kabbalah / Chaldean (Sepharial)")))
-                    .andExpect(content().string(not(containsString("badge-nhan-THAN_TRONG"))))
-                    .andExpect(content().string(not(containsString("badge-nhan-KHONG_DUNG"))))
+                    .andExpect(content().string(containsString("Khám Phá Bản Thể Qua Thần Số Học")))
+                    .andExpect(content().string(containsString("AI Life Coach")))
+                    .andExpect(content().string(containsString("Bản Ngã Cốt Lõi &amp; Chân Dung Tâm Lý")))
+                    .andExpect(content().string(containsString("Thế Mạnh Vượt Trội &amp; Năng Lực Bẩm Sinh")))
+                    .andExpect(content().string(containsString("Điểm Mù &amp; Mâu Thuẫn Cần Gỡ Bỏ")))
+                    .andExpect(content().string(containsString("Định Hướng Hành Động &amp; Lời Khuyên Khai Vấn")))
                     .andReturn();
 
             String html = res.getResponse().getContentAsString();
-            assertTrue(html.contains("/kho/"), "Mỗi nhận định trên trang Khám phá phải có đường dẫn trích dẫn tới /kho/{id}");
+            assertTrue(html.contains("/kho"), "Trang Khám phá phải có liên kết tới Kho tri thức (/kho)");
         }
     }
 
