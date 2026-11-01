@@ -89,4 +89,18 @@ class NkmsWebIntegrationTest {
             assertTrue(html.contains("/kho/"), "Mỗi nhận định trên trang Khám phá phải có đường dẫn trích dẫn tới /kho/{id}");
         }
     }
+
+    @Test
+    @DisplayName("Kiểm thử AI Analysis Engine (/api/ai-analysis) trả về luận giải cá nhân hoá cho cả 3 câu hỏi")
+    void testAiAnalysisEndpoint() throws Exception {
+        mockMvc.perform(post("/api/ai-analysis")
+                        .param("hoTen", "Nguyễn Văn An")
+                        .param("ngaySinh", "04/01/1985"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.tongQuanHoSo").isNotEmpty())
+                .andExpect(jsonPath("$.cauHoi.AI.phanTichTongHop").isNotEmpty())
+                .andExpect(jsonPath("$.cauHoi.GAP_GI.phanTichTongHop").isNotEmpty())
+                .andExpect(jsonPath("$.cauHoi.DI_THE_NAO.phanTichTongHop").isNotEmpty());
+    }
 }

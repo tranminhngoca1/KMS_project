@@ -179,6 +179,34 @@
      ===================================================================== -->
 <div th:fragment="questionSection(qResult, hoSoSo, showCulturalBlock, showKabbalahGapGiNote)" class="space-y-6">
 
+    <!-- 0. KHỐI LUẬN GIẢI CÁ NHÂN HOÁ TRỌNG TÂM TỪ AI ANALYSIS ENGINE (GEMINI 3.5 FLASH) -->
+    <div class="light-card rounded-3xl p-5 sm:p-6 border-t-4 border-t-indigo-600 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white shadow-lg space-y-3">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+            <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-xl bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 flex items-center justify-center">
+                    <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+                </span>
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-300 block">
+                        AI Analysis Engine • Gemini 3.5 Flash
+                    </span>
+                    <h4 class="text-sm sm:text-base font-extrabold text-white"
+                        th:text="'Giải Đáp Cá Nhân Hoá: ' + ${qResult.tenCauHoi}">
+                        Giải Đáp Cá Nhân Hoá
+                    </h4>
+                </div>
+            </div>
+            <span class="ai-status-pill px-2.5 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 text-[11px] font-semibold flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-notch fa-spin text-[10px] ai-spinner"></i>
+                <span class="ai-status-label">Đang đọc hồ sơ &amp; tổng hợp tri thức...</span>
+            </span>
+        </div>
+        <p th:id="'ai-tonghop-' + ${qResult.maCauHoi}"
+           class="text-xs sm:text-sm text-slate-200 leading-relaxed bg-white/5 border border-white/10 rounded-2xl p-4">
+            Đang kết nối AI Analysis Engine (Gemini 3.5 Flash) để phân tích sự giao thoa độc bản giữa các chỉ số của bạn trên cả 3 trường phái...
+        </p>
+    </div>
+
     <!-- 1. TỔNG HỢP ĐỐI CHIẾU: ĐỒNG THUẬN ĐỨNG TRƯỚC, KHÁC BIỆT ĐỨNG SAU -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <!-- 1A. CÁC TRƯỜNG PHÁI ĐỒNG Ý (ĐỨNG TRƯỚC) -->
@@ -191,11 +219,18 @@
                     <span>Các trường phái đồng ý</span>
                 </h4>
                 <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold"
-                      th:text="${qResult.dongThuan.size()} + ' điểm chung'">0 điểm</span>
+                      th:text="${qResult.dongThuan.size()} + ' điểm chung CSDL'">0 điểm</span>
             </div>
 
-            <div th:if="${qResult.dongThuan.isEmpty()}" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600">
-                Ở câu hỏi này, mỗi trường phái phân tích một chiều cạnh bổ sung riêng (không có thẻ chủ đề trùng khớp trực tiếp giữa ≥ 2 trường phái độc lập).
+            <!-- Tổng hợp đồng thuận từ AI -->
+            <div class="p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-200/90 text-xs sm:text-sm text-emerald-950 space-y-1">
+                <div class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+                    <i class="fa-solid fa-sparkles text-[10px]"></i>
+                    <span>Đối chiếu giao thoa (AI Analysis Engine):</span>
+                </div>
+                <p th:id="'ai-dongthuan-' + ${qResult.maCauHoi}" class="leading-relaxed text-slate-700">
+                    Đang đối chiếu điểm giao thoa giữa Pythagoras, Vệ Đà và Kabbalah trên hồ sơ của bạn...
+                </p>
             </div>
 
             <ul th:if="${!qResult.dongThuan.isEmpty()}" class="space-y-2.5">
@@ -222,14 +257,21 @@
                     <span>Các trường phái khác nhau ở…</span>
                 </h4>
                 <span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold"
-                      th:text="${qResult.khacBiet.size()} + ' điểm khác biệt'">0 điểm</span>
+                      th:text="${qResult.khacBiet.size()} + ' điểm khác biệt CSDL'">0 điểm</span>
             </div>
 
-            <div th:if="${qResult.khacBiet.isEmpty()}" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600">
-                Không phát hiện xung đột trực tiếp ở câu hỏi này.
+            <!-- Tổng hợp khác biệt từ AI -->
+            <div class="p-3.5 rounded-2xl bg-rose-50/90 border border-rose-200/90 text-xs sm:text-sm text-rose-950 space-y-1">
+                <div class="text-[11px] font-extrabold uppercase tracking-wider text-rose-700 flex items-center gap-1.5">
+                    <i class="fa-solid fa-code-compare text-[10px]"></i>
+                    <span>Phân tích góc nhìn khác biệt &amp; bổ khuyết (AI):</span>
+                </div>
+                <p th:id="'ai-khacbiet-' + ${qResult.maCauHoi}" class="leading-relaxed text-slate-700">
+                    Đang phân tích sự khác biệt giữa 3 trường phái trên tổ hợp số của bạn...
+                </p>
             </div>
 
-            <ul th:if="${!qResult.khacBiet.isEmpty()}" class="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
+            <ul th:if="${!qResult.khacBiet.isEmpty()}" class="space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
                 <li th:each="dItem : ${qResult.khacBiet}" class="p-3.5 rounded-2xl bg-white border border-rose-200/80 shadow-xs space-y-1.5">
                     <div class="flex items-center justify-between gap-2 flex-wrap">
                         <strong class="text-xs sm:text-sm text-rose-950" th:text="${dItem.tieuDe}">Tiêu đề khác biệt</strong>
@@ -266,6 +308,17 @@
             </div>
 
             <div class="p-4 sm:p-5 space-y-5">
+                <!-- Luận giải cá nhân hoá của AI cho trường phái Pythagoras -->
+                <div class="p-3.5 rounded-2xl bg-indigo-50/80 border border-indigo-200/90 space-y-1.5">
+                    <div class="text-[11px] font-extrabold uppercase tracking-wider text-indigo-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-600"></i>
+                        <span>AI Tổng hợp Cá nhân hoá (Pythagoras):</span>
+                    </div>
+                    <p th:id="'ai-pythagoras-' + ${qResult.maCauHoi}" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                        Đang tổng hợp mối liên kết giữa các chỉ số Pythagoras của riêng bạn...
+                    </p>
+                </div>
+
                 <!-- Nhánh A: Quỳnh Hương / David Phillips -->
                 <div class="space-y-3">
                     <div class="flex items-center justify-between border-b border-indigo-100 pb-1.5">
@@ -322,6 +375,17 @@
             </div>
 
             <div class="p-4 sm:p-5 space-y-4">
+                <!-- Luận giải cá nhân hoá của AI cho trường phái Vệ Đà -->
+                <div class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/90 space-y-1.5">
+                    <div class="text-[11px] font-extrabold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles text-amber-600"></i>
+                        <span>AI Tổng hợp Cá nhân hoá (Vệ Đà):</span>
+                    </div>
+                    <p th:id="'ai-veda-' + ${qResult.maCauHoi}" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                        Đang tổng hợp mối liên kết giữa Số Tâm hồn, Số Định mệnh và hành tinh Vệ Đà...
+                    </p>
+                </div>
+
                 <div th:if="${qResult.vedaJohari.isEmpty()}" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-500">
                     Chưa có lời giải Vệ Đà nào kích hoạt ở câu hỏi này.
                 </div>
@@ -366,6 +430,17 @@
             </div>
 
             <div class="p-4 sm:p-5 space-y-4">
+                <!-- Luận giải cá nhân hoá của AI cho trường phái Kabbalah -->
+                <div class="p-3.5 rounded-2xl bg-purple-50/80 border border-purple-200/90 space-y-1.5">
+                    <div class="text-[11px] font-extrabold uppercase tracking-wider text-purple-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i>
+                        <span>AI Tổng hợp Cá nhân hoá (Kabbalah):</span>
+                    </div>
+                    <p th:id="'ai-kabbalah-' + ${qResult.maCauHoi}" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                        Đang tổng hợp mối liên kết giữa Số Chìa khoá và Ma phương 3 tầng Kabbalah...
+                    </p>
+                </div>
+
                 <!-- Lưu ý ở câu hỏi 2: Không dùng Tarot theo năm (Mục 6.4) -->
                 <div th:if="${showKabbalahGapGiNote}" class="p-3.5 rounded-2xl bg-purple-50/80 border border-purple-200 text-xs text-purple-950 space-y-1">
                     <div class="font-bold flex items-center gap-1.5 text-purple-900">

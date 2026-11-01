@@ -41,3 +41,10 @@ Thumbs.db
 # Antigravity/Scratch artifacts
 scratch/
 
+# Local credentials & secrets
+gemini-key.txt
+application-local.yml
+application-secret.yml
+.env
+
+
