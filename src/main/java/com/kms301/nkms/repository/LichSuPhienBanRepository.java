@@ -1,6 +1,6 @@
 package com.kms301.nkms.repository;
 
-import com.kms301.nkms.domain.LichSuPhienBan;
+import com.kms301.nkms.model.LichSuPhienBan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

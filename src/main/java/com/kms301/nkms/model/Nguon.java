@@ -1,4 +1,4 @@
-package com.kms301.nkms.domain;
+package com.kms301.nkms.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

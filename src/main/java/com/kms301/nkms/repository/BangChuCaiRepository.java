@@ -1,6 +1,6 @@
 package com.kms301.nkms.repository;
 
-import com.kms301.nkms.domain.BangChuCai;
+import com.kms301.nkms.model.BangChuCai;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

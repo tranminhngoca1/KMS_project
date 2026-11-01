@@ -1,6 +1,6 @@
 package com.kms301.nkms.repository;
 
-import com.kms301.nkms.domain.QuanHeTriThuc;
+import com.kms301.nkms.model.QuanHeTriThuc;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

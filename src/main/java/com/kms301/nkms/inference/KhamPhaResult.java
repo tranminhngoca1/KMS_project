@@ -1,7 +1,7 @@
 package com.kms301.nkms.inference;
 
-import com.kms301.nkms.domain.DonViTriThuc;
-import com.kms301.nkms.domain.The;
+import com.kms301.nkms.model.DonViTriThuc;
+import com.kms301.nkms.model.The;
 import com.kms301.nkms.engine.HoSoSo;
 
 import java.util.ArrayList;

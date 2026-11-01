@@ -1,6 +1,6 @@
 package com.kms301.nkms.repository;
 
-import com.kms301.nkms.domain.Nguon;
+import com.kms301.nkms.model.Nguon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

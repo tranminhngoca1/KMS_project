@@ -17,20 +17,25 @@ Hệ thống thu nhận, mã hoá, lưu trữ, truy vết nguồn gốc (provena
 - **Cơ sở dữ liệu**: MySQL 8 / TiDB Cloud (`utf8mb4` / `utf8mb4_unicode_ci`), quản lý schema và dữ liệu bằng **Flyway** (`V1__schema.sql` → `V7__seed_quan_he_va_xung_dot.sql`).
 - **Kiểm thử tự động**: JUnit 5 (`NumerologyEngineTest` và `InferenceEngineTest`).
 
-### Cấu trúc gói (`com.kms301.nkms`)
+### Cấu trúc dự án theo mô hình MVC (`com.kms301.nkms`)
 ```text
 com.kms301.nkms
- ├─ config/          (SecurityConfig)
- ├─ domain/          (13 JPA Entities: TruongPhai, Nguon, KhaiNiem, DongNghia, CongThuc, BangChuCai, BangChuCaiGiaTri, The, CapTheDoiLap, DonViTriThuc, QuanHeTriThuc, XungDot, LichSuPhienBan)
- ├─ repository/      (Spring Data JPA Repositories + JpaSpecificationExecutor)
- ├─ engine/          (Bộ máy tính toán Java thuần, không phụ thuộc Spring)
- │   ├─ NameNormalizer, NumberReducer, DateValidator, StepResult, HoSoSo
- │   ├─ pythagoras/  (QhCalculator, DecozCalculator, BirthChart, Arrows)
- │   ├─ veda/        (JohariCalculator)
- │   └─ kabbalah/    (SepharialCalculator)
- ├─ inference/       (RuleEvaluator, InferenceEngine, KhamPhaResult — khớp quy tắc & tổng hợp Đồng thuận / Khác biệt)
- ├─ service/         (KhamPhaService, KhoTriThucService, ThongKeService)
- └─ web/             (KhamPhaController, KhoController, TrangPhuController + Thymeleaf templates)
+ ├─ controller/      [CONTROLLER] Điều hướng HTTP requests & trả về Views
+ │   ├─ KhamPhaController     (Khám phá 3 trường phái, 3 câu hỏi)
+ │   ├─ KhoController          (Quản trị kho tri thức, duyệt, thêm, sửa)
+ │   └─ TrangPhuController     (Nguồn, xung đột, khái niệm, thống kê)
+ ├─ model/           [MODEL] Thực thể dữ liệu & đối tượng truyền nhận
+ │   ├─ entity/                (13 JPA Entities: TruongPhai, Nguon, DonViTriThuc, QuanHeTriThuc, XungDot, ...)
+ │   └─ dto/                   (KhamPhaRequest - form DTO)
+ ├─ service/         [SERVICE] Xử lý nghiệp vụ logic (KhamPhaService, KhoTriThucService, ThongKeService)
+ ├─ repository/      [REPOSITORY/DAO] Tầng truy xuất dữ liệu Spring Data JPA
+ ├─ engine/          [CALCULATION ENGINE] Bộ máy tính toán Java thuần (Pythagoras, Vệ Đà, Kabbalah)
+ ├─ inference/       [KNOWLEDGE REASONING] Bộ máy suy luận tri thức, khớp luật & tổng hợp Đồng thuận / Khác biệt
+ ├─ config/          [CONFIG] Cấu hình bảo mật Spring Security & hệ thống
+ └─ resources/
+     ├─ templates/   [VIEW] Giao diện Thymeleaf HTML (kham-pha, kho-*, nguon, xung-dot...)
+     ├─ static/      [ASSETS] CSS, JS, hình ảnh
+     └─ db/migration [DATABASE] Kịch bản Flyway V1 -> V7
 ```
 
 ---

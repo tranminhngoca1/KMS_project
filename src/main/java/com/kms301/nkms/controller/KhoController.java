@@ -1,6 +1,6 @@
-package com.kms301.nkms.web;
+package com.kms301.nkms.controller;
 
-import com.kms301.nkms.domain.*;
+import com.kms301.nkms.model.*;
 import com.kms301.nkms.service.KhoTriThucService;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;

@@ -1,4 +1,4 @@
-package com.kms301.nkms.web;
+package com.kms301.nkms.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

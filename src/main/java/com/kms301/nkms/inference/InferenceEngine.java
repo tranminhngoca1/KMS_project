@@ -2,7 +2,7 @@ package com.kms301.nkms.inference;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kms301.nkms.domain.*;
+import com.kms301.nkms.model.*;
 import com.kms301.nkms.engine.HoSoSo;
 import com.kms301.nkms.inference.KhamPhaResult.*;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.kms301.nkms.repository;
 
-import com.kms301.nkms.domain.XungDot;
+import com.kms301.nkms.model.XungDot;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

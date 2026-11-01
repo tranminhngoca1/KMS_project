@@ -1,4 +1,4 @@
-package com.kms301.nkms.domain;
+package com.kms301.nkms.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

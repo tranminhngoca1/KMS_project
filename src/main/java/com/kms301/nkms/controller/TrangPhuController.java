@@ -1,6 +1,6 @@
-package com.kms301.nkms.web;
+package com.kms301.nkms.controller;
 
-import com.kms301.nkms.domain.XungDot;
+import com.kms301.nkms.model.XungDot;
 import com.kms301.nkms.service.ThongKeService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;

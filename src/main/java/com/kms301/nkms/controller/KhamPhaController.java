@@ -1,4 +1,4 @@
-package com.kms301.nkms.web;
+package com.kms301.nkms.controller;
 
 import com.kms301.nkms.engine.DateValidator;
 import com.kms301.nkms.engine.NameNormalizer;

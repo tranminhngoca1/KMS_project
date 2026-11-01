@@ -1,6 +1,6 @@
 package com.kms301.nkms.inference;
 
-import com.kms301.nkms.domain.*;
+import com.kms301.nkms.model.*;
 import com.kms301.nkms.engine.HoSoSo;
 import com.kms301.nkms.engine.NameNormalizer;
 import org.junit.jupiter.api.BeforeEach;

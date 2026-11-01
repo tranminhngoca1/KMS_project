@@ -1,6 +1,6 @@
 package com.kms301.nkms.service;
 
-import com.kms301.nkms.domain.*;
+import com.kms301.nkms.model.*;
 import com.kms301.nkms.repository.*;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
