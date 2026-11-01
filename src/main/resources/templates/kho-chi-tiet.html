@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head(${donVi.ma} + ' — Chi tiết Đơn vị Tri thức')}"></head>
+<body class="min-h-screen flex flex-col">
+
+<header th:replace="~{fragments/layout :: navbar('kho')}"></header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-grow w-full">
+
+    <!-- Thanh tiêu đề & Nút quản trị -->
+    <section class="light-card rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-white via-indigo-50/25 to-amber-50/20 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div class="space-y-2">
+            <div class="flex items-center flex-wrap gap-2">
+                <a th:href="@{/kho}" class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-3 py-1 rounded-xl border border-indigo-200 transition-all">
+                    <i class="fa-solid fa-arrow-left text-[10px]"></i> Quay lại Kho tri thức
+                </a>
+                <span class="px-2.5 py-1 rounded-xl bg-slate-900 text-cyan-300 font-mono text-xs font-bold" th:text="${donVi.ma}">PH-CD-10</span>
+                <span class="badge"
+                      th:classappend="${donVi.truongPhai.ma == 'PYTHAGORAS'} ? 'badge-pythagoras' : (${donVi.truongPhai.ma == 'VEDA'} ? 'badge-veda' : 'badge-kabbalah')"
+                      th:text="${donVi.truongPhai.ten}">Pythagoras</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900" th:text="${donVi.tieuDe}">Tiêu đề đơn vị tri thức</h2>
+            <p class="text-xs text-slate-500">
+                Hồ sơ thanh tra đơn vị tri thức hiện (Explicit Knowledge Unit) — Phân rã điều kiện kích hoạt, nguồn trích dẫn học thuật và lịch sử phiên bản.
+            </p>
+        </div>
+
+        <div sec:authorize="hasRole('ADMIN')" class="flex flex-wrap items-center gap-2.5 shrink-0">
+            <a th:href="@{/kho/{id}/sua(id=${donVi.id})}"
+               class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-all shadow-sm">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>Chỉnh sửa (Tăng phiên bản)</span>
+            </a>
+            <form th:if="${donVi.trangThai == 'NHAP'}" th:action="@{/kho/{id}/duyet(id=${donVi.id})}" method="post" class="m-0">
+                <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-sm cursor-pointer">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Duyệt (NHAP → DA_DUYET)</span>
+                </button>
+            </form>
+            <form th:if="${donVi.trangThai != 'LUU_TRU'}" th:action="@{/kho/{id}/luu-tru(id=${donVi.id})}" method="post" class="m-0"
+                  onsubmit="return confirm('Chuyển đơn vị tri thức này sang trạng thái Lưu trữ (LUU_TRU - xoá mềm)?');">
+                <input type="hidden" name="lyDo" value="Quản trị viên chuyển sang trạng thái Lưu trữ (LUU_TRU)">
+                <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white transition-all shadow-sm cursor-pointer">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <span>Lưu trữ (Xoá mềm)</span>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <div th:if="${thongBaoThanhCong != null}"
+         class="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs sm:text-sm font-bold flex items-center gap-2.5">
+        <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+        <span th:text="${thongBaoThanhCong}">Thông báo</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Cột trái (8 cột): Nội dung, Điều kiện JSON, Quan hệ, Xung đột, Lịch sử phiên bản -->
+        <div class="lg:col-span-8 space-y-6">
+
+            <!-- 1. Nội dung diễn giải & Điều kiện kích hoạt JSON (theo phong cách inspectorModal của Frontend.html) -->
+            <section class="light-card rounded-3xl p-6 space-y-5">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-800 flex items-center gap-2">
+                        <i class="fa-solid fa-file-lines text-indigo-600"></i> 1. Nội Dung Tri Thức Đã Mã Hoá (Diễn Giải Tiếng Việt)
+                    </span>
+                    <span class="text-xs font-mono text-slate-500" th:text="'Phiên bản hiện tại: v' + ${donVi.phienBan}">v1</span>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-slate-50 border-l-4 border-l-indigo-600 border border-slate-200 text-sm sm:text-base text-slate-800 leading-relaxed"
+                     th:text="${donVi.noiDung}">
+                    Nội dung chi tiết...
+                </div>
+
+                <div th:if="${donVi.lyDoNhan != null and !donVi.lyDoNhan.isEmpty()}"
+                     class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs sm:text-sm text-amber-950 space-y-1">
+                    <div class="font-bold flex items-center gap-1.5 text-amber-900">
+                        <i class="fa-solid fa-tag text-amber-600"></i>
+                        <span>Lý do gắn nhãn quản trị chất lượng (<span th:text="${donVi.nhanSuDung}"></span>):</span>
+                    </div>
+                    <p th:text="${donVi.lyDoNhan}">Lý do nhãn</p>
+                </div>
+
+                <!-- Thẻ chủ đề -->
+                <div class="space-y-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-600 block">
+                        <i class="fa-solid fa-hashtag text-indigo-600 mr-1"></i> Thẻ chủ đề (Tags phục vụ suy diễn đồng thuận / đối lập):
+                    </span>
+                    <div class="flex flex-wrap gap-2">
+                        <span th:if="${donVi.danhSachThe == null or donVi.danhSachThe.isEmpty()}" class="text-xs text-slate-400 italic">Chưa gắn thẻ chủ đề</span>
+                        <a th:each="th : ${donVi.danhSachThe}" th:href="@{/kho(theId=${th.id})}"
+                           class="px-3 py-1 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 text-xs font-bold transition-all"
+                           th:text="'#' + ${th.ten} + ' (' + ${th.ma} + ')'">#Thẻ</a>
+                    </div>
+                </div>
+
+                <!-- Hộp điều kiện JSON (phong cách inspectFormulaBox của Frontend.html) -->
+                <div class="p-4 rounded-2xl bg-slate-50 border border-cyan-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-wider text-cyan-800 flex items-center gap-1.5">
+                            <i class="fa-solid fa-code"></i> Biểu Thức Điều Kiện Kích Hoạt (<code>dieu_kien_json</code>)
+                        </span>
+                        <span class="text-[11px] font-mono text-slate-500">Rule Evaluator Engine</span>
+                    </div>
+                    <pre class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-cyan-300 overflow-x-auto shadow-inner m-0"
+                         th:text="${donVi.dieuKienJson != null ? donVi.dieuKienJson : '(Không có điều kiện tự động — Tri thức tra cứu / lịch sử)'}"></pre>
+                </div>
+            </section>
+
+            <!-- 2. Mạng lưới Quan hệ Tri thức -->
+            <section class="light-card rounded-3xl p-6 space-y-4">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-diagram-project text-indigo-600"></i> 2. Mạng Lưới Quan Hệ Tri Thức (<code>quan_he_tri_thuc</code>)
+                </span>
+
+                <div th:if="${quanHeList.isEmpty()}" class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-500">
+                    Chưa có quan hệ trực tiếp nào được khai báo cho đơn vị này.
+                </div>
+
+                <div th:if="${!quanHeList.isEmpty()}" class="overflow-x-auto rounded-2xl border border-slate-200">
+                    <table class="kms-table">
+                        <thead>
+                        <tr>
+                            <th>Từ đơn vị</th>
+                            <th>Loại quan hệ</th>
+                            <th>Đến đơn vị</th>
+                            <th>Ghi chú</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="qh : ${quanHeList}">
+                            <td>
+                                <a th:href="@{/kho/{id}(id=${qh.tuDonVi.id})}" class="font-mono font-bold text-indigo-700 hover:underline" th:text="${qh.tuDonVi.ma}"></a>
+                                <div class="text-xs text-slate-500" th:text="${qh.tuDonVi.tieuDe}"></div>
+                            </td>
+                            <td><span class="badge badge-pythagoras" th:text="${qh.loai}">PHAI_SINH</span></td>
+                            <td>
+                                <a th:href="@{/kho/{id}(id=${qh.denDonVi.id})}" class="font-mono font-bold text-indigo-700 hover:underline" th:text="${qh.denDonVi.ma}"></a>
+                                <div class="text-xs text-slate-500" th:text="${qh.denDonVi.tieuDe}"></div>
+                            </td>
+                            <td class="text-xs text-slate-700" th:text="${qh.ghiChu}">Ghi chú</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div th:if="${goiYQuanHe != null and !goiYQuanHe.isEmpty()}" class="pt-3 border-t border-slate-100 space-y-2">
+                    <span class="text-xs font-bold text-slate-700 block">
+                        <i class="fa-regular fa-lightbulb text-amber-500 mr-1"></i> Các đơn vị cùng Khái niệm &amp; Giá trị kích hoạt ở nguồn/trường phái khác:
+                    </span>
+                    <div class="flex flex-wrap gap-2">
+                        <a th:each="gy : ${goiYQuanHe}" th:href="@{/kho/{id}(id=${gy.id})}" class="badge-citation">
+                            <span th:text="${gy.ma} + ' — ' + ${gy.tieuDe} + ' (' + ${gy.trichDanHienThi} + ')'"></span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Hồ sơ Xung đột liên quan -->
+            <section th:if="${!xungDotList.isEmpty()}" class="light-card rounded-3xl p-6 border-t-4 border-t-rose-600 space-y-4">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-rose-800 flex items-center gap-2">
+                    <i class="fa-solid fa-scale-unbalanced text-rose-600"></i> 3. Hồ Sơ Xung Đột Tri Thức Liên Quan (<code>xung_dot</code>)
+                </span>
+
+                <div th:each="xd : ${xungDotList}" class="p-4 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-2">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <strong class="text-sm font-mono text-rose-950" th:text="${xd.ma}">XD-01</strong>
+                        <span class="badge badge-tin-cay-CAO" th:text="${xd.trangThai}">DA_XU_LY</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-800 leading-relaxed" th:text="${xd.moTa}">Mô tả xung đột</p>
+                    <div class="p-3 rounded-xl bg-white border border-emerald-200 text-xs text-emerald-900">
+                        <strong>Phương án xử lý KMS:</strong> <span th:text="${xd.cachXuLy}">Cách xử lý</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Lịch sử phiên bản -->
+            <section class="light-card rounded-3xl p-6 space-y-4">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-indigo-600"></i> 4. Lịch Sử Phiên Bản (<code>lich_su_phien_ban</code> — Hiện tại: <span th:text="'v' + ${donVi.phienBan}">v1</span>)
+                </span>
+
+                <div th:if="${lichSuList.isEmpty()}" class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-500">
+                    Đơn vị tri thức này đang ở phiên bản gốc (v1), chưa có lịch sử chỉnh sửa.
+                </div>
+
+                <div th:if="${!lichSuList.isEmpty()}" class="overflow-x-auto rounded-2xl border border-slate-200">
+                    <table class="kms-table">
+                        <thead>
+                        <tr>
+                            <th>Phiên bản cũ</th>
+                            <th>Nội dung cũ trước khi sửa</th>
+                            <th>Nhãn &amp; Tin cậy cũ</th>
+                            <th>Người sửa &amp; Lý do</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="ls : ${lichSuList}">
+                            <td><span class="px-2.5 py-1 rounded-lg bg-slate-200 text-slate-900 font-mono text-xs font-bold" th:text="'v' + ${ls.phienBan}">v1</span></td>
+                            <td class="text-xs text-slate-600 leading-relaxed" th:text="${ls.noiDungCu}">Nội dung cũ</td>
+                            <td>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="badge" th:classappend="'badge-nhan-' + ${ls.nhanCu}" th:text="${ls.nhanCu}">THAN_TRONG</span>
+                                    <span class="badge" th:classappend="'badge-tin-cay-' + ${ls.mucTinCayCu}" th:text="${ls.mucTinCayCu}">THAP</span>
+                                </div>
+                            </td>
+                            <td class="text-xs">
+                                <div class="font-bold text-slate-900" th:text="${ls.nguoiSua}">admin</div>
+                                <div class="text-emerald-700 mt-0.5" th:text="${ls.lyDo}">Diễn giải lại...</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Cột phải (4 cột): Truy vết Nguồn gốc & Chất lượng (Provenance Box theo Frontend.html) -->
+        <div class="lg:col-span-4 space-y-6">
+            <section class="light-card rounded-3xl p-6 bg-amber-50/40 border border-amber-200 space-y-4">
+                <div class="flex items-center justify-between border-b border-amber-200/70 pb-3">
+                    <h3 class="text-sm font-extrabold uppercase tracking-wider text-amber-900 flex items-center gap-2">
+                        <i class="fa-solid fa-book text-amber-600"></i>
+                        <span>Truy vết Nguồn gốc &amp; Chất lượng</span>
+                    </h3>
+                    <span class="text-[11px] text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-200 font-bold">Provenance</span>
+                </div>
+
+                <div class="space-y-3 text-xs sm:text-sm">
+                    <div class="p-3.5 rounded-2xl bg-white border border-amber-200 space-y-1">
+                        <span class="text-slate-400 block text-[10px] uppercase font-bold">Tên Sách / Nguồn Chính Thức:</span>
+                        <span class="text-slate-900 font-bold block" th:text="${donVi.nguon.tenSach}">The Complete Book of Numerology</span>
+                        <span class="text-xs text-amber-800 font-semibold block" th:text="${donVi.nguon.tacGia} + ' (' + ${donVi.nguon.namXuatBan} + ')'">David A. Phillips</span>
+                        <div th:if="${donVi.nguon.nguonGoc != null}" class="pt-1 text-[11px] text-slate-500">
+                            Phái sinh từ <strong th:text="${donVi.nguon.nguonGoc.ma}">PHILLIPS</strong> (<span th:text="${donVi.nguon.tyLePhaiSinh}">~60%</span>)
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bg-white border border-amber-200 space-y-1">
+                        <span class="text-slate-400 block text-[10px] uppercase font-bold">Chương &amp; Vị Trí Tham Chiếu:</span>
+                        <span class="font-mono font-bold text-indigo-700 block" th:text="${donVi.trichDanHienThi}">Phillips, Ch.7, tr.85</span>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bg-white border border-slate-200 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500 text-xs">Khái niệm chuẩn:</span>
+                            <span class="font-bold text-slate-800 text-xs text-right"
+                                  th:text="${donVi.khaiNiem != null ? (donVi.khaiNiem.tenChuan + ' (' + donVi.khaiNiem.ma + ')') : '—'}"></span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500 text-xs">Giá trị kích hoạt:</span>
+                            <code class="px-2 py-0.5 rounded bg-slate-100 text-slate-900 font-mono text-xs font-bold"
+                                  th:text="${donVi.giaTriKichHoat != null ? donVi.giaTriKichHoat : '—'}">10</code>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500 text-xs">Câu hỏi / Loại:</span>
+                            <span class="font-mono font-bold text-xs text-slate-800" th:text="${donVi.cauHoi} + ' • ' + ${donVi.loai}">AI • QUY_TAC</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500 text-xs">Mức tin cậy:</span>
+                            <span class="badge" th:classappend="'badge-tin-cay-' + ${donVi.mucTinCay}" th:text="${donVi.mucTinCay}">CAO</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500 text-xs">Nhãn sử dụng:</span>
+                            <span class="badge" th:classappend="'badge-nhan-' + ${donVi.nhanSuDung}" th:text="${donVi.nhanSuDung}">DUNG</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500 text-xs">Trạng thái duyệt:</span>
+                            <span class="badge" th:classappend="'badge-trang-thai-' + ${donVi.trangThai}" th:text="${donVi.trangThai}">DA_DUYET</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500 text-xs">Người tạo / duyệt:</span>
+                            <span class="text-xs font-semibold text-slate-700"
+                                  th:text="${donVi.nguoiTao} + ' / ' + (${donVi.nguoiDuyet != null ? donVi.nguoiDuyet : 'Chưa duyệt'})">system</span>
+                        </div>
+                    </div>
+
+                    <div th:if="${donVi.ghiChu != null and !donVi.ghiChu.isEmpty()}"
+                         class="p-3.5 rounded-2xl bg-white border border-slate-200 space-y-1">
+                        <span class="text-slate-400 block text-[10px] uppercase font-bold">Ghi chú kỹ thuật:</span>
+                        <p class="text-xs text-slate-600" th:text="${donVi.ghiChu}">Ghi chú</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

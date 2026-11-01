@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(pageTitle)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' — Hệ Thống Quản Lý Tri Thức Thần Số Học (NKMS - KMS301)'">Hệ Thống Quản Lý Tri Thức Thần Số Học (NKMS)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Be Vietnam Pro, Plus Jakarta Sans & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6.4.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom NKMS Styles -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="min-h-screen flex flex-col selection:bg-indigo-600 selection:text-white">
+
+<!-- =====================================================================
+     THANH ĐIỀU HƯỚNG TRÊN CÙNG (STICKY GLASSMORPHIC HEADER THEO FRONTEND.HTML)
+     ===================================================================== -->
+<header th:fragment="navbar(activeNav)" class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+        <!-- Logo Ma trận Ngày sinh 3x3 & Tên Hệ thống -->
+        <a th:href="@{/kham-pha}" class="flex items-center gap-3.5 group text-decoration-none">
+            <div class="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-cyan-600 p-0.5 shadow-md shadow-indigo-500/20 group-hover:shadow-indigo-500/35 transition-all duration-300">
+                <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center relative overflow-hidden">
+                    <svg class="w-6 h-6 text-indigo-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 3V21M16 3V21M3 8H21M3 16H21" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+                        <circle cx="8" cy="8" r="2" fill="#4f46e5"/>
+                        <circle cx="16" cy="16" r="2" fill="#0891b2"/>
+                        <circle cx="12" cy="12" r="2.2" fill="#d97706"/>
+                        <path d="M8 8L12 12L16 16" stroke="#d97706" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-amber-500 border-2 border-white"></span>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-indigo-600">HỆ THỐNG QUẢN LÝ TRI THỨC • KMS301</span>
+                    <span class="hidden sm:inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+                    <span class="hidden sm:inline-block text-[10px] font-mono text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 font-semibold">3 Trường Phái</span>
+                </div>
+                <h1 class="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 mt-0.5">
+                    NKMS <span class="font-normal text-slate-400 text-xs mx-0.5">/</span> <span class="gradient-text-indigo">Thần Số Học Đa Trường Phái</span>
+                </h1>
+            </div>
+        </a>
+
+        <!-- Menu điều hướng dạng Pill -->
+        <nav class="flex items-center flex-wrap gap-1 bg-slate-100 p-1.5 rounded-2xl border border-slate-200/80">
+            <a th:href="@{/kham-pha}"
+               th:class="${activeNav == 'kham-pha'} ? 'flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-white text-indigo-700 shadow-xs border border-slate-200/60' : 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 transition-all'">
+                <i class="fa-solid fa-compass text-indigo-600"></i>
+                <span>Khám phá</span>
+            </a>
+            <a th:href="@{/kho}"
+               th:class="${activeNav == 'kho'} ? 'flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-white text-amber-700 shadow-xs border border-slate-200/60' : 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 transition-all'">
+                <i class="fa-solid fa-book-atlas text-amber-600"></i>
+                <span>Kho tri thức</span>
+            </a>
+            <a th:href="@{/nguon}"
+               th:class="${activeNav == 'nguon'} ? 'flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-white text-cyan-700 shadow-xs border border-slate-200/60' : 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 transition-all'">
+                <i class="fa-solid fa-book-open text-cyan-600"></i>
+                <span>Nguồn sách</span>
+            </a>
+            <a th:href="@{/xung-dot}"
+               th:class="${activeNav == 'xung-dot'} ? 'flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-white text-rose-700 shadow-xs border border-slate-200/60' : 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 transition-all'">
+                <i class="fa-solid fa-scale-balanced text-rose-600"></i>
+                <span>Xung đột (14)</span>
+            </a>
+            <a th:href="@{/khai-niem}"
+               th:class="${activeNav == 'khai-niem'} ? 'flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-white text-purple-700 shadow-xs border border-slate-200/60' : 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 transition-all'">
+                <i class="fa-solid fa-tags text-purple-600"></i>
+                <span>Khái niệm</span>
+            </a>
+            <a th:href="@{/thong-ke}"
+               th:class="${activeNav == 'thong-ke'} ? 'flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-white text-emerald-700 shadow-xs border border-slate-200/60' : 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 transition-all'">
+                <i class="fa-solid fa-chart-pie text-emerald-600"></i>
+                <span>Thống kê</span>
+            </a>
+            <a th:href="@{/gioi-thieu}"
+               th:class="${activeNav == 'gioi-thieu'} ? 'flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-xs border border-slate-200/60' : 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 transition-all'">
+                <i class="fa-solid fa-graduation-cap text-slate-600"></i>
+                <span>Giới thiệu</span>
+            </a>
+        </nav>
+
+        <!-- Trạng thái Quản trị viên -->
+        <div class="flex items-center gap-2">
+            <div sec:authorize="isAuthenticated()" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs font-semibold text-emerald-800">Quản trị: <strong sec:authentication="name">admin</strong></span>
+                <form th:action="@{/dang-xuat}" method="post" class="m-0">
+                    <button type="submit" class="text-[11px] font-bold text-rose-700 hover:text-rose-900 bg-white px-2 py-0.5 rounded-lg border border-rose-200 transition-all">
+                        Đăng xuất
+                    </button>
+                </form>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/dang-nhap}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900 hover:bg-indigo-600 text-white transition-all shadow-xs">
+                    <i class="fa-solid fa-user-shield text-[11px]"></i>
+                    <span>Quản trị Kho</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- =====================================================================
+     FRAGMENT LỚP 1 (LAYER 1): THẺ LỜI GIẢI GỌN GÀNG, BẤM ĐỂ MỞ LỚP 2 (MODAL)
+     ===================================================================== -->
+<div th:fragment="unitCard(mu, extraClass)"
+     onclick="inspectKnowledgeCard(this)"
+     th:attr="
+        data-title=${mu.donVi.tieuDe},
+        data-kms-tag=${mu.donVi.ma} + ' • ' + ${mu.chiSoKichHoat},
+        data-domain=${mu.donVi.truongPhai.ten} + ' (' + ${mu.donVi.nguon.ma} + ')',
+        data-formula=${mu.donVi.dieuKienJson != null ? mu.donVi.dieuKienJson : 'Quy tắc diễn giải theo chỉ số ' + mu.chiSoKichHoat},
+        data-steps=${mu.cacBuocTinh != null ? mu.cacBuocTinh : ('Kích hoạt bởi: ' + mu.chiSoKichHoat)},
+        data-book=${mu.donVi.nguon.tenSach},
+        data-book-sub=${mu.donVi.nguon.nguonGoc != null ? ('Phái sinh ' + mu.donVi.nguon.tyLePhaiSinh + ' từ ' + mu.donVi.nguon.nguonGoc.tenSach) : 'Nguồn sách gốc độc lập trong Kho tri thức NKMS'},
+        data-author=${mu.donVi.nguon.tacGia},
+        data-publisher='Năm xuất bản: ' + ${mu.donVi.nguon.namXuatBan} + ' • Mã nguồn: ' + ${mu.donVi.nguon.ma},
+        data-chapter=${mu.donVi.trichDanHienThi},
+        data-apa=${mu.donVi.nguon.tacGia} + ' (' + ${mu.donVi.nguon.namXuatBan} + '). ' + ${mu.donVi.nguon.tenSach} + '. (' + ${mu.donVi.trichDanHienThi} + ').',
+        data-rationale='Mức độ tin cậy: ' + ${mu.donVi.mucTinCay} + ' • Nhãn sử dụng: ' + ${mu.donVi.nhanSuDung} + ' • Phiên bản: v' + ${mu.donVi.phienBan} + (${mu.donVi.lyDoNhan != null ? (' — ' + mu.donVi.lyDoNhan) : ''}),
+        data-kho-url=@{/kho/{id}(id=${mu.donVi.id})}
+     "
+     class="group cursor-pointer p-4 rounded-2xl bg-slate-50/90 hover:bg-white border border-slate-200/90 hover:border-indigo-300 hover:shadow-md transition-all space-y-2.5 relative"
+     th:classappend="${extraClass}">
+
+    <!-- Lớp 1: Chỉ hiển thị Tiêu đề lời giải + Chỉ số kích hoạt -->
+    <div class="flex items-start justify-between gap-2">
+        <h5 class="text-sm font-bold text-slate-900 group-hover:text-indigo-700 transition-colors leading-snug"
+            th:text="${mu.donVi.tieuDe}">Tiêu đề lời giải</h5>
+        <span class="px-2 py-0.5 rounded-lg bg-white border border-slate-200 text-indigo-700 font-mono text-[11px] font-bold shrink-0"
+              th:text="${mu.chiSoKichHoat}">Chỉ số</span>
+    </div>
+
+    <!-- Chú thích phá thế nếu tên riêng bù trục trống -->
+    <div th:if="${mu.chuThichTinhChinh != null}"
+         class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex flex-wrap items-center gap-1.5">
+        <i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i>
+        <span class="font-medium" th:text="${mu.chuThichTinhChinh}">Chú thích phá thế</span>
+        <a th:if="${mu.donViTinhChinh != null}"
+           th:href="@{/kho/{id}(id=${mu.donViTinhChinh.id})}"
+           onclick="event.stopPropagation();"
+           class="font-bold text-emerald-700 hover:underline ml-1">[Quy tắc phá thế →]</a>
+    </div>
+
+    <!-- Lớp 1: Nội dung lời giải tiếng Việt dễ đọc -->
+    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed" th:text="${mu.donVi.noiDung}">
+        Nội dung diễn giải tiếng Việt...
+    </p>
+
+    <!-- Chân thẻ Lớp 1 gọn nhẹ: Gợi ý nhấn để mở Lớp 2 (Công thức & Nguồn sách) -->
+    <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between gap-2 text-[11px]">
+        <span class="inline-flex items-center gap-1.5 font-semibold text-indigo-600 group-hover:text-indigo-800 transition-colors">
+            <i class="fa-solid fa-magnifying-glass-chart text-[11px]"></i>
+            <span>Xem cách tính &amp; nguồn (<span th:text="${mu.donVi.nguon.ma}">PHILLIPS</span>)</span>
+        </span>
+
+        <div class="flex items-center gap-1.5">
+            <span th:if="${mu.donVi.nhanSuDung == 'GOI_Y_VAN_HOA'}" class="badge badge-nhan-GOI_Y_VAN_HOA">
+                Gợi ý văn hoá
+            </span>
+            <a th:href="@{/kho/{id}(id=${mu.donVi.id})}"
+               onclick="event.stopPropagation();"
+               class="text-slate-400 hover:text-indigo-600 px-1.5 py-0.5 rounded transition-colors"
+               title="Mở trang chi tiết đơn vị tri thức trong Kho">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================================
+     FRAGMENT: LỜI GIẢI CỦA 1 CÂU HỎI (TỔNG HỢP ĐỒNG THUẬN/KHÁC BIỆT + 3 TRƯỜNG PHÁI)
+     ===================================================================== -->
+<div th:fragment="questionSection(qResult, hoSoSo, showCulturalBlock, showKabbalahGapGiNote)" class="space-y-6">
+
+    <!-- 1. TỔNG HỢP ĐỐI CHIẾU: ĐỒNG THUẬN ĐỨNG TRƯỚC, KHÁC BIỆT ĐỨNG SAU -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- 1A. CÁC TRƯỜNG PHÁI ĐỒNG Ý (ĐỨNG TRƯỚC) -->
+        <div class="light-card rounded-3xl p-5 border-t-4 border-t-emerald-600 bg-gradient-to-br from-emerald-50/50 via-white to-white space-y-3">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+                <h4 class="text-sm sm:text-base font-extrabold text-emerald-900 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center border border-emerald-200">
+                        <i class="fa-solid fa-handshake-simple text-xs"></i>
+                    </span>
+                    <span>Các trường phái đồng ý</span>
+                </h4>
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold"
+                      th:text="${qResult.dongThuan.size()} + ' điểm chung'">0 điểm</span>
+            </div>
+
+            <div th:if="${qResult.dongThuan.isEmpty()}" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600">
+                Ở câu hỏi này, mỗi trường phái phân tích một chiều cạnh bổ sung riêng (không có thẻ chủ đề trùng khớp trực tiếp giữa ≥ 2 trường phái độc lập).
+            </div>
+
+            <ul th:if="${!qResult.dongThuan.isEmpty()}" class="space-y-2.5">
+                <li th:each="cItem : ${qResult.dongThuan}" class="p-3.5 rounded-2xl bg-white border border-emerald-200/80 shadow-xs space-y-1.5">
+                    <div class="text-xs sm:text-sm font-bold text-emerald-950 leading-snug" th:text="${cItem.cauTomTat}">Tóm tắt đồng thuận</div>
+                    <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                        <span class="text-[11px] text-slate-500">Nguồn đối chiếu:</span>
+                        <a th:each="ev : ${cItem.danChung}"
+                           th:href="@{/kho/{id}(id=${ev.donVi.id})}"
+                           class="badge-citation text-[11px]"
+                           th:text="${ev.donVi.nguon.ma} + ' (' + ${ev.chiSoKichHoat} + ')'">PHILLIPS</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 1B. CÁC TRƯỜNG PHÁI KHÁC NHAU Ở... (ĐỨNG SAU) -->
+        <div class="light-card rounded-3xl p-5 border-t-4 border-t-rose-600 bg-gradient-to-br from-rose-50/50 via-white to-white space-y-3">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+                <h4 class="text-sm sm:text-base font-extrabold text-rose-900 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center border border-rose-200">
+                        <i class="fa-solid fa-scale-unbalanced text-xs"></i>
+                    </span>
+                    <span>Các trường phái khác nhau ở…</span>
+                </h4>
+                <span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold"
+                      th:text="${qResult.khacBiet.size()} + ' điểm khác biệt'">0 điểm</span>
+            </div>
+
+            <div th:if="${qResult.khacBiet.isEmpty()}" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600">
+                Không phát hiện xung đột trực tiếp ở câu hỏi này.
+            </div>
+
+            <ul th:if="${!qResult.khacBiet.isEmpty()}" class="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
+                <li th:each="dItem : ${qResult.khacBiet}" class="p-3.5 rounded-2xl bg-white border border-rose-200/80 shadow-xs space-y-1.5">
+                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                        <strong class="text-xs sm:text-sm text-rose-950" th:text="${dItem.tieuDe}">Tiêu đề khác biệt</strong>
+                        <a th:if="${dItem.maXungDot != null}" th:href="@{/xung-dot}"
+                           class="px-2 py-0.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-mono font-bold transition-all"
+                           title="Xem hồ sơ giải quyết xung đột trong KMS">
+                            <i class="fa-solid fa-scale-balanced mr-1"></i><span th:text="${dItem.maXungDot}">XD-01</span>
+                        </a>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed" th:text="${dItem.moTa}">Mô tả chi tiết khác biệt</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 2. LỜI GIẢI CHI TIẾT THEO 3 TRƯỜNG PHÁI ĐẶT NGANG HÀNG, SONG SONG NHAU -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+
+        <!-- CỘT 1: TRƯỜNG PHÁI PYTHAGORAS PHƯƠNG TÂY -->
+        <div class="light-card rounded-3xl overflow-hidden border-t-4 border-t-indigo-600">
+            <div class="p-4 sm:p-5 bg-gradient-to-r from-indigo-50/90 via-cyan-50/30 to-white border-b border-slate-200">
+                <div class="flex items-center justify-between gap-2 mb-1">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">
+                        Trường phái 01
+                    </span>
+                    <span class="text-[11px] font-mono text-indigo-700 font-semibold">Pythagoras</span>
+                </div>
+                <h4 class="text-base font-extrabold text-slate-900">
+                    Trường phái Pythagoras phương Tây
+                </h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">
+                    Nhấn vào bất kỳ lời giải nào bên dưới để xem công thức toán và trang sách trích dẫn.
+                </p>
+            </div>
+
+            <div class="p-4 sm:p-5 space-y-5">
+                <!-- Nhánh A: Quỳnh Hương / David Phillips -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between border-b border-indigo-100 pb-1.5">
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-800">
+                            A. Nhánh Quỳnh Hương / David Phillips
+                        </span>
+                        <span class="text-[11px] font-mono text-slate-400" th:text="${qResult.pythagorasQhPhillips.size()} + ' mục'"></span>
+                    </div>
+
+                    <div th:if="${qResult.pythagorasQhPhillips.isEmpty()}" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-500">
+                        Chưa có lời giải nào thuộc nhánh QH/Phillips kích hoạt ở câu hỏi này.
+                    </div>
+
+                    <div th:each="mu : ${qResult.pythagorasQhPhillips}">
+                        <div th:replace="~{fragments/layout :: unitCard(${mu}, 'border-l-4 border-l-indigo-500')}"></div>
+                    </div>
+                </div>
+
+                <!-- Nhánh B: Biến thể Hans Decoz -->
+                <div class="space-y-3 pt-2 border-t border-slate-100">
+                    <div class="flex items-center justify-between border-b border-cyan-100 pb-1.5">
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-cyan-800">
+                            B. Biến thể Mỹ (Hans Decoz)
+                        </span>
+                        <span class="text-[11px] font-mono text-slate-400" th:text="${qResult.pythagorasDecoz.size()} + ' mục'"></span>
+                    </div>
+
+                    <div th:if="${qResult.pythagorasDecoz.isEmpty()}" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-500">
+                        Không có điểm bổ sung hoặc nợ nghiệp Decoz nào kích hoạt ở mục này.
+                    </div>
+
+                    <div th:each="mu : ${qResult.pythagorasDecoz}">
+                        <div th:replace="~{fragments/layout :: unitCard(${mu}, 'border-l-4 border-l-cyan-500')}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT 2: TRƯỜNG PHÁI ẤN ĐỘ / VỆ ĐÀ (HARISH JOHARI) -->
+        <div class="light-card rounded-3xl overflow-hidden border-t-4 border-t-amber-500">
+            <div class="p-4 sm:p-5 bg-gradient-to-r from-amber-50/90 via-orange-50/30 to-white border-b border-slate-200">
+                <div class="flex items-center justify-between gap-2 mb-1">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                        Trường phái 02
+                    </span>
+                    <span class="text-[11px] font-mono text-amber-800 font-semibold">Vệ Đà • Johari</span>
+                </div>
+                <h4 class="text-base font-extrabold text-slate-900">
+                    Trường phái Ấn Độ / Vệ Đà (Harish Johari)
+                </h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">
+                    Luận giải theo Số tâm hồn, Số định mệnh và 9 hành tinh Vệ Đà (nhấn vào lời giải để xem nguồn).
+                </p>
+            </div>
+
+            <div class="p-4 sm:p-5 space-y-4">
+                <div th:if="${qResult.vedaJohari.isEmpty()}" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-500">
+                    Chưa có lời giải Vệ Đà nào kích hoạt ở câu hỏi này.
+                </div>
+
+                <div th:each="mu : ${qResult.vedaJohari}">
+                    <div th:replace="~{fragments/layout :: unitCard(${mu}, 'border-l-4 border-l-amber-500')}"></div>
+                </div>
+
+                <!-- Khối riêng Gợi ý văn hoá Vệ Đà (GOI_Y_VAN_HOA) ở Câu hỏi 3 -->
+                <div th:if="${showCulturalBlock and !qResult.vedaJohariGoiYVanHoa.isEmpty()}" class="pt-3 border-t border-amber-200 space-y-3">
+                    <div class="p-3 rounded-2xl bg-amber-50/80 border border-amber-200">
+                        <h5 class="text-xs font-extrabold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                            <i class="fa-solid fa-dharmachakra text-amber-600"></i>
+                            <span>Gợi ý văn hoá Vệ Đà (Tham khảo)</span>
+                        </h5>
+                        <p class="text-[11px] text-amber-800 mt-0.5">
+                            Đá quý, màu sắc, ngày thuận lợi theo truyền thống Ấn Độ giáo của Johari (bấm vào từng thẻ để xem trang sách gốc):
+                        </p>
+                    </div>
+                    <div th:each="mu : ${qResult.vedaJohariGoiYVanHoa}">
+                        <div th:replace="~{fragments/layout :: unitCard(${mu}, 'border-l-4 border-l-orange-400 bg-amber-50/40')}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT 3: TRƯỜNG PHÁI KABBALAH / CHALDEAN (SEPHARIAL) -->
+        <div class="light-card rounded-3xl overflow-hidden border-t-4 border-t-purple-600">
+            <div class="p-4 sm:p-5 bg-gradient-to-r from-purple-50/90 via-fuchsia-50/30 to-white border-b border-slate-200">
+                <div class="flex items-center justify-between gap-2 mb-1">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800">
+                        Trường phái 03
+                    </span>
+                    <span class="text-[11px] font-mono text-purple-800 font-semibold">Kabbalah • Sepharial</span>
+                </div>
+                <h4 class="text-base font-extrabold text-slate-900">
+                    Trường phái Kabbalah / Chaldean (Sepharial)
+                </h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">
+                    Luận giải theo Số chìa khoá (Key Number) và Ma phương 3 tầng (nhấn vào lời giải để xem nguồn).
+                </p>
+            </div>
+
+            <div class="p-4 sm:p-5 space-y-4">
+                <!-- Lưu ý ở câu hỏi 2: Không dùng Tarot theo năm (Mục 6.4) -->
+                <div th:if="${showKabbalahGapGiNote}" class="p-3.5 rounded-2xl bg-purple-50/80 border border-purple-200 text-xs text-purple-950 space-y-1">
+                    <div class="font-bold flex items-center gap-1.5 text-purple-900">
+                        <i class="fa-solid fa-circle-info text-purple-600"></i>
+                        <span>Phạm vi trường phái Kabbalah ở câu hỏi này:</span>
+                    </div>
+                    <p class="leading-relaxed" th:text="${hoSoSo.sepharial.chuThichGapGi}">
+                        Trường phái này chỉ có phương pháp Tarot theo năm, đã bị loại vì mang tính bói toán.
+                    </p>
+                </div>
+
+                <div th:if="${qResult.kabbalahSepharial.isEmpty()}" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-500">
+                    Không có đơn vị bổ sung nào kích hoạt ở mục này.
+                </div>
+
+                <div th:each="mu : ${qResult.kabbalahSepharial}">
+                    <div th:replace="~{fragments/layout :: unitCard(${mu}, 'border-l-4 border-l-purple-500')}"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- =====================================================================
+     FOOTER HỌC THUẬT & TUYÊN BỐ MIỄN TRỪ TRÁCH NHIỆM (MỤC 10.1)
+     ===================================================================== -->
+<footer th:fragment="footer" class="mt-16 border-t border-slate-200 py-8 bg-white text-xs text-slate-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+        <div class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-amber-950 flex items-start gap-3">
+            <i class="fa-solid fa-triangle-exclamation text-amber-600 text-base mt-0.5"></i>
+            <div class="leading-relaxed">
+                <strong>Tuyên bố miễn trừ trách nhiệm học thuật (Mục 10.1):</strong>
+                Đây là hệ thống quản lý tri thức phục vụ học tập môn KMS301. Các luận giải phản ánh quan điểm của từng tác giả trong nguồn sách đã trích dẫn, không phải kết luận khoa học, không thay thế tư vấn tâm lý, y tế hay nghề nghiệp.
+            </div>
+        </div>
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-slate-500">
+            <p>
+                Dự án Môn học <strong>KMS301 — Hệ thống Quản lý Tri thức Thần số học (NKMS)</strong> • Đối chiếu 3 Trường phái (Pythagoras, Vệ Đà, Kabbalah).
+            </p>
+            <p class="text-[11px] text-slate-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+                <span>Quyền riêng tư: Chỉ tính toán trong phiên request, tuyệt đối không lưu họ tên và ngày sinh người dùng.</span>
+            </p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

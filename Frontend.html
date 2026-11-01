@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KMS - Hệ Thống Quản Lý Tri Thức và Định Vị Cá Nhân</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Be Vietnam Pro (chuẩn tiếng Việt không lỗi phông) & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Be Vietnam Pro"', '"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Be Vietnam Pro"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Nền sáng hiện đại kết hợp lưới ánh sáng nhẹ */
+    body {
+      background-color: #f8fafc;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.06) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(245, 158, 11, 0.04) 0px, transparent 50%);
+      color: #1e293b;
+    }
+
+    /* Thanh cuộn mềm mại */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 6px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    .light-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+    }
+
+    .light-card-hover {
+      transition: all 0.25s ease;
+    }
+    .light-card-hover:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 10px 25px -3px rgba(15, 23, 42, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .gradient-text-indigo {
+      background: linear-gradient(135deg, #4338ca 0%, #3b82f6 50%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gradient-text-amber {
+      background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #ea580c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="font-sans min-h-screen selection:bg-indigo-500 selection:text-white antialiased">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/90 px-4 lg:px-8 py-3 shadow-sm">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      
+      <!-- Logo và Thương hiệu tinh gọn KMS -->
+      <div class="flex items-center gap-3">
+        
+        <!-- LOGO THIẾT KẾ RIÊNG: MA TRẬN NGÀY THÁNG NĂM SINH 3x3 -->
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-amber-500 p-0.5 shadow-sm flex-shrink-0 group hover:scale-105 transition-transform" title="Logo Biểu Tượng Ma Trận Ngày Sinh 3x3">
+          <div class="w-full h-full bg-white rounded-[10px] flex items-center justify-center p-1.5 shadow-inner">
+            <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+              <!-- Khung lưới ma trận -->
+              <rect x="2" y="2" width="32" height="32" rx="5" stroke="url(#logo_grad)" stroke-width="1.5" stroke-dasharray="2 1.5"/>
+              <!-- Các trục phân cách 3 tầng (Trí não - Tâm hồn - Thể chất) -->
+              <line x1="12" y1="4" x2="12" y2="32" stroke="#e2e8f0" stroke-width="1.2"/>
+              <line x1="24" y1="4" x2="24" y2="32" stroke="#e2e8f0" stroke-width="1.2"/>
+              <line x1="4" y1="12" x2="32" y2="12" stroke="#e2e8f0" stroke-width="1.2"/>
+              <line x1="4" y1="24" x2="32" y2="24" stroke="#e2e8f0" stroke-width="1.2"/>
+              <!-- Tọa độ 9 ô ngày sinh Pythagoras -->
+              <!-- Hàng 1 (3 - 6 - 9): Trí Não -->
+              <circle cx="7.5" cy="7.5" r="2.2" fill="#06b6d4"/>
+              <circle cx="18" cy="7.5" r="2.2" fill="#6366f1"/>
+              <circle cx="28.5" cy="7.5" r="2.2" fill="#f59e0b"/>
+              <!-- Hàng 2 (2 - 5 - 8): Tâm Hồn -->
+              <circle cx="7.5" cy="18" r="2.2" fill="#ec4899"/>
+              <circle cx="18" cy="18" r="2.8" fill="#4f46e5"/>
+              <circle cx="28.5" cy="18" r="2.2" fill="#8b5cf6"/>
+              <!-- Hàng 3 (1 - 4 - 7): Thể Chất -->
+              <circle cx="7.5" cy="28.5" r="2.2" fill="#10b981"/>
+              <circle cx="18" cy="28.5" r="2.2" fill="#3b82f6"/>
+              <circle cx="28.5" cy="28.5" r="2.2" fill="#f97316"/>
+              <defs>
+                <linearGradient id="logo_grad" x1="2" y1="2" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#06b6d4"/>
+                  <stop offset="0.5" stop-color="#4f46e5"/>
+                  <stop offset="1" stop-color="#f59e0b"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Tên Logo chỉ để là KMS -->
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-700 via-cyan-700 to-indigo-900 bg-clip-text text-transparent">KMS</span>
+          <span class="text-xs px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/90 font-semibold">Hệ Thống Tri Thức</span>
+        </div>
+      </div>
+
+      <!-- MAIN NAVIGATION TABS -->
+      <nav class="flex items-center p-1 rounded-2xl bg-slate-100 border border-slate-200">
+        <!-- Tab Button: Khám Phá -->
+        <button 
+          id="navBtnDiscovery" 
+          onclick="switchMainTab('discovery')" 
+          class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 bg-white text-indigo-700 shadow-sm border border-slate-200/60"
+        >
+          <i class="fa-solid fa-compass text-indigo-600"></i>
+          <span>Khám Phá và Định Vị</span>
+          <span class="hidden sm:inline-block text-[10px] px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-700 font-bold">Ma Trận và 3 Câu Hỏi</span>
+        </button>
+
+        <!-- Tab Button: Kho Tri Thức -->
+        <button 
+          id="navBtnKnowledge" 
+          onclick="switchMainTab('knowledge')" 
+          class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition-all duration-200"
+        >
+          <i class="fa-solid fa-book-bookmark text-amber-500"></i>
+          <span>Kho Tri Thức</span>
+          <span class="hidden sm:inline-block text-[10px] px-1.5 py-0.2 rounded bg-amber-50 text-amber-700 border border-amber-200/70 font-semibold">Thư Viện Nguồn</span>
+        </button>
+      </nav>
+
+      <!-- Thông tin đề tài -->
+      <div class="hidden lg:flex items-center gap-3">
+        <div class="text-right">
+          <span class="text-xs font-bold text-slate-800 block">Đề Tài KMS 2026</span>
+          <span class="text-[11px] text-slate-500">Môn Quản Lý Tri Thức</span>
+        </div>
+        <div class="w-9 h-9 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-xs font-bold text-indigo-700">
+          KM
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ROOT CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+
+    <!-- ===================================================================
+         PHẦN 1: TAB KHÁM PHÁ BẢN THÂN (MA TRẬN, 3 CÂU HỎI, TRUY VẤN NGUỒN)
+         =================================================================== -->
+    <div id="tabContentDiscovery" class="space-y-10">
+
+      <!-- Hero Input Section (Giao diện sáng sủa) -->
+      <section class="light-card rounded-3xl p-6 sm:p-8 border border-slate-200 bg-gradient-to-br from-white via-indigo-50/20 to-cyan-50/30">
+        <div class="max-w-3xl mb-6">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-indigo-600 mb-2 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">
+            <i class="fa-solid fa-sparkles text-xs"></i> Lập Bản Đồ Nhận Thức Cá Nhân
+          </span>
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Định Vị Tri Thức: <span class="gradient-text-indigo">Hành Trình Khám Phá Bản Thân</span>
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+            Nhập hồ sơ để kích hoạt bộ máy tính toán Pythagoras. Bấm vào <strong class="text-amber-700 font-semibold">bất kỳ thông số nào</strong> hoặc <strong class="text-indigo-700 font-semibold">từng lời giải đáp</strong> để kiểm chứng công thức toán học và tài liệu nguồn tham khảo.
+          </p>
+        </div>
+
+        <!-- Form nhập liệu -->
+        <form id="profileForm" onsubmit="event.preventDefault(); applyProfile();" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-200">
+          <div class="md:col-span-5 space-y-1.5">
+            <label class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-regular fa-user text-indigo-600"></i> Họ và tên của bạn
+            </label>
+            <input 
+              type="text" 
+              id="inputName" 
+              value="Nguyễn Hoàng Nam"
+              required 
+              placeholder="Nhập đầy đủ họ tên..."
+              class="w-full bg-white text-slate-900 rounded-xl px-4 py-3 text-sm border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 shadow-sm"
+            >
+          </div>
+
+          <div class="md:col-span-4 space-y-1.5">
+            <label class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-regular fa-calendar text-indigo-600"></i> Ngày tháng năm sinh (Dương lịch)
+            </label>
+            <input 
+              type="date" 
+              id="inputDob" 
+              value="1998-08-16"
+              required 
+              class="w-full bg-white text-slate-900 rounded-xl px-4 py-3 text-sm border border-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 shadow-sm"
+            >
+          </div>
+
+          <div class="md:col-span-3">
+            <button 
+              type="submit" 
+              class="w-full py-3.5 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white shadow-md shadow-indigo-200 transition-all flex items-center justify-center gap-2 active:scale-95"
+            >
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>Tính Toán và Giải Mã</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Hồ sơ mẫu nhanh -->
+        <div class="flex flex-wrap items-center gap-2 mt-4 text-xs text-slate-500">
+          <span class="font-semibold text-slate-600">Hồ sơ mẫu nhanh:</span>
+          <button type="button" onclick="setSampleProfile('Nguyễn Hoàng Nam', '1998-08-16')" class="px-3 py-1 rounded-lg bg-white hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 transition-all border border-slate-200 font-medium">
+            Hoàng Nam (Số 6 - Yêu thương)
+          </button>
+          <button type="button" onclick="setSampleProfile('Trần Minh Quân', '1995-10-25')" class="px-3 py-1 rounded-lg bg-white hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 transition-all border border-slate-200 font-medium">
+            Minh Quân (Số 5 - Bứt phá)
+          </button>
+          <button type="button" onclick="setSampleProfile('Lê Quỳnh Chi', '2001-03-07')" class="px-3 py-1 rounded-lg bg-white hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 transition-all border border-slate-200 font-medium">
+            Quỳnh Chi (Số 4 - Kỷ luật)
+          </button>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           TỔNG HỢP CÁC CHỈ SỐ ĐÃ TÍNH (THẺ TƯƠNG TÁC SÁNG SỦA)
+           =================================================================== -->
+      <section class="space-y-3.5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Bảng Chỉ Số Năng Lượng Gốc</span>
+            <h2 class="text-lg sm:text-xl font-bold text-slate-900">Các Thông Số Đã Tính Từ Dữ Liệu Đầu Vào</h2>
+          </div>
+          <span class="text-xs text-amber-800 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200 flex items-center gap-1.5 font-medium self-start sm:self-auto">
+            <i class="fa-solid fa-hand-pointer text-[11px] animate-bounce text-amber-600"></i> Nhấn vào từng số để xem công thức và sách nguồn
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+          
+          <!-- Thông số 1: Số Chủ Đạo -->
+          <div 
+            onclick="inspectKnowledge('metric_ruling')" 
+            class="light-card light-card-hover p-4 rounded-2xl cursor-pointer group relative overflow-hidden border-t-4 border-t-cyan-500"
+          >
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Số Chủ Đạo</span>
+              <i class="fa-solid fa-circle-info text-cyan-600/70 group-hover:text-cyan-600 text-xs"></i>
+            </div>
+            <div id="badgeRulingNumber" class="text-3xl font-extrabold text-cyan-700 my-1 group-hover:scale-105 transition-transform">6</div>
+            <div class="text-xs text-slate-600 font-medium truncate">Đường Đời (Life Path)</div>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-indigo-600 font-semibold">
+              <span>Xem công thức</span>
+              <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </div>
+          </div>
+
+          <!-- Thông số 2: Số Sứ Mệnh -->
+          <div 
+            onclick="inspectKnowledge('metric_destiny')" 
+            class="light-card light-card-hover p-4 rounded-2xl cursor-pointer group relative overflow-hidden border-t-4 border-t-indigo-500"
+          >
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Số Sứ Mệnh</span>
+              <i class="fa-solid fa-circle-info text-indigo-600/70 group-hover:text-indigo-600 text-xs"></i>
+            </div>
+            <div id="badgeDestinyNumber" class="text-3xl font-extrabold text-indigo-700 my-1 group-hover:scale-105 transition-transform">7</div>
+            <div class="text-xs text-slate-600 font-medium truncate">Theo Họ và Tên</div>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-indigo-600 font-semibold">
+              <span>Xem công thức</span>
+              <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </div>
+          </div>
+
+          <!-- Thông số 3: Số Linh Hồn -->
+          <div 
+            onclick="inspectKnowledge('metric_soul')" 
+            class="light-card light-card-hover p-4 rounded-2xl cursor-pointer group relative overflow-hidden border-t-4 border-t-pink-500"
+          >
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Số Linh Hồn</span>
+              <i class="fa-solid fa-circle-info text-pink-600/70 group-hover:text-pink-600 text-xs"></i>
+            </div>
+            <div id="badgeSoulNumber" class="text-3xl font-extrabold text-pink-700 my-1 group-hover:scale-105 transition-transform">9</div>
+            <div class="text-xs text-slate-600 font-medium truncate">Khát vọng nguyên âm</div>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-indigo-600 font-semibold">
+              <span>Xem công thức</span>
+              <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </div>
+          </div>
+
+          <!-- Thông số 4: Số Nhân Cách -->
+          <div 
+            onclick="inspectKnowledge('metric_personality')" 
+            class="light-card light-card-hover p-4 rounded-2xl cursor-pointer group relative overflow-hidden border-t-4 border-t-emerald-500"
+          >
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Số Nhân Cách</span>
+              <i class="fa-solid fa-circle-info text-emerald-600/70 group-hover:text-emerald-600 text-xs"></i>
+            </div>
+            <div id="badgePersonalityNumber" class="text-3xl font-extrabold text-emerald-700 my-1 group-hover:scale-105 transition-transform">7</div>
+            <div class="text-xs text-slate-600 font-medium truncate">Biểu hiện phụ âm</div>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-indigo-600 font-semibold">
+              <span>Xem công thức</span>
+              <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </div>
+          </div>
+
+          <!-- Thông số 5: Năm Cá Nhân -->
+          <div 
+            onclick="inspectKnowledge('metric_year')" 
+            class="light-card light-card-hover p-4 rounded-2xl cursor-pointer group relative overflow-hidden border-t-4 border-t-amber-500 col-span-2 sm:col-span-1"
+          >
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Năm Cá Nhân</span>
+              <i class="fa-solid fa-circle-info text-amber-600/70 group-hover:text-amber-600 text-xs"></i>
+            </div>
+            <div id="badgePersonalYear" class="text-3xl font-extrabold text-amber-700 my-1 group-hover:scale-105 transition-transform">5</div>
+            <div class="text-xs text-slate-600 font-medium truncate">Năm 2026 (Chu kỳ 9)</div>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-indigo-600 font-semibold">
+              <span>Xem công thức</span>
+              <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           MA TRẬN NGÀY SINH 3x3 VÀ KIM TỰ THÁP 4 ĐỈNH CAO
+           =================================================================== -->
+      <section class="light-card rounded-3xl p-6 sm:p-8 space-y-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Trực Quan Hóa Dữ Liệu Ngày Sinh</span>
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5">Ma Trận Ngày Sinh 3x3 và Kim Tự Tháp 4 Đỉnh Cao</h2>
+            <p class="text-xs sm:text-sm text-slate-600">Biểu diễn tần số năng lượng qua 3 tầng: Trí não (3-6-9), Tâm hồn (2-5-8), Thể chất (1-4-7).</p>
+          </div>
+          <button 
+            onclick="inspectKnowledge('matrix_general')" 
+            class="px-4 py-2.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 transition-all flex items-center gap-2 shadow-sm"
+          >
+            <i class="fa-solid fa-book-bookmark text-indigo-600"></i>
+            <span>Nguồn Sách và Quy Tắc Ma Trận</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- Lưới 3x3 Ma Trận Sáng Sủa -->
+          <div class="lg:col-span-5 flex flex-col items-center p-5 rounded-2xl bg-slate-50 border border-slate-200">
+            <span class="text-xs font-bold uppercase text-slate-600 tracking-wider mb-3">Lưới 3x3 Pythagoras</span>
+            
+            <div class="grid grid-cols-3 gap-2.5 w-full max-w-[280px] aspect-square p-3 rounded-2xl bg-white border border-slate-200 shadow-sm">
+              <!-- Hàng 1: 3, 6, 9 -->
+              <div id="cell-3" onclick="inspectKnowledge('matrix_cell_3')" class="cursor-pointer transition-all hover:scale-105 rounded-xl flex flex-col items-center justify-center border border-slate-200 relative bg-slate-50">
+                <span class="text-[10px] text-slate-400 absolute top-1 left-2 font-bold">3</span>
+                <span class="cell-val text-base font-bold text-slate-400">·</span>
+              </div>
+              <div id="cell-6" onclick="inspectKnowledge('matrix_cell_6')" class="cursor-pointer transition-all hover:scale-105 rounded-xl flex flex-col items-center justify-center border border-slate-200 relative bg-slate-50">
+                <span class="text-[10px] text-slate-400 absolute top-1 left-2 font-bold">6</span>
+                <span class="cell-val text-base font-bold text-slate-400">·</span>
+              </div>
+              <div id="cell-9" onclick="inspectKnowledge('matrix_cell_9')" class="cursor-pointer transition-all hover:scale-105 rounded-xl flex flex-col items-center justify-center border border-slate-200 relative bg-slate-50">
+                <span class="text-[10px] text-slate-400 absolute top-1 left-2 font-bold">9</span>
+                <span class="cell-val text-base font-bold text-slate-400">·</span>
+              </div>
+
+              <!-- Hàng 2: 2, 5, 8 -->
+              <div id="cell-2" onclick="inspectKnowledge('matrix_cell_2')" class="cursor-pointer transition-all hover:scale-105 rounded-xl flex flex-col items-center justify-center border border-slate-200 relative bg-slate-50">
+                <span class="text-[10px] text-slate-400 absolute top-1 left-2 font-bold">2</span>
+                <span class="cell-val text-base font-bold text-slate-400">·</span>
+              </div>
+              <div id="cell-5" onclick="inspectKnowledge('matrix_cell_5')" class="cursor-pointer transition-all hover:scale-105 rounded-xl flex flex-col items-center justify-center border border-slate-200 relative bg-slate-50">
+                <span class="text-[10px] text-slate-400 absolute top-1 left-2 font-bold">5</span>
+                <span class="cell-val text-base font-bold text-slate-400">·</span>
+              </div>
+              <div id="cell-8" onclick="inspectKnowledge('matrix_cell_8')" class="cursor-pointer transition-all hover:scale-105 rounded-xl flex flex-col items-center justify-center border border-slate-200 relative bg-slate-50">
+                <span class="text-[10px] text-slate-400 absolute top-1 left-2 font-bold">8</span>
+                <span class="cell-val text-base font-bold text-slate-400">·</span>
+              </div>
+
+              <!-- Hàng 3: 1, 4, 7 -->
+              <div id="cell-1" onclick="inspectKnowledge('matrix_cell_1')" class="cursor-pointer transition-all hover:scale-105 rounded-xl flex flex-col items-center justify-center border border-slate-200 relative bg-slate-50">
+                <span class="text-[10px] text-slate-400 absolute top-1 left-2 font-bold">1</span>
+                <span class="cell-val text-base font-bold text-slate-400">·</span>
+              </div>
+              <div id="cell-4" onclick="inspectKnowledge('matrix_cell_4')" class="cursor-pointer transition-all hover:scale-105 rounded-xl flex flex-col items-center justify-center border border-slate-200 relative bg-slate-50">
+                <span class="text-[10px] text-slate-400 absolute top-1 left-2 font-bold">4</span>
+                <span class="cell-val text-base font-bold text-slate-400">·</span>
+              </div>
+              <div id="cell-7" onclick="inspectKnowledge('matrix_cell_7')" class="cursor-pointer transition-all hover:scale-105 rounded-xl flex flex-col items-center justify-center border border-slate-200 relative bg-slate-50">
+                <span class="text-[10px] text-slate-400 absolute top-1 left-2 font-bold">7</span>
+                <span class="cell-val text-base font-bold text-slate-400">·</span>
+              </div>
+            </div>
+
+            <div class="w-full mt-4 space-y-2 text-xs">
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200">
+                <span class="text-slate-600 font-medium">Trục Trí Não (3-6-9):</span>
+                <span id="matrixMentalSummary" class="text-cyan-700 font-bold">Hoạt động tích cực</span>
+              </div>
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200">
+                <span class="text-slate-600 font-medium">Trục Tâm Hồn (2-5-8):</span>
+                <span id="matrixSoulSummary" class="text-pink-700 font-bold">Nhạy bén, cân bằng</span>
+              </div>
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200">
+                <span class="text-slate-600 font-medium">Trục Thể Chất (1-4-7):</span>
+                <span id="matrixPhysicalSummary" class="text-emerald-700 font-bold">Vững vàng, thực tế</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kim Tự Tháp 4 Đỉnh Cao & Mũi Tên Nhận Diện -->
+          <div class="lg:col-span-7 space-y-5">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                  <i class="fa-solid fa-mountain-sun text-amber-500"></i> Kim Tự Tháp 4 Đỉnh Cao Cuộc Đời
+                </h3>
+                <button onclick="inspectKnowledge('pinnacles_logic')" class="text-xs text-indigo-600 hover:underline flex items-center gap-1 font-semibold">
+                  <span>Công thức tính đỉnh</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                </button>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div onclick="inspectKnowledge('pinnacle_1')" class="cursor-pointer p-3.5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-300 text-center transition-all group hover:bg-white shadow-xs">
+                  <span class="text-[10px] text-slate-500 uppercase block font-bold">Đỉnh 1</span>
+                  <span id="pinnacleAge1" class="text-xs text-indigo-700 font-bold">Tuổi 30</span>
+                  <div id="pinnacleNum1" class="text-2xl font-extrabold text-slate-800 my-1 group-hover:text-indigo-600">6</div>
+                  <span class="text-[11px] text-slate-600 block truncate">Gia đình và Sáng tạo</span>
+                </div>
+                <div onclick="inspectKnowledge('pinnacle_2')" class="cursor-pointer p-3.5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-300 text-center transition-all group hover:bg-white shadow-xs">
+                  <span class="text-[10px] text-slate-500 uppercase block font-bold">Đỉnh 2</span>
+                  <span id="pinnacleAge2" class="text-xs text-indigo-700 font-bold">Tuổi 39</span>
+                  <div id="pinnacleNum2" class="text-2xl font-extrabold text-slate-800 my-1 group-hover:text-indigo-600">7</div>
+                  <span class="text-[11px] text-slate-600 block truncate">Trí tuệ tự thân</span>
+                </div>
+                <div onclick="inspectKnowledge('pinnacle_3')" class="cursor-pointer p-3.5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-300 text-center transition-all group hover:bg-white shadow-xs">
+                  <span class="text-[10px] text-slate-500 uppercase block font-bold">Đỉnh 3</span>
+                  <span id="pinnacleAge3" class="text-xs text-indigo-700 font-bold">Tuổi 48</span>
+                  <div id="pinnacleNum3" class="text-2xl font-extrabold text-slate-800 my-1 group-hover:text-indigo-600">4</div>
+                  <span class="text-[11px] text-slate-600 block truncate">Thực thi vững chắc</span>
+                </div>
+                <div onclick="inspectKnowledge('pinnacle_4')" class="cursor-pointer p-3.5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-300 text-center transition-all group hover:bg-white shadow-xs">
+                  <span class="text-[10px] text-slate-500 uppercase block font-bold">Đỉnh 4</span>
+                  <span id="pinnacleAge4" class="text-xs text-indigo-700 font-bold">Tuổi 57</span>
+                  <div id="pinnacleNum4" class="text-2xl font-extrabold text-slate-800 my-1 group-hover:text-indigo-600">11</div>
+                  <span class="text-[11px] text-slate-600 block truncate">Tinh thần và Phụng sự</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mũi Tên và Số Thiếu Nhận Diện -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center justify-between">
+                  <span>Mũi Tên Nhận Diện</span>
+                  <button onclick="inspectKnowledge('arrows_definition')" class="text-emerald-700 hover:text-emerald-900"><i class="fa-solid fa-circle-question"></i></button>
+                </span>
+                <div id="matrixArrowsFound" class="text-xs text-emerald-900 font-medium">
+                  Mũi tên Kế Hoạch (1-2-3) hoặc Quyết Tâm (1-5-9)
+                </div>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-1.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-800 flex items-center justify-between">
+                  <span>Con Số Bài Học Thiếu</span>
+                  <button onclick="inspectKnowledge('missing_numbers')" class="text-rose-700 hover:text-rose-900"><i class="fa-solid fa-circle-question"></i></button>
+                </span>
+                <div id="matrixMissingNumbers" class="text-xs text-rose-900 font-medium">
+                  Thiếu số 4 (Kỷ luật), Thiếu số 7 (Trải nghiệm)
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           LỜI GIẢI ĐÁP TUẦN TỰ 3 CÂU HỎI TRIẾT LÝ
+           =================================================================== -->
+      <section class="space-y-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-indigo-600">Phương Pháp Luận Định Vị Bản Thể</span>
+          <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mt-1">Lời Giải Đáp Theo Thứ Tự 3 Câu Hỏi Cốt Lõi</h2>
+          <p class="text-xs sm:text-sm text-slate-600">Mỗi lời giải đáp được tổng hợp dựa trên tri thức hiện (Explicit Knowledge) từ các tác phẩm học thuật.</p>
+        </div>
+
+        <!-- CÂU HỎI 1: TÔI LÀ AI? -->
+        <div class="light-card rounded-3xl p-6 sm:p-8 border-l-4 border-l-cyan-600 space-y-6">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-50 text-cyan-800 text-xs font-bold mb-2 border border-cyan-200">
+                <i class="fa-solid fa-id-card"></i> Câu Hỏi 1: Nhận Diện Căn Tính Bản Thể
+              </div>
+              <h3 class="text-xl sm:text-2xl font-bold text-slate-900">
+                Tôi Là Ai? — <span id="q1HeadlineRuling" class="text-cyan-700">Người Chăm Sóc và Yêu Thương Vô Điều Kiện</span>
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Giải mã từ sự giao thoa giữa Số Đường Đời <span id="q1RulingSpan" class="text-slate-900 font-bold">6</span>, Số Sứ Mệnh <span id="q1DestinySpan" class="text-slate-900 font-bold">7</span> và các con số trên ma trận.
+              </p>
+            </div>
+
+            <button 
+              onclick="inspectKnowledge('q1_who_am_i')" 
+              class="self-start lg:self-center px-4 py-2.5 rounded-xl text-xs font-bold bg-cyan-50 text-cyan-800 border border-cyan-300 hover:bg-cyan-100 transition-all flex items-center gap-2 whitespace-nowrap shadow-xs active:scale-95"
+            >
+              <i class="fa-solid fa-graduation-cap text-cyan-700"></i>
+              <span>Xem Nguồn Sách và Cơ Sở Luận Giải</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <!-- Hộp 1: Cốt lõi -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-cyan-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-fingerprint"></i> Bản Tính Cốt Lõi
+              </span>
+              <p id="q1CoreEssence" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                Bạn mang năng lượng của sự che chở, tận tụy và khả năng kết nối cảm xúc sâu sắc. Trong tổ chức, bạn luôn là chỗ dựa tâm lý an toàn và dung hòa xung đột.
+              </p>
+            </div>
+
+            <!-- Hộp 2: Thế mạnh -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-gem"></i> Năng Lực Thiên Bẩm
+              </span>
+              <ul id="q1StrengthsList" class="space-y-1.5 text-xs sm:text-sm text-slate-700">
+                <!-- Nạp tự động qua JS -->
+              </ul>
+            </div>
+
+            <!-- Hộp 3: Linh hồn -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-pink-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-heart"></i> Khát Vọng Nội Tâm Sâu Thẳm
+              </span>
+              <p id="q1SoulDesire" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                Trái tim bạn khao khát được cống hiến cho những giá trị nhân văn có thật. Bạn sẽ nhanh chóng mất động lực nếu chỉ làm việc vì đồng lương đơn thuần.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CÂU HỎI 2: TÔI ĐANG GẶP GÌ? -->
+        <div class="light-card rounded-3xl p-6 sm:p-8 border-l-4 border-l-amber-500 space-y-6">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-bold mb-2 border border-amber-200">
+                <i class="fa-solid fa-timeline"></i> Câu Hỏi 2: Phân Tích Thực Tại và Thời Vận
+              </div>
+              <h3 class="text-xl sm:text-2xl font-bold text-slate-900">
+                Tôi Đang Gặp Gì? — <span id="q2HeadlineCycle" class="text-amber-700">Năm Cá Nhân 2026: Đổi Mới và Thử Thách Vùng An Toàn</span>
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Phân tích theo chu kỳ 9 năm Pythagoras kết hợp đỉnh cao kim tự tháp và các con số khuyết trên ma trận.
+              </p>
+            </div>
+
+            <button 
+              onclick="inspectKnowledge('q2_what_facing')" 
+              class="self-start lg:self-center px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100 transition-all flex items-center gap-2 whitespace-nowrap shadow-xs active:scale-95"
+            >
+              <i class="fa-solid fa-graduation-cap text-amber-700"></i>
+              <span>Xem Nguồn Sách và Cơ Sở Luận Giải</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <!-- Hộp 1: Thời vận -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-bolt"></i> Năng Lượng Vận Hạn Năm 2026
+              </span>
+              <p id="q2YearInsight" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                Tần số năm nay kích hoạt mong muốn bứt phá và mở rộng mối quan hệ. Bạn dễ đối mặt với những ngã rẽ buộc phải thay đổi tư duy làm việc cũ kỹ.
+              </p>
+            </div>
+
+            <!-- Hộp 2: Điểm kẹt -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-rose-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-triangle-exclamation"></i> Điểm Kẹt và Bài Học Nghiệp
+              </span>
+              <div id="q2ChallengesList" class="space-y-1.5 text-xs sm:text-sm text-slate-700">
+                <!-- Nạp tự động qua JS -->
+              </div>
+            </div>
+
+            <!-- Hộp 3: Đỉnh cao -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-purple-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-mountain"></i> Giai Đoạn Đỉnh Cao Hiện Tại
+              </span>
+              <p id="q2PeakContext" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                Bạn đang trong chu kỳ tích lũy nội lực chuẩn bị đón nhận đỉnh cao số 6 lúc 30 tuổi: thời kỳ phát triển vượt bậc về trách nhiệm tổ chức và gia đình.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CÂU HỎI 3: TÔI NÊN ĐI NHƯ THẾ NÀO? -->
+        <div class="light-card rounded-3xl p-6 sm:p-8 border-l-4 border-l-emerald-600 space-y-6">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold mb-2 border border-emerald-200">
+                <i class="fa-solid fa-route"></i> Câu Hỏi 3: Chiến Lược Tri Thức và Hành Động
+              </div>
+              <h3 class="text-xl sm:text-2xl font-bold text-slate-900">
+                Tôi Nên Đi Như Thế Nào? — <span id="q3HeadlineStrategy" class="text-emerald-700">Phát Huy Điềm Tĩnh, Bù Đắp Kỷ Luật và Cân Bằng Cảm Xúc</span>
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Lộ trình chuyển hóa cụ thể giúp tối ưu hóa thế mạnh bẩm sinh và bù đắp các số còn trống trên biểu đồ.
+              </p>
+            </div>
+
+            <button 
+              onclick="inspectKnowledge('q3_how_to_navigate')" 
+              class="self-start lg:self-center px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition-all flex items-center gap-2 whitespace-nowrap shadow-xs active:scale-95"
+            >
+              <i class="fa-solid fa-graduation-cap text-emerald-700"></i>
+              <span>Xem Nguồn Sách và Cơ Sở Luận Giải</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <!-- Hộp 1: Nghề nghiệp -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-briefcase"></i> 1. Nhóm Nghề Tương Thích
+              </span>
+              <p class="text-xs text-slate-600">
+                Lựa chọn môi trường phát huy được năng lực chăm sóc và khả năng dẫn dắt:
+              </p>
+              <div id="q3CareerTags" class="flex flex-wrap gap-1.5 pt-1">
+                <!-- Nạp tự động qua JS -->
+              </div>
+            </div>
+
+            <!-- Hộp 2: Bù đắp -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-cyan-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-shield-halved"></i> 2. Rèn Luyện và Bù Đắp Khuyết
+              </span>
+              <ul id="q3ActionRemedies" class="space-y-1.5 text-xs sm:text-sm text-slate-700">
+                <!-- Nạp tự động qua JS -->
+              </ul>
+            </div>
+
+            <!-- Hộp 3: Kế hoạch 90 ngày -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-list-check"></i> 3. Kế Hoạch Hành Động 90 Ngày
+              </span>
+              <div class="space-y-2 text-xs sm:text-sm text-slate-700">
+                <div class="p-2.5 rounded-xl bg-white border border-slate-200">
+                  <span class="text-amber-700 font-bold block mb-0.5">Tháng 1-2:</span>
+                  Tập trung thiết lập ranh giới cảm xúc rõ ràng, kiên quyết từ chối những việc ngoài trách nhiệm.
+                </div>
+                <div class="p-2.5 rounded-xl bg-white border border-slate-200">
+                  <span class="text-emerald-700 font-bold block mb-0.5">Tháng 3:</span>
+                  Chủ động đề xuất hoặc triển khai một sáng kiến cải tiến quy trình trong công việc.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- ===================================================================
+         PHẦN 2: TAB KHO TRI THỨC (KNOWLEDGE BASE / REPOSITORY SÁNG SỦA)
+         =================================================================== -->
+    <div id="tabContentKnowledge" class="space-y-8 hidden">
+      
+      <!-- Thanh tìm kiếm & bộ lọc -->
+      <section class="light-card rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-white via-amber-50/20 to-orange-50/20">
+        <div class="max-w-3xl mb-6">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-amber-700 mb-2 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
+            <i class="fa-solid fa-database text-xs"></i> Cơ Sở Dữ Liệu và Tri Thức Chuẩn Hóa
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            Kho Tri Thức và Bản Đồ Vận Mệnh (KMS Repository)
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-2">
+            Hệ thống hóa toàn bộ tài liệu nghiên cứu, nguyên lý Pythagoras cổ điển, ma trận năng lượng và các bài học nghiệp nhằm phục vụ việc phân loại và truy xuất nhanh chóng.
+          </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-grow">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input 
+              type="text" 
+              id="knowledgeSearchInput"
+              onkeyup="filterKnowledgeItems()"
+              placeholder="Tìm kiếm tài liệu: 'Số 3', 'Đỉnh cao', 'Mũi tên 1-2-3', 'Học thuyết'..."
+              class="w-full bg-white text-slate-900 placeholder-slate-400 rounded-xl pl-11 pr-4 py-3 text-sm border border-slate-200 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 shadow-sm"
+            >
+          </div>
+
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+            <button onclick="setCategoryFilter('all')" class="cat-pill active px-3.5 py-2.5 rounded-xl text-xs font-bold bg-amber-500 text-white transition-all whitespace-nowrap shadow-sm" data-cat="all">
+              Tất Cả (4)
+            </button>
+            <button onclick="setCategoryFilter('core')" class="cat-pill px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-white text-slate-600 hover:text-slate-900 border border-slate-200 transition-all whitespace-nowrap" data-cat="core">
+              Số Chủ Đạo
+            </button>
+            <button onclick="setCategoryFilter('cycle')" class="cat-pill px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-white text-slate-600 hover:text-slate-900 border border-slate-200 transition-all whitespace-nowrap" data-cat="cycle">
+              Chu Kỳ 9 Năm
+            </button>
+            <button onclick="setCategoryFilter('matrix')" class="cat-pill px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-white text-slate-600 hover:text-slate-900 border border-slate-200 transition-all whitespace-nowrap" data-cat="matrix">
+              Ma Trận 3x3
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Danh sách tài liệu -->
+      <section>
+        <div id="knowledgeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Nạp động qua JS -->
+        </div>
+
+        <div id="noKnowledgeFound" class="hidden text-center py-12 light-card rounded-2xl">
+          <i class="fa-regular fa-folder-open text-4xl text-slate-400 mb-3"></i>
+          <p class="text-slate-500 text-sm">Không tìm thấy tài liệu phù hợp trong kho tri thức.</p>
+        </div>
+      </section>
+
+      <!-- Module Đóng Góp Tri Thức Mới -->
+      <section class="light-card rounded-3xl p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-code-pull-request text-indigo-600"></i> Đóng Góp Tri Thức Mới Vào Hệ Thống (KMS Capture)
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5">Quy trình ghi nhận tri thức thực nghiệm từ chuyên gia hoặc người dùng</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 font-semibold">Chuẩn KM-04</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <input type="text" id="contribTitle" placeholder="Tiêu đề tri thức / ghi chú mới..." class="bg-slate-50 text-slate-900 rounded-xl px-4 py-2.5 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+          <select id="contribCat" class="bg-slate-50 text-slate-900 rounded-xl px-4 py-2.5 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500 font-medium">
+            <option value="core">Danh mục: Số Chủ Đạo</option>
+            <option value="cycle">Danh mục: Chu Kỳ và Vận Hạn</option>
+            <option value="matrix">Danh mục: Ma Trận 3x3</option>
+          </select>
+          <button onclick="handleSimulatedContribution()" class="py-2.5 px-4 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-all flex items-center justify-center gap-2 shadow-sm">
+            <i class="fa-solid fa-plus text-xs"></i> Ghi Nhận Vào Kho Tri Thức
+          </button>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ===================================================================
+       MODAL THANH TRA TRI THỨC: CÔNG THỨC TOÁN HỌC VÀ NGUỒN SÁCH TÁC GIẢ
+       =================================================================== -->
+  <div id="inspectorModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+    <div class="bg-white max-w-3xl w-full rounded-3xl p-6 sm:p-8 max-h-[92vh] overflow-y-auto border border-slate-200 space-y-6 shadow-2xl">
+      
+      <!-- Tiêu đề Modal -->
+      <div class="flex items-start justify-between border-b border-slate-100 pb-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span id="inspectKmsTag" class="text-[10px] px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase tracking-wider font-bold">KMS-EXPLICIT-RULE</span>
+            <span id="inspectDomainTag" class="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">Trường phái Pythagoras</span>
+          </div>
+          <h3 id="inspectTitle" class="text-xl sm:text-2xl font-bold text-slate-900">Công Thức và Nguồn Gốc Tri Thức</h3>
+          <p id="inspectSubtitle" class="text-xs text-slate-500 mt-0.5">Phân rã logic thuật toán và thẩm định nguồn học thuật theo chuẩn quản lý tri thức.</p>
+        </div>
+        <button onclick="closeInspectorModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Phần 1: Công thức toán học và các bước tính -->
+      <div class="p-5 rounded-2xl bg-slate-50 border border-cyan-200 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-cyan-800 flex items-center gap-2">
+            <i class="fa-solid fa-square-root-variable"></i> 1. Công Thức Toán Học và Các Bước Tính
+          </span>
+          <span class="text-[11px] text-slate-500 font-mono">Dữ liệu thực tế của bạn</span>
+        </div>
+        
+        <div id="inspectFormulaBox" class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-cyan-300 overflow-x-auto shadow-inner">
+          <!-- Populated by JS -->
+        </div>
+
+        <div id="inspectCalculationSteps" class="text-xs sm:text-sm text-slate-700 space-y-1.5 leading-relaxed bg-white p-3.5 rounded-xl border border-slate-200">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Phần 2: Nguồn trích dẫn học thuật và tác giả -->
+      <div class="p-5 rounded-2xl bg-amber-50/60 border border-amber-200 space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-800 flex items-center gap-2">
+            <i class="fa-solid fa-book"></i> 2. Nguồn Trích Dẫn Học Thuật và Tác Giả
+          </span>
+          <span class="text-[11px] text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-200 font-bold">Tài Liệu Gốc</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+          <div class="p-3.5 rounded-xl bg-white border border-amber-200 space-y-1">
+            <span class="text-slate-500 block text-[10px] uppercase font-bold">Tên Sách / Công Trình:</span>
+            <span id="inspectBookTitle" class="text-slate-900 font-bold block">The Complete Book of Numerology</span>
+            <span id="inspectBookSub" class="text-xs text-slate-500 block">(Bản dịch Việt: Thay Đổi Cuộc Sống Với Nhân Số Học)</span>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-white border border-amber-200 space-y-1">
+            <span class="text-slate-500 block text-[10px] uppercase font-bold">Tác Giả và Nhà Xuất Bản:</span>
+            <span id="inspectAuthor" class="text-amber-800 font-bold block">TS. David A. Phillips (Dr. David A. Phillips)</span>
+            <span id="inspectPublisher" class="text-xs text-slate-500 block">NXB Hay House (1992) / NXB Tổng Hợp TP.HCM (2020)</span>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-white border border-amber-200 text-xs sm:text-sm space-y-1">
+          <span class="text-slate-500 block text-[10px] uppercase font-bold">Chương và Vị Trí Tham Chiếu:</span>
+          <p id="inspectChapterPage" class="text-slate-700 font-medium">Chương 4: "The Ruling Numbers" (Các con số chủ đạo), Trang 48 - 92.</p>
+        </div>
+
+        <!-- Khối trích dẫn APA -->
+        <div class="p-3.5 rounded-xl bg-white border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div class="text-xs font-mono text-slate-700">
+            <span class="text-slate-500 font-sans block text-[10px] font-bold">Định dạng trích dẫn chuẩn APA:</span>
+            <span id="inspectApaCitation">Phillips, D. A. (1992). The Complete Book of Numerology. Hay House.</span>
+          </div>
+          <button onclick="copyApaCitation()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white flex items-center gap-1.5 transition-all whitespace-nowrap shadow-xs">
+            <i class="fa-regular fa-copy text-xs"></i>
+            <span>Sao chép APA</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Phần 3: Vai trò trong hệ thống KMS -->
+      <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-600 space-y-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+          <i class="fa-solid fa-diagram-project text-indigo-600"></i> Vai Trò Trong Hệ Thống Quản Lý Tri Thức (KMS)
+        </span>
+        <p id="inspectKmsRationale" class="leading-relaxed">
+          Đây là tri thức hiện (Explicit Knowledge) được chuẩn hóa thành các luật suy diễn if-then. Dữ liệu ngày sinh và họ tên được phân tích qua bộ suy luận số học Pythagoras để sinh ra các khuyến nghị hành vi cụ thể.
+        </p>
+      </div>
+
+      <!-- Nút đóng và liên kết -->
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+        <button onclick="jumpToKnowledgeArticle()" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100 flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-book-open"></i>
+          <span>Mở Bài Viết Trong Kho Tri Thức</span>
+        </button>
+        <button onclick="closeInspectorModal()" class="px-5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">
+          Đóng Cửa Sổ
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- KNOWLEDGE DETAIL MODAL (ĐỌC BÀI VIẾT CHI TIẾT) -->
+  <div id="knowledgeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+    <div class="bg-white max-w-2xl w-full rounded-3xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto border border-slate-200 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div>
+          <span id="modalMetaTag" class="text-[10px] px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 uppercase tracking-wider font-bold">Metadata</span>
+          <h3 id="modalTitle" class="text-xl font-bold text-slate-900 mt-1">Tiêu Đề Tri Thức</h3>
+        </div>
+        <button onclick="closeKnowledgeModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="modalBody" class="text-xs sm:text-sm text-slate-700 space-y-3 leading-relaxed">
+        <!-- Nội dung bài viết -->
+      </div>
+      <div class="pt-4 border-t border-slate-100 flex justify-end">
+        <button onclick="closeKnowledgeModal()" class="px-5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700">Đóng Cửa Sổ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- THÔNG BÁO TOAST -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-white px-4 py-3 rounded-2xl flex items-center gap-3 border border-emerald-300 shadow-xl">
+    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+    <span id="toastText" class="text-xs font-bold text-slate-800">Đã cập nhật dữ liệu thành công!</span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="mt-20 border-t border-slate-200 py-8 text-center text-xs text-slate-500 bg-white">
+    <p>Dự án thiết kế giao diện Môn Học: <strong>Hệ Thống Quản Lý Tri Thức (KMS)</strong> • Chuyên đề Định Vị Bản Thân và Bản Đồ Vận Mệnh.</p>
+    <p class="text-[11px] text-slate-400 mt-1">Áp dụng kiến trúc tách lớp: Knowledge Capture - Knowledge Sharing - Self-Knowledge Discovery.</p>
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    /* =====================================================================
+       1. DỮ LIỆU KHO TRI THỨC (KMS REPOSITORY)
+       ===================================================================== */
+    const knowledgeArticles = [
+      {
+        id: "KMS-001",
+        title: "Học Thuyết 9 Năm Vận Hạn và Chu Kỳ Cá Nhân Pythagoras",
+        category: "cycle",
+        categoryName: "Chu Kỳ 9 Năm",
+        difficulty: "Cơ bản",
+        readTime: "4 phút",
+        author: "TS. David A. Phillips",
+        summary: "Quy luật vận hành của cuộc đời con người qua các giai đoạn 9 năm, từ năm số 1 (Gieo hạt) đến năm số 9 (Thu hoạch và Thanh lọc).",
+        content: `
+          <p>Mô hình chu kỳ 9 năm của Pythagoras phân tích năng lượng biến đổi theo dạng sóng xoắn ốc:</p>
+          <ul class="list-disc pl-5 space-y-1.5">
+            <li><strong>Năm 1:</strong> Khởi nguồn, định hình mục tiêu, bắt đầu dự án mới.</li>
+            <li><strong>Năm 2:</strong> Kiên nhẫn, hợp tác, trau dồi nội tâm và xây dựng niềm tin.</li>
+            <li><strong>Năm 3:</strong> Mở rộng quan hệ, sáng tạo, phát triển kỹ năng giao tiếp.</li>
+            <li><strong>Năm 4:</strong> Củng cố thể chế, sắp xếp tài chính và xây nền tảng vững chắc.</li>
+            <li><strong>Năm 5:</strong> Bứt phá, thay đổi môi trường, đón nhận cơ hội bất ngờ.</li>
+            <li><strong>Năm 6:</strong> Chăm sóc tổ ấm, củng cố nội bộ và các mối quan hệ gia đình.</li>
+            <li><strong>Năm 7:</strong> Trải nghiệm, chiêm nghiệm, nâng cao nhận thức và chuyên môn sâu.</li>
+            <li><strong>Năm 8:</strong> Độc lập tài chính, gặt hái thành quả kinh doanh.</li>
+            <li><strong>Năm 9:</strong> Hoàn tất, đóng lại chu kỳ cũ để chuẩn bị chu kỳ mới.</li>
+          </ul>
+        `
+      },
+      {
+        id: "KMS-002",
+        title: "Giải Mã Số Chủ Đạo: Biểu Tượng Căn Tính và Đường Đời",
+        category: "core",
+        categoryName: "Số Chủ Đạo",
+        difficulty: "Cơ bản",
+        readTime: "5 phút",
+        author: "Faith Javane và Dusty Bunker",
+        summary: "Phân tích cấu trúc tâm lý của các con số từ 2 đến 11 và Master 22 theo trường phái Số học tam giác thần thánh.",
+        content: `
+          <p>Số Chủ Đạo (Life Path) là con số quan trọng nhất trong bản đồ vận mệnh, mô tả bản chất thiên phú, bài học lớn nhất mà cá nhân cần vượt qua trong kiếp sống này.</p>
+        `
+      },
+      {
+        id: "KMS-003",
+        title: "Nguyên Lý 3 Trục Nhận Thức Trong Biểu Đồ 3x3",
+        category: "matrix",
+        categoryName: "Ma Trận 3x3",
+        difficulty: "Nâng cao",
+        readTime: "6 phút",
+        author: "TS. David A. Phillips",
+        summary: "Phân tích 3 tầng biểu đồ Pythagoras: Trục thể chất (1-4-7), Trục tâm hồn (2-5-8), Trục trí não (3-6-9).",
+        content: `
+          <p>Biểu đồ ngày sinh 3x3 phản ánh cấu trúc năng lượng bẩm sinh:</p>
+          <ul class="list-disc pl-5 space-y-1.5">
+            <li><strong>Trục Trí Não (3-6-9):</strong> Đại diện cho tư duy logic, trí nhớ và lý tưởng sống.</li>
+            <li><strong>Trục Tâm Hồn (2-5-8):</strong> Đại diện cho trực giác, tình cảm và sự nhạy bén cảm xúc.</li>
+            <li><strong>Trục Thể Chất (1-4-7):</strong> Đại diện cho tính thực tiễn, kỷ luật và hành động cụ thể.</li>
+          </ul>
+        `
+      },
+      {
+        id: "KMS-004",
+        title: "Kim Tự Tháp 4 Đỉnh Cao: Khung Định Vị Đại Vận Cuộc Đời",
+        category: "cycle",
+        categoryName: "Chu Kỳ 9 Năm",
+        difficulty: "Nâng cao",
+        readTime: "5 phút",
+        author: "Lê Đỗ Quỳnh Hương",
+        summary: "Phương pháp toán học xác định 4 mốc trưởng thành quan trọng nhất và tần số năng lượng tương ứng từng đỉnh.",
+        content: `
+          <p>Bốn đỉnh cao đại diện cho 4 mùa của một đời người. Đỉnh 1 và 2 đánh dấu bước lập thân và sự nghiệp; Đỉnh 3 và 4 phản ánh sự chín muồi về trí tuệ và cống hiến cho xã hội.</p>
+        `
+      }
+    ];
+
+    /* =====================================================================
+       2. TỪ ĐIỂN THANH TRA TRI THỨC (CÔNG THỨC TOÁN VÀ NGUỒN SÁCH TÁC GIẢ)
+       ===================================================================== */
+    const inspectionDatabase = {
+      metric_ruling: {
+        title: "Số Chủ Đạo / Đường Đời (Ruling / Life Path Number)",
+        subtitle: "Chỉ số nền tảng phản ánh mục đích sống và bản thể cốt lõi.",
+        kmsTag: "KMS-RULE-LP01",
+        formula: "RulingNumber = ReduceToDigit( sum(Day) + sum(Month) + sum(Year) )",
+        book: "The Complete Book of Numerology",
+        bookSub: "(Bản dịch Việt: Thay Đổi Cuộc Sống Với Nhân Số Học - NXB Tổng Hợp TP.HCM)",
+        author: "TS. David A. Phillips (Dr. David A. Phillips)",
+        publisher: "Hay House Inc. (USA, 1992)",
+        chapter: "Chương 4: The Ruling Numbers (Các con số chủ đạo), Trang 48 - 92.",
+        apa: "Phillips, D. A. (1992). The Complete Book of Numerology. Carlsbad, CA: Hay House.",
+        rationale: "Trong hệ thống KMS, đây là tri thức định danh căn bản (Identity Core). Mọi quy luật tư vấn hành vi và nghề nghiệp đều lấy Số Chủ Đạo làm biến đầu vào có trọng số cao nhất.",
+        articleId: "KMS-002",
+        getSteps: (user) => {
+          return `
+            <strong>Dữ liệu tính toán:</strong> Ngày sinh ${user.day}/${user.month}/${user.year}<br>
+            • Rút gọn Ngày: ${user.day} → ${reduceToDigitString(user.day)}<br>
+            • Rút gọn Tháng: ${user.month} → ${reduceToDigitString(user.month)}<br>
+            • Rút gọn Năm: ${user.year} → ${reduceToDigitString(user.year)}<br>
+            • Tổng các phần tử: ${reduceToDigit(user.day)} + ${reduceToDigit(user.month)} + ${reduceToDigit(user.year)} = <strong>${reduceToDigit(user.day) + reduceToDigit(user.month) + reduceToDigit(user.year)}</strong><br>
+            • Rút gọn kết quả cuối: = <strong class="text-indigo-600 font-bold text-base">${user.ruling}</strong> (Quy chuẩn Pythagoras giữ nguyên số Master 11, 22).
+          `;
+        }
+      },
+      metric_destiny: {
+        title: "Số Sứ Mệnh (Destiny / Expression Number)",
+        subtitle: "Năng lực hành động và vai trò xã hội thông qua họ và tên.",
+        kmsTag: "KMS-RULE-DEST02",
+        formula: "DestinyNumber = ReduceToDigit( sum( PythagoreanValue(all_letters) ) )",
+        book: "Numerology and the Divine Triangle",
+        bookSub: "(Bản dịch kinh điển về số học chữ cái Pythagoras phương Tây)",
+        author: "Faith Javane và Dusty Bunker",
+        publisher: "Para Research / Schiffer Publishing (1979)",
+        chapter: "Part 1: The Divine Triangle - Chapter: The Destiny Number, Trang 23 - 35.",
+        apa: "Javane, F., & Bunker, D. (1979). Numerology and the Divine Triangle. Schiffer Publishing.",
+        rationale: "Tri thức chuyển đổi văn bản sang tần số số học (Text-to-Number Encoding). Mỗi ký tự Latin được ánh xạ theo bảng mã 1-9 Pythagoras.",
+        articleId: "KMS-002",
+        getSteps: (user) => {
+          return `
+            <strong>Dữ liệu tính toán:</strong> Họ tên: "${user.name}"<br>
+            • Chuẩn hóa bỏ dấu tiếng Việt và ánh xạ bảng mã Pythagoras (A=1, B=2, C=3...):<br>
+            • Tổng các chữ số tương ứng toàn bộ họ và tên = ${user.destinyRawSum}<br>
+            • Rút gọn về 1 chữ số: <strong>${user.destiny}</strong>
+          `;
+        }
+      },
+      metric_soul: {
+        title: "Số Linh Hồn (Soul Urge / Heart's Desire Number)",
+        subtitle: "Động lực nội tâm, khát vọng thầm kín và sự thỏa mãn tinh thần.",
+        kmsTag: "KMS-RULE-SOUL03",
+        formula: "SoulUrge = ReduceToDigit( sum( PythagoreanValue(vowels: A, E, I, O, U, Y) ) )",
+        book: "The Secret Science of Numerology",
+        bookSub: "(Bản phân tích bản chất rung động sóng âm của các nguyên âm)",
+        author: "Shirley Blackwell Lawrence, Msc.D.",
+        publisher: "New Page Books (2001)",
+        chapter: "Chapter 14: The Vowels and Consonants, Trang 112 - 128.",
+        apa: "Lawrence, S. B. (2001). The Secret Science of Numerology. New Page Books.",
+        rationale: "Nguyên âm đại diện cho luồng khí phát ra từ trái tim không bị cản trở bởi môi hay răng, phản ánh năng lượng tâm hồn thuần khiết.",
+        articleId: "KMS-002",
+        getSteps: (user) => {
+          return `
+            <strong>Dữ liệu tính toán:</strong> Các nguyên âm trong tên "${user.name}":<br>
+            • Danh sách nguyên âm nhận diện: <em>${user.vowelsList || 'U, E, O, A...'}</em><br>
+            • Rút gọn tổng các nguyên âm = <strong class="text-pink-600 font-bold">${user.soul}</strong>
+          `;
+        }
+      },
+      metric_personality: {
+        title: "Số Nhân Cách (Personality Number)",
+        subtitle: "Cách người khác nhìn nhận bạn trong các mối quan hệ xã hội.",
+        kmsTag: "KMS-RULE-PERS04",
+        formula: "PersonalityNumber = ReduceToDigit( sum( PythagoreanValue(consonants) ) )",
+        book: "Numerology: The Complete Guide",
+        bookSub: "(Sách hướng dẫn trọn bộ giải mã cấu trúc họ tên)",
+        author: "Matthew Oliver Goodwin",
+        publisher: "Newcastle Publishing Co. (1981)",
+        chapter: "Volume 1: Personality Traits and Consonants, Trang 65 - 80.",
+        apa: "Goodwin, M. O. (1981). Numerology: The Complete Guide. Newcastle Publishing Co.",
+        rationale: "Phụ âm đóng vai trò như lớp áo giáp bên ngoài bảo vệ nguyên âm, tượng trưng cho tính cách xã hội mà cá nhân bộc lộ ra thế giới.",
+        articleId: "KMS-002",
+        getSteps: (user) => {
+          return `
+            <strong>Dữ liệu tính toán:</strong> Các phụ âm trong tên "${user.name}":<br>
+            • Rút gọn tổng các phụ âm = <strong class="text-emerald-600 font-bold">${user.personality}</strong>
+          `;
+        }
+      },
+      metric_year: {
+        title: "Năm Cá Nhân (Personal Year Cycle)",
+        subtitle: "Tần số vận hạn chu kỳ 9 năm cho năm hiện tại 2026.",
+        kmsTag: "KMS-RULE-YEAR05",
+        formula: "PersonalYear = ReduceToDigit( sum(Day) + sum(Month) + sum(CurrentYear: 2026) )",
+        book: "The Complete Book of Numerology",
+        bookSub: "(Bản tiếng Việt: Thay Đổi Cuộc Sống Với Nhân Số Học)",
+        author: "TS. David A. Phillips",
+        publisher: "Hay House Inc. (1992)",
+        chapter: "Chương 8: The 9-Year Epicycle (Chu kỳ 9 năm), Trang 145 - 172.",
+        apa: "Phillips, D. A. (1992). The Complete Book of Numerology. Hay House.",
+        rationale: "Mô hình vận hạn dạng xoắn ốc 9 năm (9-year wave). Giúp người dùng biết khi nào nên đầu tư mạo hiểm (Năm 5, 8) và khi nào nên củng cố nội lực (Năm 4, 7).",
+        articleId: "KMS-001",
+        getSteps: (user) => {
+          return `
+            <strong>Dữ liệu tính toán:</strong> Ngày sinh ${user.day}/${user.month} và Năm xem xét 2026<br>
+            • Rút gọn Ngày sinh: ${reduceToDigit(user.day)}<br>
+            • Rút gọn Tháng sinh: ${reduceToDigit(user.month)}<br>
+            • Rút gọn Năm 2026: 2 + 0 + 2 + 6 = 10 → 1<br>
+            • Tổng: ${reduceToDigit(user.day)} + ${reduceToDigit(user.month)} + 1 = <strong>${reduceToDigit(user.day) + reduceToDigit(user.month) + 1}</strong><br>
+            • Năm Cá Nhân 2026 = <strong class="text-amber-700 font-bold text-sm">${user.personalYear}</strong>
+          `;
+        }
+      },
+      matrix_general: {
+        title: "Ma Trận Ngày Sinh 3x3 Pythagoras (The Birth Chart)",
+        subtitle: "Cấu trúc 3 trục năng lượng đại diện cho Thể chất, Tâm hồn và Trí não.",
+        kmsTag: "KMS-MATRIX-CORE01",
+        formula: "BirthChart = MapOccurrences(Day + Month + Year, Matrix3x3)",
+        book: "The Complete Book of Numerology",
+        bookSub: "(Nghiên cứu nguyên thủy về biểu đồ ngày sinh của trường phái Pythagoras phương Tây)",
+        author: "TS. David A. Phillips",
+        publisher: "Hay House Inc. (1992)",
+        chapter: "Chương 5: The Birth Chart (Biểu đồ ngày sinh), Trang 93 - 120.",
+        apa: "Phillips, D. A. (1992). The Complete Book of Numerology. Hay House.",
+        rationale: "Mỗi con số xuất hiện bao nhiêu lần sẽ thể hiện cường độ năng lượng ở ô đó. Ô không có số là bài học nghiệp cần rèn luyện bù đắp.",
+        articleId: "KMS-003",
+        getSteps: (user) => {
+          return `
+            <strong>Dữ liệu tính toán:</strong> Chuỗi ngày sinh ghép: "${user.day}${user.month}${user.year}"<br>
+            • Đếm tần số xuất hiện của từng số từ 1 đến 9.<br>
+            • Trục Trí Não (3-6-9): Tầng nhận thức logic và sáng tạo.<br>
+            • Trục Tâm Hồn (2-5-8): Tầng cảm xúc, trực giác và tình yêu thương.<br>
+            • Trục Thể Chất (1-4-7): Tầng thực tế, kỷ luật và hành động cụ thể.
+          `;
+        }
+      },
+      pinnacles_logic: {
+        title: "Kim Tự Tháp 4 Đỉnh Cao Cuộc Đời (The 4 Pinnacles)",
+        subtitle: "Xác định 4 mốc đại vận chuyển mình và thành tựu đỉnh cao.",
+        kmsTag: "KMS-PINNACLE-CYCLE",
+        formula: "Age1 = 36 - RulingNumber; Pinnacle1 = Reduce(Day + Month); Pinnacle2 = Reduce(Day + Year)...",
+        book: "The Complete Book of Numerology",
+        bookSub: "(Bản tiếng Việt: Thay Đổi Cuộc Sống Với Nhân Số Học)",
+        author: "TS. David A. Phillips",
+        publisher: "Hay House Inc. (1992)",
+        chapter: "Chương 7: The Four Pinnacles (Bốn đỉnh cao kim tự tháp), Trang 125 - 144.",
+        apa: "Phillips, D. A. (1992). The Complete Book of Numerology. Hay House.",
+        rationale: "Kim tự tháp biểu trưng cho sự tiến hóa của nhận thức con người theo 4 mùa cuộc đời.",
+        articleId: "KMS-004",
+        getSteps: (user) => {
+          const age1 = 36 - (user.ruling > 9 ? reduceToDigit(user.ruling) : user.ruling);
+          return `
+            <strong>Dữ liệu tính toán:</strong> Số chủ đạo ${user.ruling}<br>
+            • Độ tuổi chạm Đỉnh 1: 36 - ${user.ruling > 9 ? reduceToDigit(user.ruling) : user.ruling} = <strong>Tuổi ${age1}</strong><br>
+            • Đỉnh 2: Tuổi ${age1} + 9 = <strong>Tuổi ${age1 + 9}</strong><br>
+            • Đỉnh 3: Tuổi ${age1 + 9} + 9 = <strong>Tuổi ${age1 + 18}</strong><br>
+            • Đỉnh 4: Tuổi ${age1 + 18} + 9 = <strong>Tuổi ${age1 + 27}</strong>
+          `;
+        }
+      },
+      q1_who_am_i: {
+        title: "Luận Giải Câu Hỏi 1: Tôi Là Ai? (Self-Identity Analysis)",
+        subtitle: "Căn tính cốt lõi, tài năng thiên bẩm và khát vọng nội tâm sâu thẳm.",
+        kmsTag: "KMS-QUERY-Q1-IDENTITY",
+        formula: "SelfModel = Synthesize(RulingNumber, DestinyNumber, SoulNumber, MatrixStrengths)",
+        book: "The Complete Book of Numerology và The Divine Triangle",
+        bookSub: "(Tổng hợp nghiên cứu của TS. David A. Phillips và Faith Javane)",
+        author: "TS. David A. Phillips và Dusty Bunker",
+        publisher: "Hay House và Schiffer Publishing",
+        chapter: "Chương 4 (David Phillips) và Phần 1 (Divine Triangle)",
+        apa: "Phillips, D. A. (1992). The Complete Book of Numerology. Hay House.",
+        rationale: "Cơ sở tri thức giúp cá nhân tự phản tư, trả lời câu hỏi căn bản nhất của triết học nhận thức: Bản thể thực sự của tôi là gì?",
+        articleId: "KMS-002",
+        getSteps: (user) => {
+          return `
+            <strong>Quy tắc tổng hợp tri thức KMS:</strong><br>
+            1. Trích xuất bản tính cốt lõi từ <strong>Số Chủ Đạo ${user.ruling}</strong>.<br>
+            2. Trích xuất năng lực hành động từ <strong>Số Sứ Mệnh ${user.destiny}</strong>.<br>
+            3. Trích xuất động lực tinh thần từ <strong>Số Linh Hồn ${user.soul}</strong>.<br>
+            4. Đối chiếu thế mạnh trục ma trận để định hình chân dung nhận thức toàn diện.
+          `;
+        }
+      },
+      q2_what_facing: {
+        title: "Luận Giải Câu Hỏi 2: Tôi Đang Gặp Gì? (Situational và Karmic Context)",
+        subtitle: "Bối cảnh thực tại, thời vận năm 2026 và các điểm kẹt năng lượng.",
+        kmsTag: "KMS-QUERY-Q2-CONTEXT",
+        formula: "ContextModel = Correlate(PersonalYear_2026, CurrentPinnacle, MissingNumbersInMatrix)",
+        book: "The 9-Year Epicycle và Karmic Lessons in Numerology",
+        bookSub: "(Tài liệu nghiên cứu chu kỳ thời vận và bài học nghiệp)",
+        author: "TS. David A. Phillips và Shirley Blackwell Lawrence",
+        publisher: "Hay House / New Page Books",
+        chapter: "The Epicycles và Empty Cells in Birth Chart",
+        apa: "Lawrence, S. B. (2001). The Secret Science of Numerology. New Page Books.",
+        rationale: "Phân tích bối cảnh thời gian và không gian năng lượng. Con người không sống biệt lập mà luôn chịu chi phối bởi chu kỳ biến thiên vũ trụ.",
+        articleId: "KMS-001",
+        getSteps: (user) => {
+          return `
+            <strong>Quy tắc tổng hợp tri thức KMS:</strong><br>
+            1. Đánh giá tần số <strong>Năm Cá Nhân 2026 (Số ${user.personalYear})</strong>.<br>
+            2. Xác định vị trí đỉnh cao Kim tự tháp hiện tại của độ tuổi.<br>
+            3. Phát hiện điểm nghẽn từ <strong>các ô số còn trống trên Ma Trận 3x3</strong>.
+          `;
+        }
+      },
+      q3_how_to_navigate: {
+        title: "Luận Giải Câu Hỏi 3: Tôi Nên Đi Như Thế Nào? (Strategic Action Plan)",
+        subtitle: "Lộ trình chuyển hóa, định hướng nghề nghiệp và kế hoạch 90 ngày.",
+        kmsTag: "KMS-QUERY-Q3-STRATEGY",
+        formula: "ActionStrategy = Optimize(RulingStrengths) + Remedy(MissingNumbers) + Align(PersonalYear)",
+        book: "Numerology for Healing and Practical Transformation",
+        bookSub: "(Học thuyết chuyển hóa hành vi và cân bằng năng lượng sống)",
+        author: "TS. David A. Phillips và Lê Đỗ Quỳnh Hương",
+        publisher: "NXB Tổng Hợp TP.HCM (2020) và Hay House",
+        chapter: "Chương 9: Overcoming Weaknesses và Remedial Exercises, Trang 175 - 210.",
+        apa: "Phillips, D. A. (1992). The Complete Book of Numerology. Hay House.",
+        rationale: "Tri thức hành động (Actionable Knowledge) là giá trị cao nhất của hệ thống KMS. Không dừng lại ở việc mô tả quá khứ, KMS phải chỉ dẫn phương án hành động cụ thể.",
+        articleId: "KMS-003",
+        getSteps: (user) => {
+          return `
+            <strong>Quy tắc tổng hợp tri thức KMS:</strong><br>
+            1. Lọc nhóm ngành nghề tương thích với tần số rung động Số ${user.ruling}.<br>
+            2. Đề xuất bài tập rèn luyện bù đắp cho các con số khuyết.<br>
+            3. Thiết lập mục tiêu hành động trọng tâm trong 90 ngày tới.
+          `;
+        }
+      }
+    };
+
+    const rulingProfiles = {
+      2: {
+        title: "Người Hòa Giải và Sứ Giả Kết Nối",
+        essence: "Bạn sở hữu trực giác nhạy bén, khả năng lắng nghe và đồng cảm sâu sắc. Bạn đóng vai trò keo gắn kết và hòa giải trong mọi môi trường.",
+        strengths: ["Lắng nghe thấu cảm", "Ngoại giao tinh tế", "Trung thành và tận tâm"],
+        careers: ["Tâm lý học", "Ngoại giao", "Quản trị nhân sự", "Tư vấn chăm sóc"],
+        yearInsight: "Năm nay yêu cầu bạn mở rộng đối tác, học hỏi thêm kỹ năng mới và linh hoạt ứng biến với thay đổi.",
+        remedies: ["Học cách nói lời từ chối thẳng thắn", "Rèn luyện tính quyết đoán khi quyết định"]
+      },
+      3: {
+        title: "Người Truyền Cảm Hứng và Sáng Tạo Đột Phá",
+        essence: "Bạn sở hữu trí tuệ linh hoạt, khả năng biểu đạt bằng ngôn từ xuất sắc và luôn mang lại sinh khí vui tươi cho người khác.",
+        strengths: ["Giao tiếp thuyết phục", "Tư duy sáng tạo", "Lạc quan, dí dỏm"],
+        careers: ["Marketing / Content", "Giáo dục / Đào tạo", "Truyền thông", "Thiết kế nghệ thuật"],
+        yearInsight: "Một năm bùng nổ ý tưởng mới. Hãy mạnh dạn đem các sáng kiến của bạn trình bày trước đám đông.",
+        remedies: ["Rèn luyện sự tập trung đến cùng", "Tránh tiêu pha hoặc hành động bốc đồng"]
+      },
+      4: {
+        title: "Người Kiến Tạo Nền Tảng và Trật Tự",
+        essence: "Bạn là con người của kỷ luật, nguyên tắc, tính chính xác và sự bền bỉ. Bạn đem lại sự yên tâm tuyệt đối cho bất kỳ dự án nào.",
+        strengths: ["Tổ chức bài bản", "Đáng tin cậy", "Khả năng thực thi cao"],
+        careers: ["Kỹ sư / Lập trình", "Kế toán / Tài chính", "Quản lý vận hành", "Kiến trúc sư"],
+        yearInsight: "Năm nay thôi thúc bạn thử nghiệm các mô hình làm việc linh hoạt hơn thay vì quá dập khuôn.",
+        remedies: ["Học cách đón nhận ý kiến trái chiều", "Dành thời gian nghỉ ngơi thư giãn"]
+      },
+      5: {
+        title: "Người Tiên Phong Tự Do và Khám Phá",
+        essence: "Bạn mang tinh thần tự do, ghét sự trói buộc và luôn khao khát được trải nghiệm những chân trời tri thức mới.",
+        strengths: ["Thích ứng linh hoạt", "Dám nghĩ dám làm", "Tò mò, đa tài"],
+        careers: ["Khởi nghiệp kinh doanh", "Du lịch / Hướng dẫn", "Sự kiện / Event", "Báo chí tự do"],
+        yearInsight: "Thời điểm vàng để thay đổi môi trường sống hoặc tạo bước ngoặt lớn cho sự nghiệp cá nhân.",
+        remedies: ["Học tính kiên trì dài hạn", "Tuân thủ các cam kết và kế hoạch đã định"]
+      },
+      6: {
+        title: "Người Chăm Sóc và Yêu Thương Vô Điều Kiện",
+        essence: "Bạn mang năng lượng của sự che chở, trách nhiệm và gắn kết. Bạn luôn đặt gia đình và sự hài hòa của tập thể lên hàng đầu.",
+        strengths: ["Tận tâm chu đáo", "Thẩm mỹ tinh tế", "Khả năng hàn gắn"],
+        careers: ["Quản lý nhân sự", "Giáo dục mầm non", "Thiết kế nội thất", "Bác sĩ / Y tế"],
+        yearInsight: "Năm 2026 mang số 5 sẽ kéo bạn ra khỏi vùng an toàn quen thuộc, buộc bạn phải chủ động kết nối nhiều hơn.",
+        remedies: ["Thiết lập ranh giới bảo vệ bản thân", "Tránh lo âu kiểm soát người khác"]
+      },
+      7: {
+        title: "Nhà Thông Thái, Trí Tuệ và Chiêm Nghiệm",
+        essence: "Bạn là người đam mê tìm kiếm bản chất chân lý, có năng lực tự học phi thường và trực giác triết lý sâu sắc.",
+        strengths: ["Phân tích sâu sắc", "Tự chủ độc lập", "Tư duy quy luật"],
+        careers: ["Nghiên cứu khoa học", "Chuyên gia dữ liệu", "Học giả / Triết gia", "Chiến lược gia"],
+        yearInsight: "Năm nay khuyến khích bạn áp dụng các tri thức chiêm nghiệm vào thực tế cuộc sống đời thường.",
+        remedies: ["Mở lòng chia sẻ cảm xúc với bạn bè", "Tránh khép kín thái quá"]
+      },
+      8: {
+        title: "Nhà Điều Hành, Bản Lĩnh và Thịnh Vượng",
+        essence: "Bạn có tầm nhìn chiến lược, khả năng quản trị tài chính và tố chất lãnh đạo bẩm sinh để đạt được thành tựu lớn.",
+        strengths: ["Tư duy kinh doanh", "Bản lĩnh kiên cường", "Thực lực quản trị"],
+        careers: ["Giám đốc điều hành", "Đầu tư tài chính", "Kinh doanh bất động sản", "Quản lý cấp cao"],
+        yearInsight: "Cơ hội kinh doanh và bứt phá về địa vị xã hội đang mở ra rõ nét trong chu kỳ này.",
+        remedies: ["Cân bằng giữa công việc và tình cảm", "Tránh độc đoán áp đặt quan điểm"]
+      },
+      9: {
+        title: "Nhà Nhân Đạo và Phụng Sự Cộng Đồng",
+        essence: "Bạn mang lý tưởng sống cao đẹp, trái tim vị tha và mong muốn đem lại những điều tốt lành cho nhân loại.",
+        strengths: ["Tấm lòng bác ái", "Tầm nhìn quốc tế", "Truyền cảm hứng lớn"],
+        careers: ["Tổ chức phi chính phủ (NGO)", "Giảng viên đại học", "Nghệ sĩ cộng đồng", "Nhà hoạt động xã hội"],
+        yearInsight: "Thời kỳ củng cố và lan tỏa những dự án cộng đồng có tầm ảnh hưởng nhân văn sâu rộng.",
+        remedies: ["Thực tế hóa các mục tiêu tài chính", "Tránh cả tin quá mức"]
+      },
+      11: {
+        title: "Bậc Thầy Trực Giác và Soi Sáng Tinh Thần",
+        essence: "Bạn mang tần số tâm linh nhạy bén, khả năng dẫn dắt nhận thức và truyền cảm hứng sâu sắc cho mọi người.",
+        strengths: ["Trực giác thiên tài", "Chính trực thanh tao", "Nhạy bén cảm xúc"],
+        careers: ["Nhà trị liệu tâm lý", "Giáo dục khai phóng", "Nghệ thuật đỉnh cao", "Lãnh đạo tinh thần"],
+        yearInsight: "Năm bứt phá năng lượng trực giác, hãy lắng nghe tiếng nói bên trong khi ra quyết định lớn.",
+        remedies: ["Học cách quản lý căng thẳng cảm xúc", "Nối đất (grounding) bằng lối sống thực tế"]
+      }
+    };
+
+    /* =====================================================================
+       3. THUẬT TOÁN TÍNH TOÁN PYTHAGORAS
+       ===================================================================== */
+    let currentUserState = {
+      name: "Nguyễn Hoàng Nam",
+      dob: "1998-08-16",
+      day: 16,
+      month: 8,
+      year: 1998,
+      ruling: 6,
+      destiny: 7,
+      destinyRawSum: 34,
+      soul: 9,
+      personality: 7,
+      personalYear: 5,
+      vowelsList: "U, E, O, A"
+    };
+
+    function reduceToDigit(n, keepMaster = false) {
+      if (keepMaster && (n === 11 || n === 22)) return n;
+      while (n > 9) {
+        if (keepMaster && (n === 11 || n === 22)) return n;
+        n = n.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0);
+      }
+      return n;
+    }
+
+    function reduceToDigitString(n) {
+      const s = n.toString();
+      if (s.length === 1) return s;
+      const sum = s.split('').map(Number).reduce((a, b) => a + b, 0);
+      return `${s.split('').join('+')} = ${sum}${sum > 9 ? ' → ' + reduceToDigit(sum) : ''}`;
+    }
+
+    function calculateRulingNumber(year, month, day) {
+      const rY = reduceToDigit(year);
+      const rM = reduceToDigit(month);
+      const rD = reduceToDigit(day);
+      let sum = rY + rM + rD;
+      if (sum === 11 || sum === 22) return sum;
+      while (sum > 11 && sum !== 22) {
+        sum = sum.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0);
+      }
+      return sum;
+    }
+
+    function calculatePersonalYear(month, day, currentYear = 2026) {
+      const rD = reduceToDigit(day);
+      const rM = reduceToDigit(month);
+      const rY = reduceToDigit(currentYear);
+      return reduceToDigit(rD + rM + rY);
+    }
+
+    function removeVietnameseTones(str) {
+      str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+      str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+      str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+      str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+      str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+      str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+      str = str.replace(/đ/g, "d");
+      str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+      str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+      str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+      str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+      str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+      str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+      str = str.replace(/Đ/g, "D");
+      return str;
+    }
+
+    const pythagoreanMap = {
+      a: 1, j: 1, s: 1,
+      b: 2, k: 2, t: 2,
+      c: 3, l: 3, u: 3,
+      d: 4, m: 4, v: 4,
+      e: 5, n: 5, w: 5,
+      f: 6, o: 6, x: 6,
+      g: 7, p: 7, y: 7,
+      h: 8, q: 8, z: 8,
+      i: 9, r: 9
+    };
+
+    function parseNameToNumbers(fullName) {
+      const clean = removeVietnameseTones(fullName).toLowerCase().replace(/[^a-z]/g, '');
+      const vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
+      let totalSum = 0;
+      let vowelSum = 0;
+      let constSum = 0;
+      const detectedVowels = [];
+
+      for (const char of clean) {
+        const val = pythagoreanMap[char] || 0;
+        totalSum += val;
+        if (vowels.includes(char)) {
+          vowelSum += val;
+          detectedVowels.push(char.toUpperCase());
+        } else {
+          constSum += val;
+        }
+      }
+
+      return {
+        destiny: reduceToDigit(totalSum),
+        destinyRawSum: totalSum,
+        soul: reduceToDigit(vowelSum),
+        personality: reduceToDigit(constSum),
+        vowelsList: detectedVowels.length > 0 ? Array.from(new Set(detectedVowels)).join(', ') : "Không có"
+      };
+    }
+
+    /* =====================================================================
+       4. ĐIỀU KHIỂN GIAO DIỆN VÀ TƯƠNG TÁC
+       ===================================================================== */
+    let currentMainTab = 'discovery';
+    let currentCategoryFilter = 'all';
+    let currentActiveInspectKey = null;
+
+    function switchMainTab(tab) {
+      currentMainTab = tab;
+
+      const btnDiscovery = document.getElementById('navBtnDiscovery');
+      const btnKnowledge = document.getElementById('navBtnKnowledge');
+      const contentDiscovery = document.getElementById('tabContentDiscovery');
+      const contentKnowledge = document.getElementById('tabContentKnowledge');
+
+      [btnDiscovery, btnKnowledge].forEach(btn => {
+        if (btn) {
+          btn.className = "flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition-all duration-200";
+        }
+      });
+
+      contentDiscovery.classList.add('hidden');
+      contentKnowledge.classList.add('hidden');
+
+      if (tab === 'discovery') {
+        btnDiscovery.className = "flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 bg-white text-indigo-700 shadow-sm border border-slate-200/60";
+        contentDiscovery.classList.remove('hidden');
+      } else if (tab === 'knowledge') {
+        btnKnowledge.className = "flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 bg-white text-amber-700 shadow-sm border border-slate-200/60";
+        contentKnowledge.classList.remove('hidden');
+        renderKnowledgeList();
+      }
+    }
+
+    function applyProfile() {
+      const name = document.getElementById('inputName').value.trim() || "Người Tìm Kiếm Tri Thức";
+      const dobStr = document.getElementById('inputDob').value;
+
+      if (!dobStr) {
+        showToast("Vui lòng chọn ngày tháng năm sinh hợp lệ!");
+        return;
+      }
+
+      const [yStr, mStr, dStr] = dobStr.split('-');
+      const year = parseInt(yStr, 10);
+      const month = parseInt(mStr, 10);
+      const day = parseInt(dStr, 10);
+
+      const ruling = calculateRulingNumber(year, month, day);
+      const personalYr = calculatePersonalYear(month, day, 2026);
+      const nameMetrics = parseNameToNumbers(name);
+      const profile = rulingProfiles[ruling] || rulingProfiles[6];
+
+      currentUserState = {
+        name: name,
+        dob: dobStr,
+        day: day,
+        month: month,
+        year: year,
+        ruling: ruling,
+        destiny: nameMetrics.destiny,
+        destinyRawSum: nameMetrics.destinyRawSum,
+        soul: nameMetrics.soul,
+        personality: nameMetrics.personality,
+        personalYear: personalYr,
+        vowelsList: nameMetrics.vowelsList
+      };
+
+      // 1. Cập nhật thẻ chỉ số
+      safeSetText('badgeRulingNumber', ruling);
+      safeSetText('badgeDestinyNumber', nameMetrics.destiny);
+      safeSetText('badgeSoulNumber', nameMetrics.soul);
+      safeSetText('badgePersonalityNumber', nameMetrics.personality);
+      safeSetText('badgePersonalYear', personalYr);
+
+      // 2. Cập nhật Câu hỏi 1 (Tôi là ai?)
+      safeSetText('q1HeadlineRuling', profile.title);
+      safeSetText('q1RulingSpan', ruling);
+      safeSetText('q1DestinySpan', nameMetrics.destiny);
+      safeSetText('q1CoreEssence', profile.essence);
+      
+      const strList = document.getElementById('q1StrengthsList');
+      if (strList) {
+        strList.innerHTML = '';
+        profile.strengths.forEach(st => {
+          const li = document.createElement('li');
+          li.className = "flex items-center gap-2";
+          li.innerHTML = `<i class="fa-solid fa-check text-emerald-600 text-xs"></i> <span>${st}</span>`;
+          strList.appendChild(li);
+        });
+      }
+
+      // 3. Cập nhật Câu hỏi 2 (Tôi đang gặp gì?)
+      safeSetText('q2YearInsight', profile.yearInsight);
+      const chList = document.getElementById('q2ChallengesList');
+      if (chList) {
+        chList.innerHTML = `
+          <div class="p-2.5 rounded-xl bg-white border border-slate-200">
+            <span class="text-rose-700 font-bold block mb-0.5">Thách thức chu kỳ:</span>
+            Dễ gặp sự phân tán mục tiêu và áp lực tài chính ngắn hạn do năng lượng biến động.
+          </div>
+          <div class="p-2.5 rounded-xl bg-white border border-slate-200">
+            <span class="text-amber-700 font-bold block mb-0.5">Khắc phục:</span>
+            Cần rèn luyện tính tập trung và ghi chép nhật ký công việc mỗi ngày.
+          </div>
+        `;
+      }
+
+      // 4. Cập nhật Câu hỏi 3 (Tôi nên đi như thế nào?)
+      safeSetText('q3HeadlineStrategy', `Phát huy năng lượng Số ${ruling} và Thiết lập kỷ luật cá nhân`);
+      const tagList = document.getElementById('q3CareerTags');
+      if (tagList) {
+        tagList.innerHTML = '';
+        profile.careers.forEach(car => {
+          const span = document.createElement('span');
+          span.className = "px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold";
+          span.innerText = car;
+          tagList.appendChild(span);
+        });
+      }
+
+      const remedyList = document.getElementById('q3ActionRemedies');
+      if (remedyList) {
+        remedyList.innerHTML = '';
+        profile.remedies.forEach(rem => {
+          const li = document.createElement('li');
+          li.className = "flex items-start gap-2";
+          li.innerHTML = `<i class="fa-solid fa-arrow-trend-up text-cyan-700 mt-0.5 text-xs"></i> <span>${rem}</span>`;
+          remedyList.appendChild(li);
+        });
+      }
+
+      // 5. Cập nhật Ma Trận 3x3 và 4 Đỉnh Cao
+      updateMatrixVisual(year, month, day, ruling);
+
+      showToast("Đã giải mã toàn diện thông số và cập nhật ma trận!");
+    }
+
+    function setSampleProfile(name, dateStr) {
+      document.getElementById('inputName').value = name;
+      document.getElementById('inputDob').value = dateStr;
+      applyProfile();
+    }
+
+    function updateMatrixVisual(year, month, day, ruling) {
+      const dateStr = `${day}${month}${year}`;
+      const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
+      for (const ch of dateStr) {
+        const d = parseInt(ch, 10);
+        if (d >= 1 && d <= 9) counts[d]++;
+      }
+
+      const missing = [];
+      for (let i = 1; i <= 9; i++) {
+        const cell = document.getElementById(`cell-${i}`);
+        if (!cell) continue;
+        const valSpan = cell.querySelector('.cell-val');
+        if (counts[i] > 0) {
+          valSpan.innerText = String(i).repeat(counts[i]);
+          valSpan.className = "cell-val text-sm sm:text-base font-extrabold text-amber-800";
+          cell.className = "cursor-pointer transition-all hover:scale-105 rounded-xl flex flex-col items-center justify-center border border-amber-300 relative bg-amber-50 shadow-xs";
+        } else {
+          missing.push(i);
+          valSpan.innerText = "·";
+          valSpan.className = "cell-val text-base text-slate-300";
+          cell.className = "cursor-pointer transition-all hover:scale-105 rounded-xl flex flex-col items-center justify-center border border-slate-200 relative bg-slate-50";
+        }
+      }
+
+      // Tóm tắt các trục ma trận
+      safeSetText('matrixMentalSummary', counts[3] || counts[6] || counts[9] ? "Hoạt động tích cực" : "Cần kích hoạt");
+      safeSetText('matrixSoulSummary', counts[2] || counts[5] || counts[8] ? "Nhạy bén, cân bằng" : "Ít bộc lộ");
+      safeSetText('matrixPhysicalSummary', counts[1] || counts[4] || counts[7] ? "Vững vàng, thực tế" : "Mơ mộng");
+
+      // Số thiếu và mũi tên
+      safeSetText('matrixMissingNumbers', missing.length > 0 ? `Thiếu số: ${missing.join(', ')} (Cần bù đắp kỹ năng)` : "Biểu đồ tròn trịa (Đầy đủ 9 số)");
+      
+      let arrows = [];
+      if (counts[1] && counts[2] && counts[3]) arrows.push("Kế Hoạch (1-2-3)");
+      if (counts[4] && counts[5] && counts[6]) arrows.push("Ý Chí (4-5-6)");
+      if (counts[7] && counts[8] && counts[9]) arrows.push("Hoạt Động (7-8-9)");
+      if (counts[1] && counts[5] && counts[9]) arrows.push("Quyết Tâm (1-5-9)");
+      if (counts[3] && counts[5] && counts[7]) arrows.push("Tâm Linh (3-5-7)");
+      safeSetText('matrixArrowsFound', arrows.length > 0 ? `Có Mũi Tên: ${arrows.join(' và ')}` : "Không có mũi tên 3 số liền kề (Phát triển đa hướng)");
+
+      // Tuổi chạm đỉnh
+      const baseRuling = ruling > 9 ? reduceToDigit(ruling) : ruling;
+      const age1 = 36 - baseRuling;
+      safeSetText('pinnacleAge1', `Tuổi ${age1}`);
+      safeSetText('pinnacleAge2', `Tuổi ${age1 + 9}`);
+      safeSetText('pinnacleAge3', `Tuổi ${age1 + 18}`);
+      safeSetText('pinnacleAge4', `Tuổi ${age1 + 27}`);
+
+      safeSetText('pinnacleNum1', reduceToDigit(day + month));
+      safeSetText('pinnacleNum2', reduceToDigit(day + year));
+      safeSetText('pinnacleNum3', reduceToDigit(reduceToDigit(day + month) + reduceToDigit(day + year)));
+      safeSetText('pinnacleNum4', reduceToDigit(month + year));
+    }
+
+    /* =====================================================================
+       5. BỘ MÁY THANH TRA TRI THỨC (INSPECTOR MODAL)
+       ===================================================================== */
+    function inspectKnowledge(key) {
+      currentActiveInspectKey = key;
+      const data = inspectionDatabase[key] || inspectionDatabase['metric_ruling'];
+
+      safeSetText('inspectTitle', data.title);
+      safeSetText('inspectSubtitle', data.subtitle);
+      safeSetText('inspectKmsTag', data.kmsTag);
+      safeSetText('inspectFormulaBox', data.formula);
+      
+      const stepsContainer = document.getElementById('inspectCalculationSteps');
+      if (stepsContainer && data.getSteps) {
+        stepsContainer.innerHTML = data.getSteps(currentUserState);
+      }
+
+      safeSetText('inspectBookTitle', data.book);
+      safeSetText('inspectBookSub', data.bookSub);
+      safeSetText('inspectAuthor', data.author);
+      safeSetText('inspectPublisher', data.publisher);
+      safeSetText('inspectChapterPage', data.chapter);
+      safeSetText('inspectApaCitation', data.apa);
+      safeSetText('inspectKmsRationale', data.rationale);
+
+      const modal = document.getElementById('inspectorModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeInspectorModal() {
+      const modal = document.getElementById('inspectorModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function copyApaCitation() {
+      const apaText = document.getElementById('inspectApaCitation').innerText;
+      copyToClipboard(apaText);
+      showToast("Đã sao chép trích dẫn APA vào bộ nhớ tạm!");
+    }
+
+    function jumpToKnowledgeArticle() {
+      const data = inspectionDatabase[currentActiveInspectKey];
+      closeInspectorModal();
+      switchMainTab('knowledge');
+      if (data && data.articleId) {
+        setTimeout(() => {
+          openKnowledgeModal(data.articleId);
+        }, 200);
+      }
+    }
+
+    /* =====================================================================
+       6. TÌM KIẾM VÀ QUẢN LÝ KHO TRI THỨC
+       ===================================================================== */
+    function renderKnowledgeList(filterQuery = "") {
+      const container = document.getElementById('knowledgeGrid');
+      const noFound = document.getElementById('noKnowledgeFound');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const query = filterQuery.toLowerCase().trim();
+
+      const filtered = knowledgeArticles.filter(art => {
+        const matchesCat = currentCategoryFilter === 'all' || art.category === currentCategoryFilter;
+        const matchesQuery = !query || art.title.toLowerCase().includes(query) || art.summary.toLowerCase().includes(query);
+        return matchesCat && matchesQuery;
+      });
+
+      if (filtered.length === 0) {
+        if (noFound) noFound.classList.remove('hidden');
+        return;
+      }
+      if (noFound) noFound.classList.add('hidden');
+
+      filtered.forEach(art => {
+        const card = document.createElement('div');
+        card.className = "light-card light-card-hover p-6 rounded-3xl flex flex-col justify-between group";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between text-xs text-slate-500 mb-3">
+              <span class="px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 font-bold text-amber-800">${art.categoryName}</span>
+              <span><i class="fa-regular fa-clock mr-1 text-slate-400"></i>${art.readTime}</span>
+            </div>
+            <h4 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2">${art.title}</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-2 line-clamp-3 leading-relaxed">${art.summary}</p>
+          </div>
+          <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs text-slate-400 font-mono font-medium">Mã: ${art.id}</span>
+            <button onclick="openKnowledgeModal('${art.id}')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 transition-colors">
+              <span>Đọc Tri Thức</span>
+              <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterKnowledgeItems() {
+      const query = document.getElementById('knowledgeSearchInput').value;
+      renderKnowledgeList(query);
+    }
+
+    function setCategoryFilter(cat) {
+      currentCategoryFilter = cat;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.className = "cat-pill active px-3.5 py-2.5 rounded-xl text-xs font-bold bg-amber-500 text-white transition-all whitespace-nowrap shadow-sm";
+        } else {
+          btn.className = "cat-pill px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-white text-slate-600 hover:text-slate-900 border border-slate-200 transition-all whitespace-nowrap";
+        }
+      });
+      filterKnowledgeItems();
+    }
+
+    function openKnowledgeModal(artId) {
+      const art = knowledgeArticles.find(a => a.id === artId);
+      if (!art) return;
+
+      safeSetText('modalMetaTag', `${art.categoryName} • ${art.difficulty} • Tác giả: ${art.author}`);
+      safeSetText('modalTitle', art.title);
+      safeSetHTML('modalBody', art.content);
+      const m = document.getElementById('knowledgeModal');
+      if (m) m.classList.remove('hidden');
+    }
+
+    function closeKnowledgeModal() {
+      const m = document.getElementById('knowledgeModal');
+      if (m) m.classList.add('hidden');
+    }
+
+    function handleSimulatedContribution() {
+      const title = document.getElementById('contribTitle').value.trim();
+      const cat = document.getElementById('contribCat').value;
+
+      if (!title) {
+        showToast("Vui lòng nhập tiêu đề tri thức!");
+        return;
+      }
+
+      const newId = `KMS-00${knowledgeArticles.length + 1}`;
+      knowledgeArticles.unshift({
+        id: newId,
+        title: title,
+        category: cat,
+        categoryName: cat === 'core' ? 'Số Chủ Đạo' : (cat === 'cycle' ? 'Chu Kỳ 9 Năm' : 'Ma Trận 3x3'),
+        difficulty: "Đóng góp mới",
+        readTime: "3 phút",
+        author: "Người Dùng (KMS)",
+        summary: `Tri thức thực nghiệm mới được đóng góp về ${title}. Đang chờ thẩm định.`,
+        content: `<p>Tri thức thực nghiệm ghi nhận từ người học: <strong>${title}</strong>. Đang được đưa vào quy trình thẩm định KMS.</p>`
+      });
+
+      document.getElementById('contribTitle').value = '';
+      renderKnowledgeList();
+      showToast("Đã ghi nhận tri thức mới vào hệ thống KMS!");
+    }
+
+    /* =====================================================================
+       7. CÁC HÀM TIỆN ÍCH AN TOÀN
+       ===================================================================== */
+    function safeSetText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = text;
+    }
+
+    function safeSetHTML(id, html) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = html;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      safeSetText('toastText', msg);
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    function copyToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (e) {
+        console.error(e);
+      }
+      document.body.removeChild(textArea);
+    }
+
+    // Khởi tạo khi trang tải xong
+    window.onload = function() {
+      applyProfile();
+      renderKnowledgeList();
+    };
+  </script>
+</body>
+</html>

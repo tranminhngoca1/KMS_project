@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Quản trị Xung đột Tri thức (14 Xung đột)')}"></head>
+<body class="min-h-screen flex flex-col">
+
+<header th:replace="~{fragments/layout :: navbar('xung-dot')}"></header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-grow w-full">
+
+    <section class="light-card rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-white via-rose-50/25 to-amber-50/20 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div class="max-w-3xl">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-rose-700 mb-2 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200">
+                <i class="fa-solid fa-scale-balanced text-xs"></i> Quản Trị Xung Đột Tri Thức (Conflict Governance)
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                14 Hồ Sơ Xung Đột Tri Thức Liên Trường Phái
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+                Mục 7.2: Khi hai trường phái hoặc hai tác giả bất đồng về công thức, tập giá trị hay ý nghĩa con số, hệ thống KMS không tự chọn một bên là "đúng", mà ghi nhận tường minh vào bảng <code>xung_dot</code> kèm phương án xử lý.
+            </p>
+        </div>
+
+        <form th:action="@{/xung-dot}" method="get" class="flex items-center gap-2 shrink-0">
+            <label class="text-xs font-bold text-slate-600">Hiển thị:</label>
+            <select name="size" onchange="this.form.submit()"
+                    class="bg-white text-slate-800 rounded-xl px-3.5 py-2.5 text-xs font-bold border border-slate-200 focus:outline-none focus:border-rose-500">
+                <option value="10" th:selected="${size == 10}">10 xung đột / trang</option>
+                <option value="20" th:selected="${size == 20}">20 xung đột / trang</option>
+                <option value="50" th:selected="${size == 50}">50 xung đột / trang</option>
+            </select>
+        </form>
+    </section>
+
+    <section class="light-card rounded-3xl p-6 space-y-4">
+        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="kms-table">
+                <thead>
+                <tr>
+                    <th class="w-12">#</th>
+                    <th class="w-56">Mã xung đột &amp; Khái niệm</th>
+                    <th>Mô tả bất đồng giữa các nguồn / trường phái</th>
+                    <th>Phương án xử lý trong Hệ thống KMS</th>
+                    <th class="w-36">Trạng thái</th>
+                    <th class="w-60">Các đơn vị liên quan</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="xd : ${xungDotPage.content}">
+                    <td class="font-mono font-bold text-slate-500" th:text="${xd.id}">1</td>
+                    <td>
+                        <code class="font-mono font-bold text-xs text-rose-800 bg-rose-50 px-2 py-1 rounded-lg border border-rose-200 inline-block"
+                              th:text="${xd.ma}">XD-01-CHU-DAO-DUONG-DOI-DINH-MENH</code>
+                        <div th:if="${xd.khaiNiem != null}" class="text-xs font-semibold text-slate-600 mt-1"
+                             th:text="${xd.khaiNiem.tenChuan}">Con số chủ đạo</div>
+                    </td>
+                    <td class="text-xs sm:text-sm text-slate-700 leading-relaxed" th:text="${xd.moTa}">Mô tả xung đột</td>
+                    <td class="text-xs sm:text-sm text-emerald-950 bg-emerald-50/40 leading-relaxed" th:text="${xd.cachXuLy}">Cách xử lý</td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${xd.trangThai == 'DA_XU_LY'} ? 'badge-tin-cay-CAO' : 'badge-veda'"
+                              th:text="${xd.trangThai}">DA_XU_LY</span>
+                    </td>
+                    <td>
+                        <div class="flex flex-wrap gap-1.5">
+                            <a th:each="dv : ${xd.danhSachDonVi}" th:href="@{/kho/{id}(id=${dv.id})}"
+                               class="badge-citation" th:title="${dv.tieuDe}">
+                                <span th:text="${dv.ma}">PH-CD-10</span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${xungDotPage.totalPages > 1}" class="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <div class="text-xs text-slate-500">
+                Trang <strong class="text-slate-800" th:text="${xungDotPage.number + 1}">1</strong> / <strong class="text-slate-800" th:text="${xungDotPage.totalPages}">2</strong>
+            </div>
+            <div class="flex items-center gap-1.5">
+                <a th:if="${xungDotPage.hasPrevious()}"
+                   th:href="@{/xung-dot(page=${xungDotPage.number - 1},size=${size})}"
+                   class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200">← Trước</a>
+                <a th:each="p : ${#numbers.sequence(0, xungDotPage.totalPages - 1)}"
+                   th:href="@{/xung-dot(page=${p},size=${size})}"
+                   th:class="${p == xungDotPage.number} ? 'px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-600 text-white' : 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'"
+                   th:text="${p + 1}">1</a>
+                <a th:if="${xungDotPage.hasNext()}"
+                   th:href="@{/xung-dot(page=${xungDotPage.number + 1},size=${size})}"
+                   class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200">Sau →</a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

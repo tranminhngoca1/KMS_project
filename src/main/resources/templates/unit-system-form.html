@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Nhập bảng chữ cái Unit System — Johari')}"></head>
+<body class="min-h-screen flex flex-col">
+
+<header th:replace="~{fragments/layout :: navbar('kho')}"></header>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-grow w-full">
+
+    <section class="light-card rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-white via-amber-50/30 to-orange-50/20">
+        <a th:href="@{/kho}"
+           class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 hover:text-amber-950 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200 mb-3">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i> Quay lại Kho tri thức
+        </a>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">
+            Quản trị Bảng chữ cái "Unit System" của Harish Johari (Vệ Đà)
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+            Mục 5 &amp; 10.2: Trong bản PDF hiện có, bảng Unit System tại mục "Name Number" (trang 10 sách / trang 8 PDF) bị khuyết hình ảnh.
+            Quản trị viên nhập 26 giá trị (1–9) từ bản sách in tại đây để hệ thống tự động chuyển trạng thái từ <code>CHUA_CO_DU_LIEU</code> sang <code>KICH_HOAT</code>.
+        </p>
+    </section>
+
+    <div th:if="${thongBaoLoi != null}"
+         class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm font-bold flex items-center gap-2">
+        <i class="fa-solid fa-circle-exclamation text-rose-600"></i>
+        <span th:text="${thongBaoLoi}">Lỗi</span>
+    </div>
+
+    <section class="light-card rounded-3xl p-6 sm:p-8 space-y-6">
+        <div th:if="${unitSystemInfo != null}" class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-1">
+            <div class="flex items-center gap-2 text-xs sm:text-sm">
+                <strong class="text-slate-900">Trạng thái hiện tại:</strong>
+                <span class="badge"
+                      th:classappend="${unitSystemInfo.trangThai == 'KICH_HOAT'} ? 'badge-tin-cay-CAO' : 'badge-veda'"
+                      th:text="${unitSystemInfo.trangThai}">CHUA_CO_DU_LIEU</span>
+            </div>
+            <p class="text-xs text-slate-600" th:text="${unitSystemInfo.ghiChu}"></p>
+        </div>
+
+        <form th:action="@{/kho/bang-chu-cai/unit-system}" method="post" class="space-y-6">
+            <div class="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-9 gap-3">
+                <div th:each="letter : ${letters}" class="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-1.5 hover:border-amber-400 transition-all">
+                    <label class="font-mono font-extrabold text-sm text-indigo-700 block" th:text="'Chữ ' + ${letter}">Chữ A</label>
+                    <input type="number" min="1" max="9" required
+                           th:name="'letter_' + ${letter}"
+                           th:value="${currentValues.get(letter)}"
+                           placeholder="1–9"
+                           class="w-full bg-white text-center font-mono font-bold text-slate-900 rounded-xl py-1.5 text-sm border border-slate-200 focus:outline-none focus:border-amber-500">
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center gap-3">
+                <button type="submit"
+                        class="px-6 py-3 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white transition-all shadow-sm cursor-pointer">
+                    <i class="fa-solid fa-check mr-1"></i> Lưu 26 chữ cái &amp; Kích hoạt bảng Unit System
+                </button>
+                <a th:href="@{/kho}" class="px-5 py-3 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">
+                    Huỷ
+                </a>
+            </div>
+        </form>
+    </section>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

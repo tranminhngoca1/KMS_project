@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Kho Tri thức Mã hoá')}"></head>
+<body class="min-h-screen flex flex-col">
+
+<header th:replace="~{fragments/layout :: navbar('kho')}"></header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-grow w-full">
+
+    <!-- Thông báo thành công nếu có -->
+    <div th:if="${thongBaoThanhCong != null}"
+         class="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs sm:text-sm font-bold flex items-center gap-2.5 shadow-xs">
+        <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+        <span th:text="${thongBaoThanhCong}">Thông báo thành công</span>
+    </div>
+
+    <!-- Trạng thái bảng chữ cái Unit System của Johari (Mục 5 & 10.2) -->
+    <section th:if="${unitSystemInfo != null}"
+             class="light-card rounded-2xl p-4 sm:px-6 border-l-4 border-l-amber-500 bg-gradient-to-r from-amber-50/70 via-white to-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div class="text-xs sm:text-sm text-slate-700 space-y-1">
+            <div class="flex items-center flex-wrap gap-2">
+                <i class="fa-solid fa-language text-amber-600"></i>
+                <strong class="text-slate-900">Bảng chữ cái "Unit System" của Harish Johari (Vệ Đà):</strong>
+                <span class="badge"
+                      th:classappend="${unitSystemInfo.trangThai == 'KICH_HOAT'} ? 'badge-tin-cay-CAO' : 'badge-veda'"
+                      th:text="${unitSystemInfo.trangThai}">CHUA_CO_DU_LIEU</span>
+            </div>
+            <p class="text-xs text-slate-600" th:text="${unitSystemInfo.ghiChu}">Ghi chú</p>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')" class="shrink-0">
+            <a th:href="@{/kho/bang-chu-cai/unit-system}"
+               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white transition-all shadow-xs">
+                <i class="fa-solid fa-keyboard"></i>
+                <span>Cập nhật 26 chữ cái A–Z →</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- ===================================================================
+         HERO & BỘ LỌC TÌM KIẾM 9 TIÊU CHÍ (THEO PHONG CÁCH FRONTEND.HTML)
+         =================================================================== -->
+    <section class="light-card rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-white via-amber-50/20 to-orange-50/20 space-y-6">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="max-w-3xl">
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-amber-700 mb-2 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
+                    <i class="fa-solid fa-database text-xs"></i> Cơ Sở Dữ Liệu &amp; Tri Thức Chuẩn Hóa (KMS Repository)
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                    Kho Tri thức Thần số học (Knowledge Repository)
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1.5">
+                    Quản lý các đơn vị tri thức đã mã hoá từ 5 nguồn sách thuộc 3 trường phái, kèm truy vết nguồn gốc (provenance), mức tin cậy, nhãn sử dụng, phiên bản và điều kiện kích hoạt JSON.
+                </p>
+            </div>
+
+            <div sec:authorize="hasRole('ADMIN')" class="flex flex-wrap items-center gap-2.5 shrink-0">
+                <a th:href="@{/kho/bang-chu-cai/unit-system}"
+                   class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-white hover:bg-amber-50 text-amber-800 border border-amber-300 transition-all shadow-xs">
+                    <i class="fa-solid fa-font"></i>
+                    <span>Bảng Unit System</span>
+                </a>
+                <a th:href="@{/kho/them}"
+                   class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-all shadow-sm">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Thêm Đơn Vị Tri Thức</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Form Tìm kiếm toàn văn & 9 Bộ lọc -->
+        <form th:action="@{/kho}" method="get" class="space-y-4">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-grow">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" name="tuKhoa"
+                           th:value="${tuKhoa}"
+                           placeholder="Tìm kiếm theo mã (PH-CD-10), tiêu đề, nội dung diễn giải, chương hoặc ghi chú..."
+                           class="w-full bg-white text-slate-900 placeholder-slate-400 rounded-xl pl-11 pr-4 py-3 text-sm border border-slate-200 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 shadow-xs">
+                </div>
+                <select name="size" class="bg-white text-slate-800 rounded-xl px-3.5 py-3 text-xs font-semibold border border-slate-200 focus:outline-none focus:border-amber-500">
+                    <option value="10" th:selected="${size == 10}">10 đơn vị / trang</option>
+                    <option value="20" th:selected="${size == 20}">20 đơn vị / trang</option>
+                    <option value="50" th:selected="${size == 50}">50 đơn vị / trang</option>
+                </select>
+                <div class="flex gap-2">
+                    <button type="submit"
+                            class="px-5 py-3 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-filter"></i>
+                        <span>Lọc Kết Quả</span>
+                    </button>
+                    <a th:href="@{/kho}"
+                       class="px-4 py-3 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>Xoá lọc</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 9 tiêu chí lọc chuyên sâu -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-2">
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">1. Trường phái</label>
+                    <select name="truongPhaiId" class="w-full bg-white text-slate-800 rounded-xl px-3 py-2 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="">-- Tất cả trường phái --</option>
+                        <option th:each="tp : ${dsTruongPhai}" th:value="${tp.id}"
+                                th:selected="${truongPhaiId != null and truongPhaiId == tp.id}"
+                                th:text="${tp.ten} + ' (' + ${tp.ma} + ')'"></option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">2. Nguồn sách</label>
+                    <select name="nguonId" class="w-full bg-white text-slate-800 rounded-xl px-3 py-2 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="">-- Tất cả nguồn sách --</option>
+                        <option th:each="ng : ${dsNguon}" th:value="${ng.id}"
+                                th:selected="${nguonId != null and nguonId == ng.id}"
+                                th:text="${ng.ma} + ' — ' + ${ng.tenSach}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">3. Khái niệm</label>
+                    <select name="khaiNiemId" class="w-full bg-white text-slate-800 rounded-xl px-3 py-2 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="">-- Tất cả khái niệm --</option>
+                        <option th:each="kn : ${dsKhaiNiem}" th:value="${kn.id}"
+                                th:selected="${khaiNiemId != null and khaiNiemId == kn.id}"
+                                th:text="${kn.tenChuan}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">4. Câu hỏi</label>
+                    <select name="cauHoi" class="w-full bg-white text-slate-800 rounded-xl px-3 py-2 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="">-- Tất cả câu hỏi --</option>
+                        <option value="AI" th:selected="${cauHoi == 'AI'}">Tôi là ai? (AI)</option>
+                        <option value="GAP_GI" th:selected="${cauHoi == 'GAP_GI'}">Tôi đang gặp gì? (GAP_GI)</option>
+                        <option value="DI_THE_NAO" th:selected="${cauHoi == 'DI_THE_NAO'}">Tôi nên đi thế nào? (DI_THE_NAO)</option>
+                        <option value="NEN_TANG" th:selected="${cauHoi == 'NEN_TANG'}">Tri thức nền tảng (NEN_TANG)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">5. Loại tri thức</label>
+                    <select name="loai" class="w-full bg-white text-slate-800 rounded-xl px-3 py-2 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="">-- Tất cả loại --</option>
+                        <option value="QUY_TAC" th:selected="${loai == 'QUY_TAC'}">QUY_TAC</option>
+                        <option value="MO_TA" th:selected="${loai == 'MO_TA'}">MO_TA</option>
+                        <option value="CONG_THUC" th:selected="${loai == 'CONG_THUC'}">CONG_THUC</option>
+                        <option value="BANG_TRA" th:selected="${loai == 'BANG_TRA'}">BANG_TRA</option>
+                        <option value="CA_THUC_TE" th:selected="${loai == 'CA_THUC_TE'}">CA_THUC_TE</option>
+                        <option value="LICH_SU" th:selected="${loai == 'LICH_SU'}">LICH_SU</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">6. Mức tin cậy</label>
+                    <select name="mucTinCay" class="w-full bg-white text-slate-800 rounded-xl px-3 py-2 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="">-- Tất cả mức tin cậy --</option>
+                        <option value="CAO" th:selected="${mucTinCay == 'CAO'}">CAO</option>
+                        <option value="TRUNG_BINH" th:selected="${mucTinCay == 'TRUNG_BINH'}">TRUNG_BINH</option>
+                        <option value="THAP" th:selected="${mucTinCay == 'THAP'}">THAP</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">7. Nhãn sử dụng</label>
+                    <select name="nhanSuDung" class="w-full bg-white text-slate-800 rounded-xl px-3 py-2 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="">-- Tất cả nhãn sử dụng --</option>
+                        <option value="DUNG" th:selected="${nhanSuDung == 'DUNG'}">DUNG</option>
+                        <option value="GOI_Y_VAN_HOA" th:selected="${nhanSuDung == 'GOI_Y_VAN_HOA'}">GOI_Y_VAN_HOA</option>
+                        <option value="THAN_TRONG" th:selected="${nhanSuDung == 'THAN_TRONG'}">THAN_TRONG</option>
+                        <option value="KHONG_DUNG" th:selected="${nhanSuDung == 'KHONG_DUNG'}">KHONG_DUNG</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">8. Trạng thái duyệt</label>
+                    <select name="trangThai" class="w-full bg-white text-slate-800 rounded-xl px-3 py-2 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="DA_DUYET" th:selected="${trangThai == 'DA_DUYET'}">DA_DUYET</option>
+                        <option value="NHAP" th:selected="${trangThai == 'NHAP'}">NHAP</option>
+                        <option value="LUU_TRU" th:selected="${trangThai == 'LUU_TRU'}">LUU_TRU</option>
+                    </select>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">9. Thẻ chủ đề (Tag suy diễn đồng thuận / đối lập)</label>
+                    <select name="theId" class="w-full bg-white text-slate-800 rounded-xl px-3 py-2 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="">-- Tất cả thẻ chủ đề --</option>
+                        <option th:each="th : ${dsThe}" th:value="${th.id}"
+                                th:selected="${theId != null and theId == th.id}"
+                                th:text="'[' + ${th.nhom} + '] ' + ${th.ten}"></option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <!-- ===================================================================
+         DANH SÁCH ĐƠN VỊ TRI THỨC (BẢNG CHUẨN KMS + PHÂN TRANG)
+         =================================================================== -->
+    <section class="light-card rounded-3xl p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div class="text-xs sm:text-sm text-slate-600">
+                Tìm thấy <strong class="text-slate-900 font-bold" th:text="${donViPage.totalElements}">477</strong> đơn vị tri thức
+                (Trang <strong class="text-indigo-700" th:text="${donViPage.number + 1}">1</strong> / <strong th:text="${donViPage.totalPages > 0 ? donViPage.totalPages : 1}">1</strong>)
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+                <span><span class="inline-block w-2 h-2 rounded-full bg-indigo-600 mr-1"></span>Pythagoras</span>
+                <span><span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-1"></span>Vệ Đà</span>
+                <span><span class="inline-block w-2 h-2 rounded-full bg-purple-600 mr-1"></span>Kabbalah</span>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="kms-table">
+                <thead>
+                <tr>
+                    <th>Mã</th>
+                    <th>Tiêu đề &amp; Khái niệm</th>
+                    <th>Trường phái</th>
+                    <th>Trích dẫn nguồn (Provenance)</th>
+                    <th>Câu hỏi / Loại</th>
+                    <th>Tin cậy &amp; Nhãn</th>
+                    <th>Phiên bản</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${donViPage.content.isEmpty()}">
+                    <td colspan="8" class="text-center py-12 text-slate-500">
+                        <i class="fa-regular fa-folder-open text-3xl text-slate-300 block mb-2"></i>
+                        Không có đơn vị tri thức nào khớp với bộ lọc hiện tại.
+                    </td>
+                </tr>
+                <tr th:each="dv : ${donViPage.content}">
+                    <td>
+                        <a th:href="@{/kho/{id}(id=${dv.id})}"
+                           class="font-mono font-bold text-xs text-indigo-700 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-lg border border-indigo-200 inline-block"
+                           th:text="${dv.ma}">PH-CD-10</a>
+                    </td>
+                    <td>
+                        <a th:href="@{/kho/{id}(id=${dv.id})}"
+                           class="font-bold text-slate-900 hover:text-indigo-600 transition-colors block text-sm"
+                           th:text="${dv.tieuDe}">Tiêu đề</a>
+                        <div th:if="${dv.khaiNiem != null}" class="text-xs text-slate-500 mt-0.5"
+                             th:text="'Khái niệm: ' + ${dv.khaiNiem.tenChuan} + (${dv.giaTriKichHoat != null} ? ' (' + ${dv.giaTriKichHoat} + ')' : '')"></div>
+                    </td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${dv.truongPhai.ma == 'PYTHAGORAS'} ? 'badge-pythagoras' : (${dv.truongPhai.ma == 'VEDA'} ? 'badge-veda' : 'badge-kabbalah')"
+                              th:text="${dv.truongPhai.ma}">PYTHAGORAS</span>
+                    </td>
+                    <td>
+                        <a th:href="@{/kho/{id}(id=${dv.id})}" class="badge-citation">
+                            <i class="fa-solid fa-book-bookmark text-amber-600 text-[10px]"></i>
+                            <span th:text="${dv.trichDanHienThi}">Phillips, Ch.7, tr.85</span>
+                        </a>
+                    </td>
+                    <td>
+                        <div class="flex flex-wrap gap-1">
+                            <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[11px] font-bold" th:text="${dv.cauHoi}">AI</span>
+                            <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-mono text-[11px]" th:text="${dv.loai}">QUY_TAC</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex flex-wrap gap-1">
+                            <span class="badge" th:classappend="'badge-tin-cay-' + ${dv.mucTinCay}" th:text="${dv.mucTinCay}">CAO</span>
+                            <span class="badge" th:classappend="'badge-nhan-' + ${dv.nhanSuDung}" th:text="${dv.nhanSuDung}">DUNG</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex flex-wrap gap-1 items-center">
+                            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-800 font-mono text-[11px] font-bold" th:text="'v' + ${dv.phienBan}">v1</span>
+                            <span class="badge" th:classappend="'badge-trang-thai-' + ${dv.trangThai}" th:text="${dv.trangThai}">DA_DUYET</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-1.5">
+                            <a th:href="@{/kho/{id}(id=${dv.id})}"
+                               class="px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-all whitespace-nowrap">
+                                Chi tiết
+                            </a>
+                            <a sec:authorize="hasRole('ADMIN')" th:href="@{/kho/{id}/sua(id=${dv.id})}"
+                               class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white transition-all whitespace-nowrap">
+                                Sửa
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Thanh phân trang -->
+        <div th:if="${donViPage.totalPages > 1}" class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="text-xs text-slate-500">
+                Hiển thị trang <strong class="text-slate-800" th:text="${donViPage.number + 1}">1</strong> / <strong class="text-slate-800" th:text="${donViPage.totalPages}">10</strong>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5">
+                <a th:if="${donViPage.hasPrevious()}"
+                   th:href="@{/kho(page=${donViPage.number - 1},size=${size},tuKhoa=${tuKhoa},truongPhaiId=${truongPhaiId},nguonId=${nguonId},khaiNiemId=${khaiNiemId},cauHoi=${cauHoi},loai=${loai},mucTinCay=${mucTinCay},nhanSuDung=${nhanSuDung},trangThai=${trangThai},theId=${theId})}"
+                   class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all">
+                    ← Trước
+                </a>
+
+                <a th:each="p : ${#numbers.sequence(0, donViPage.totalPages - 1)}"
+                   th:if="${p >= donViPage.number - 3 and p <= donViPage.number + 3}"
+                   th:href="@{/kho(page=${p},size=${size},tuKhoa=${tuKhoa},truongPhaiId=${truongPhaiId},nguonId=${nguonId},khaiNiemId=${khaiNiemId},cauHoi=${cauHoi},loai=${loai},mucTinCay=${mucTinCay},nhanSuDung=${nhanSuDung},trangThai=${trangThai},theId=${theId})}"
+                   th:class="${p == donViPage.number} ? 'px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-xs' : 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all'"
+                   th:text="${p + 1}">1</a>
+
+                <a th:if="${donViPage.hasNext()}"
+                   th:href="@{/kho(page=${donViPage.number + 1},size=${size},tuKhoa=${tuKhoa},truongPhaiId=${truongPhaiId},nguonId=${nguonId},khaiNiemId=${khaiNiemId},cauHoi=${cauHoi},loai=${loai},mucTinCay=${mucTinCay},nhanSuDung=${nhanSuDung},trangThai=${trangThai},theId=${theId})}"
+                   class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all">
+                    Sau →
+                </a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

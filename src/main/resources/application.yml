@@ -1,0 +1,42 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: nkms
+  datasource:
+    url: jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/nkms?sslMode=REQUIRED&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true
+    username: 3ABDL1s5VdiCGNm.root
+    password: ZhsmrYL78RDhIgte
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 7
+    locations: classpath:db/migration
+    validate-on-migrate: false
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+
+nkms:
+  admin:
+    username: admin
+    password: admin123

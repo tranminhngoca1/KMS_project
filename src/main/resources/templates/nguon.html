@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Nguồn Tri thức &amp; Bảng chữ cái')}"></head>
+<body class="min-h-screen flex flex-col">
+
+<header th:replace="~{fragments/layout :: navbar('nguon')}"></header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-grow w-full">
+
+    <section class="light-card rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-white via-cyan-50/25 to-indigo-50/20">
+        <span class="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-cyan-800 mb-2 bg-cyan-50 px-2.5 py-1 rounded-lg border border-cyan-200">
+            <i class="fa-solid fa-book-open text-xs"></i> Truy Vết Nguồn Gốc Học Thuật (Provenance)
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            Nguồn Sách &amp; Quan Hệ Phái Sinh (5 Nguồn Chính Thức)
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1.5">
+            Danh mục 5 nguồn sách chính thức được mã hoá vào Kho tri thức NKMS, kèm quan hệ gốc – phái sinh và các bảng quy đổi chữ cái.
+        </p>
+    </section>
+
+    <!-- Ghi chú loại trừ BPHS và Sefer Yetzirah theo Mục 1 & 10.3 -->
+    <section class="light-card rounded-3xl p-6 border-l-4 border-l-amber-500 bg-amber-50/50 space-y-2">
+        <h3 class="text-sm sm:text-base font-extrabold text-amber-900 flex items-center gap-2">
+            <i class="fa-solid fa-ban text-amber-600"></i>
+            <span>Quy tắc kiểm soát phạm vi nguồn (Không dùng BPHS và Sefer Yetzirah)</span>
+        </h3>
+        <p class="text-xs sm:text-sm text-amber-950 leading-relaxed">
+            Theo yêu cầu Mục 1 &amp; Mục 10.3: Hệ thống <strong>không sử dụng</strong> hai bộ sách <em>Brihat Parashara Hora Shastra (BPHS, tập 1 &amp; 2)</em> và <em>Sefer Yetzirah</em>.
+            Lý do: <strong>BPHS</strong> là chiêm tinh học Vệ Đà (Jyotish — cần giờ sinh và vị trí thiên văn của các chòm sao/cung hoàng đạo), còn <strong>Sefer Yetzirah</strong> là triết lý vũ trụ luận Kabbalah cổ đại về 10 Sefirot và 22 chữ cái Hebrew, không phải hệ thống thần số học tra cứu theo họ tên và ngày sinh. Không có bất kỳ đơn vị tri thức nào được tạo từ hai sách này.
+        </p>
+    </section>
+
+    <!-- Bảng 5 nguồn sách -->
+    <section class="light-card rounded-3xl p-6 space-y-4">
+        <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-book-bookmark text-indigo-600"></i>
+            <span>1. Bảng 5 Nguồn sách chính thức &amp; Quan hệ Gốc – Phái sinh</span>
+        </h3>
+        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="kms-table">
+                <thead>
+                <tr>
+                    <th>Mã nguồn</th>
+                    <th>Tên sách &amp; Tác giả</th>
+                    <th>Trường phái</th>
+                    <th>Quan hệ Gốc – Phái sinh</th>
+                    <th>Số đơn vị trong Kho</th>
+                    <th>Ghi chú &amp; Phạm vi</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ng : ${dsNguon}">
+                    <td>
+                        <a th:href="@{/kho(nguonId=${ng.id})}"
+                           class="font-mono font-bold text-xs text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200 inline-block"
+                           th:text="${ng.ma}">PHILLIPS</a>
+                    </td>
+                    <td>
+                        <strong class="text-slate-900 block text-sm" th:text="${ng.tenSach}">The Complete Book of Numerology</strong>
+                        <div class="text-xs text-slate-500 mt-0.5" th:text="${ng.tacGia} + ' (' + ${ng.namXuatBan} + ')'">David A. Phillips</div>
+                        <div class="text-[11px] font-mono text-cyan-700 mt-1">
+                            File tóm tắt: <code th:text="${ng.fileTomTat}"></code>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${ng.truongPhai.ma == 'PYTHAGORAS'} ? 'badge-pythagoras' : (${ng.truongPhai.ma == 'VEDA'} ? 'badge-veda' : 'badge-kabbalah')"
+                              th:text="${ng.truongPhai.ten} + ' (' + ${ng.truongPhai.ma} + ')'"></span>
+                    </td>
+                    <td>
+                        <span th:if="${ng.nguonGoc == null}" class="badge badge-tin-cay-CAO">Bản gốc độc lập</span>
+                        <div th:if="${ng.nguonGoc != null}" class="space-y-1">
+                            <span class="badge badge-veda">
+                                Phái sinh từ <strong th:text="${ng.nguonGoc.ma}">PHILLIPS</strong> (<span th:text="${ng.tyLePhaiSinh}">~60%</span>)
+                            </span>
+                            <p class="text-[11px] text-slate-500 leading-snug">
+                                Khi tính Đồng thuận ở trang Khám phá, QH và PHILLIPS được gộp làm 1 nguồn gốc duy nhất để tránh "đồng thuận giả".
+                            </p>
+                        </div>
+                    </td>
+                    <td>
+                        <a th:href="@{/kho(nguonId=${ng.id})}"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 text-slate-800 hover:text-indigo-700 text-xs font-bold border border-slate-200 transition-all">
+                            <strong th:text="${soDonViTheoNguon.get(ng.id)}">0</strong>
+                            <span>đơn vị →</span>
+                        </a>
+                    </td>
+                    <td class="text-xs text-slate-600 leading-relaxed" th:text="${ng.ghiChu}">Ghi chú</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Bảng chữ cái của các trường phái (Mục 5) -->
+    <section class="light-card rounded-3xl p-6 space-y-4">
+        <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-spell-check text-amber-600"></i>
+            <span>2. Bảng Quy đổi Chữ cái → Số trong CSDL (<code>bang_chu_cai</code>)</span>
+        </h3>
+        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="kms-table">
+                <thead>
+                <tr>
+                    <th>Mã bảng</th>
+                    <th>Trường phái</th>
+                    <th>Nguồn sách</th>
+                    <th>Trạng thái</th>
+                    <th>Ghi chú quản trị tri thức</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="bcc : ${dsBangChuCai}">
+                    <td><code class="font-mono font-bold text-xs text-slate-900 bg-slate-100 px-2 py-1 rounded" th:text="${bcc.ma}">PYTHAGORAS</code></td>
+                    <td class="font-semibold text-xs text-slate-800" th:text="${bcc.truongPhai.ten}">Pythagoras</td>
+                    <td><span class="font-mono text-xs font-bold text-indigo-700" th:text="${bcc.nguon.ma}">PHILLIPS</span></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${bcc.trangThai == 'KICH_HOAT'} ? 'badge-tin-cay-CAO' : (${bcc.trangThai == 'CHUA_CO_DU_LIEU'} ? 'badge-veda' : 'badge-trang-thai-LUU_TRU')"
+                              th:text="${bcc.trangThai}">KICH_HOAT</span>
+                    </td>
+                    <td class="text-xs text-slate-600 leading-relaxed" th:text="${bcc.ghiChu}">Ghi chú</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

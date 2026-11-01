@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${isEdit} ? 'Chỉnh sửa Đơn vị Tri thức' : 'Thêm mới Đơn vị Tri thức')}"></head>
+<body class="min-h-screen flex flex-col">
+
+<header th:replace="~{fragments/layout :: navbar('kho')}"></header>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-grow w-full">
+
+    <section class="light-card rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-white via-indigo-50/25 to-cyan-50/20">
+        <a th:href="${isEdit} ? @{/kho/{id}(id=${donVi.id})} : @{/kho}"
+           class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-3 py-1 rounded-xl border border-indigo-200 mb-3">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i> Quay lại
+        </a>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900"
+            th:text="${isEdit} ? ('Chỉnh sửa Đơn vị Tri thức: ' + ${donVi.ma} + ' (Hiện tại v' + ${donVi.phienBan} + ')') : 'Thêm mới Đơn vị Tri thức vào Kho (KMS Capture)'"></h2>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1">
+            Mọi đơn vị tri thức phải diễn giải lại bằng tiếng Việt (không chép nguyên văn dài từ sách) và gắn đầy đủ nguồn, chương/mục, trang, mức tin cậy và nhãn sử dụng.
+        </p>
+    </section>
+
+    <div th:if="${isEdit and goiYQuanHe != null and !goiYQuanHe.isEmpty()}"
+         class="light-card rounded-2xl p-4 border-l-4 border-l-indigo-600 bg-indigo-50/40 space-y-2">
+        <strong class="text-xs text-indigo-950 block">
+            <i class="fa-solid fa-link text-indigo-600 mr-1"></i> Gợi ý kiểm tra quan hệ / xung đột (cùng Khái niệm &amp; Giá trị kích hoạt ở nguồn khác):
+        </strong>
+        <div class="flex flex-wrap gap-2">
+            <a th:each="gy : ${goiYQuanHe}" th:href="@{/kho/{id}(id=${gy.id})}" target="_blank" class="badge-citation">
+                <span th:text="${gy.ma} + ' — ' + ${gy.tieuDe} + ' (' + ${gy.trichDanHienThi} + ')'"></span>
+            </a>
+        </div>
+    </div>
+
+    <section class="light-card rounded-3xl p-6 sm:p-8">
+        <form th:action="${isEdit} ? @{/kho/{id}/sua(id=${donVi.id})} : @{/kho/them}" method="post" class="space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Mã đơn vị (duy nhất) *</label>
+                    <input type="text" name="ma" required placeholder="VD: PH-CD-10" th:value="${donVi.ma}"
+                           class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-sm font-mono font-bold border border-slate-200 focus:outline-none focus:border-indigo-500 focus:bg-white">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Tiêu đề đơn vị tri thức *</label>
+                    <input type="text" name="tieuDe" required placeholder="VD: Con số chủ đạo 10 — Linh hoạt và thích nghi" th:value="${donVi.tieuDe}"
+                           class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-sm font-semibold border border-slate-200 focus:outline-none focus:border-indigo-500 focus:bg-white">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Trường phái *</label>
+                    <select name="truongPhaiId" required class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs font-semibold border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option th:each="tp : ${dsTruongPhai}" th:value="${tp.id}"
+                                th:selected="${donVi.truongPhai != null and donVi.truongPhai.id == tp.id}"
+                                th:text="${tp.ten} + ' (' + ${tp.ma} + ')'"></option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Nguồn sách *</label>
+                    <select name="nguonId" required class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs font-semibold border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option th:each="ng : ${dsNguon}" th:value="${ng.id}"
+                                th:selected="${donVi.nguon != null and donVi.nguon.id == ng.id}"
+                                th:text="${ng.ma} + ' — ' + ${ng.tenSach}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Khái niệm chuẩn</label>
+                    <select name="khaiNiemId" class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs font-semibold border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="">-- Không gắn khái niệm cụ thể --</option>
+                        <option th:each="kn : ${dsKhaiNiem}" th:value="${kn.id}"
+                                th:selected="${donVi.khaiNiem != null and donVi.khaiNiem.id == kn.id}"
+                                th:text="${kn.tenChuan} + ' (' + ${kn.ma} + ')'"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Loại đơn vị *</label>
+                    <select name="loai" required class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs font-semibold border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="QUY_TAC" th:selected="${donVi.loai == 'QUY_TAC'}">QUY_TAC</option>
+                        <option value="MO_TA" th:selected="${donVi.loai == 'MO_TA'}">MO_TA</option>
+                        <option value="CONG_THUC" th:selected="${donVi.loai == 'CONG_THUC'}">CONG_THUC</option>
+                        <option value="BANG_TRA" th:selected="${donVi.loai == 'BANG_TRA'}">BANG_TRA</option>
+                        <option value="CA_THUC_TE" th:selected="${donVi.loai == 'CA_THUC_TE'}">CA_THUC_TE</option>
+                        <option value="LICH_SU" th:selected="${donVi.loai == 'LICH_SU'}">LICH_SU</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Câu hỏi phục vụ *</label>
+                    <select name="cauHoi" required class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs font-semibold border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="AI" th:selected="${donVi.cauHoi == 'AI'}">Tôi là ai? (AI)</option>
+                        <option value="GAP_GI" th:selected="${donVi.cauHoi == 'GAP_GI'}">Tôi đang gặp gì? (GAP_GI)</option>
+                        <option value="DI_THE_NAO" th:selected="${donVi.cauHoi == 'DI_THE_NAO'}">Tôi nên đi thế nào? (DI_THE_NAO)</option>
+                        <option value="NEN_TANG" th:selected="${donVi.cauHoi == 'NEN_TANG'}">Tri thức nền tảng (NEN_TANG)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Giá trị kích hoạt</label>
+                    <input type="text" name="giaTriKichHoat" placeholder="VD: 10, 22/4, 1-5-9:CO" th:value="${donVi.giaTriKichHoat}"
+                           class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs font-mono border border-slate-200 focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Chương / Mục sách</label>
+                    <input type="text" name="chuong" placeholder="VD: Ch.7 hoặc §6" th:value="${donVi.chuong}"
+                           class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Trang từ</label>
+                    <input type="number" name="trangTu" th:value="${donVi.trangTu}"
+                           class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs font-mono border border-slate-200 focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Trang đến</label>
+                    <input type="number" name="trangDen" th:value="${donVi.trangDen}"
+                           class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs font-mono border border-slate-200 focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Mức tin cậy *</label>
+                    <select name="mucTinCay" required class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs font-semibold border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="CAO" th:selected="${donVi.mucTinCay == 'CAO'}">CAO</option>
+                        <option value="TRUNG_BINH" th:selected="${donVi.mucTinCay == 'TRUNG_BINH'}">TRUNG_BINH</option>
+                        <option value="THAP" th:selected="${donVi.mucTinCay == 'THAP'}">THAP</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Nhãn sử dụng *</label>
+                    <select name="nhanSuDung" required class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs font-semibold border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="DUNG" th:selected="${donVi.nhanSuDung == 'DUNG'}">DUNG</option>
+                        <option value="GOI_Y_VAN_HOA" th:selected="${donVi.nhanSuDung == 'GOI_Y_VAN_HOA'}">GOI_Y_VAN_HOA</option>
+                        <option value="THAN_TRONG" th:selected="${donVi.nhanSuDung == 'THAN_TRONG'}">THAN_TRONG</option>
+                        <option value="KHONG_DUNG" th:selected="${donVi.nhanSuDung == 'KHONG_DUNG'}">KHONG_DUNG</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Trạng thái duyệt *</label>
+                    <select name="trangThai" required class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs font-semibold border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="DA_DUYET" th:selected="${donVi.trangThai == 'DA_DUYET'}">DA_DUYET</option>
+                        <option value="NHAP" th:selected="${donVi.trangThai == 'NHAP'}">NHAP</option>
+                        <option value="LUU_TRU" th:selected="${donVi.trangThai == 'LUU_TRU'}">LUU_TRU</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Điều kiện kích hoạt JSON (<code>dieu_kien_json</code>)</label>
+                <input type="text" name="dieuKienJson"
+                       placeholder='VD: {"chi_so":"QH_CHU_DAO","bang":"10"}'
+                       th:value="${donVi.dieuKienJson}"
+                       class="w-full bg-slate-900 text-cyan-300 rounded-xl px-4 py-2.5 text-xs font-mono border border-slate-700 focus:outline-none focus:border-cyan-400">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Nội dung diễn giải bằng tiếng Việt (không chép nguyên văn sách) *</label>
+                <textarea name="noiDung" rows="5" required th:text="${donVi.noiDung}"
+                          class="w-full bg-slate-50 text-slate-900 rounded-2xl p-4 text-sm border border-slate-200 focus:outline-none focus:border-indigo-500 focus:bg-white"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Lý do gắn nhãn sử dụng (nếu THAN_TRONG / KHONG_DUNG / GOI_Y_VAN_HOA)</label>
+                    <input type="text" name="lyDoNhan" th:value="${donVi.lyDoNhan}"
+                           class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Ghi chú kỹ thuật (VD: số trang PDF)</label>
+                    <input type="text" name="ghiChu" th:value="${donVi.ghiChu}"
+                           class="w-full bg-slate-50 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs border border-slate-200 focus:outline-none focus:border-indigo-500">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Thẻ chủ đề (Tags phục vụ suy diễn đồng thuận / đối lập)</label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-56 overflow-y-auto p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                    <label th:each="th : ${dsThe}" class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:text-indigo-700">
+                        <input type="checkbox" name="theIds" th:value="${th.id}"
+                               th:checked="${selectedTheIds != null and selectedTheIds.contains(th.id)}"
+                               class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                        <span th:text="${th.ten} + ' (' + ${th.nhom} + ')'"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div th:if="${isEdit}" class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+                <label class="block text-xs font-extrabold uppercase tracking-wider text-emerald-900">
+                    <i class="fa-solid fa-code-commit mr-1"></i> Lý do chỉnh sửa (Bắt buộc lưu vào bảng <code>lich_su_phien_ban</code> khi nâng phiên bản) *
+                </label>
+                <input type="text" name="lyDoSua" required
+                       placeholder="VD: Diễn giải lại tránh khẳng định số mệnh tiêu cực, hoặc bổ sung số trang từ PDF gốc..."
+                       class="w-full bg-white text-slate-900 rounded-xl px-3.5 py-2.5 text-xs border border-emerald-300 focus:outline-none focus:border-emerald-600">
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center gap-3">
+                <button type="submit"
+                        class="px-6 py-3 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-all shadow-md cursor-pointer"
+                        th:text="${isEdit} ? ('Lưu cập nhật (Nâng lên v' + (${donVi.phienBan} + 1) + ')') : 'Tạo mới đơn vị tri thức'"></button>
+                <a th:href="${isEdit} ? @{/kho/{id}(id=${donVi.id})} : @{/kho}"
+                   class="px-5 py-3 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">
+                    Huỷ
+                </a>
+            </div>
+        </form>
+    </section>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

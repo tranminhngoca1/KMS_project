@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Giới thiệu Phương pháp Kỹ nghệ Tri thức KMS301')}"></head>
+<body class="min-h-screen flex flex-col">
+
+<header th:replace="~{fragments/layout :: navbar('gioi-thieu')}"></header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-grow w-full">
+
+    <section class="light-card rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-white via-indigo-50/30 to-amber-50/20">
+        <span class="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-indigo-700 mb-2 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200">
+            <i class="fa-solid fa-graduation-cap text-xs"></i> Phương Pháp Kỹ Nghệ Tri Thức (Knowledge Engineering • KMS301)
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            Giới Thiệu Hệ Thống Quản Lý Tri Thức Thần Số Học (NKMS)
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+            Mục tiêu học thuật, quy trình kỹ nghệ tri thức (Knowledge Engineering), phân biệt độ tin cậy thủ tục và độ tin cậy tiên đoán, và danh mục xác minh nguồn PDF gốc.
+        </p>
+    </section>
+
+    <section class="light-card rounded-3xl p-6 sm:p-8 space-y-4">
+        <h3 class="text-base sm:text-lg font-extrabold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-sitemap text-indigo-600"></i>
+            <span>1. Mục tiêu Học thuật &amp; Các hoạt động KMS cốt lõi</span>
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+            Hệ thống <strong>NKMS (Numerology Knowledge Management System)</strong> được xây dựng cho học phần <strong>KMS301</strong> nhằm minh hoạ toàn diện vòng đời quản lý tri thức trên một miền tri thức đa nguồn, nhiều xung đột và dị biệt văn hoá:
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <strong class="text-xs sm:text-sm text-indigo-900 flex items-center gap-1.5">
+                    <i class="fa-solid fa-code text-indigo-600"></i> 1. Thu nhận &amp; Mã hoá tri thức
+                </strong>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Chuyển hoá tri thức bán cấu trúc từ 5 cuốn sách thuộc 3 trường phái (Pythagoras phương Tây, Vệ Đà Ấn Độ, Kabbalah/Chaldean) thành các đơn vị tri thức có cấu trúc (<code>don_vi_tri_thuc</code>) và biểu thức điều kiện máy đọc được (<code>dieu_kien_json</code>).
+                </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <strong class="text-xs sm:text-sm text-amber-900 flex items-center gap-1.5">
+                    <i class="fa-solid fa-book-bookmark text-amber-600"></i> 2. Truy vết nguồn gốc (Provenance)
+                </strong>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Mỗi nhận định hiển thị cho người dùng đều gắn chặt với nguồn sách, chương/mục, số trang và quan hệ gốc – phái sinh (như Quỳnh Hương phái sinh ~60% từ David Phillips nên được gộp làm 1 nguồn gốc khi tính đồng thuận).
+                </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <strong class="text-xs sm:text-sm text-rose-900 flex items-center gap-1.5">
+                    <i class="fa-solid fa-scale-balanced text-rose-600"></i> 3. Quản trị xung đột tri thức
+                </strong>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Hệ thống không ép các trường phái về một công thức duy nhất mà lưu trữ tường minh <strong>14 hồ sơ xung đột</strong> (<code>xung_dot</code>) và đặt kết quả 3 trường phái song song ngang hàng.
+                </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <strong class="text-xs sm:text-sm text-emerald-900 flex items-center gap-1.5">
+                    <i class="fa-solid fa-shield-check text-emerald-600"></i> 4. Quản trị chất lượng &amp; Phiên bản
+                </strong>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Phân loại 4 nhãn sử dụng (<code>DUNG</code>, <code>GOI_Y_VAN_HOA</code>, <code>THAN_TRONG</code>, <code>KHONG_DUNG</code>) và quản lý lịch sử phiên bản (<code>lich_su_phien_ban</code>) khi diễn giải lại các nhận định định mệnh tiêu cực.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="light-card rounded-3xl p-6 sm:p-8 space-y-4">
+        <h3 class="text-base sm:text-lg font-extrabold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-check-double text-emerald-600"></i>
+            <span>2. Phân biệt Độ tin cậy Thủ tục (Procedural Reliability) và Độ tin cậy Tiên đoán (Predictive Reliability)</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-2">
+                <h4 class="text-sm font-extrabold text-emerald-900 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                    <span>Độ tin cậy Thủ tục (Mức tin cậy: CAO)</span>
+                </h4>
+                <p class="text-xs sm:text-sm text-emerald-950 leading-relaxed">
+                    Áp dụng cho các <strong>công thức toán học, quy tắc rút gọn số và quy tắc lập biểu đồ</strong> (như công thức Con số chủ đạo của Phillips, công thức Số năm cộng thứ sinh nhật của Johari, hay Ma phương 3 tầng của Sepharial).
+                    Độ tin cậy <code>CAO</code> ở đây nghĩa là <em>thuật toán được mã hoá chính xác 100% theo đúng văn bản nguồn của tác giả</em> và có thể kiểm chứng lặp lại bằng bộ kiểm thử tự động (JUnit 5).
+                </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2">
+                <h4 class="text-sm font-extrabold text-amber-900 flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                    <span>Độ tin cậy Tiên đoán (Mức tin cậy: TRUNG_BINH / THAP)</span>
+                </h4>
+                <p class="text-xs sm:text-sm text-amber-950 leading-relaxed">
+                    Áp dụng cho các <strong>luận giải tính cách, xu hướng cuộc đời hoặc dự báo</strong>. Đây là quan điểm chiêm nghiệm của từng tác giả, <em>chưa được kiểm chứng bằng thực nghiệm khoa học thống kê</em>.
+                    Những nội dung mang tính định mệnh nặng nề, y học thay thế hay bói toán được gắn mức tin cậy <code>THAP</code> và nhãn <code>THAN_TRONG</code> / <code>KHONG_DUNG</code> để không bao giờ hiển thị ở trang Khám phá.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="light-card rounded-3xl p-6 sm:p-8 space-y-4">
+        <h3 class="text-base sm:text-lg font-extrabold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-file-pdf text-rose-600"></i>
+            <span>3. Kết quả Xác minh PDF gốc &amp; Các mục "CẦN XÁC MINH" (Mục 5, 6, 8.1)</span>
+        </h3>
+        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="kms-table">
+                <thead>
+                <tr>
+                    <th>Hạng mục trong Prompt</th>
+                    <th>Kết quả đối chiếu PDF gốc trong <code>tai-lieu/pdf/</code></th>
+                    <th>Trạng thái xử lý trong Hệ thống</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><strong class="text-slate-900">Bảng chữ cái "Unit System" của Harish Johari</strong> (Mục 5)</td>
+                    <td class="text-xs text-slate-600 leading-relaxed">Đã kiểm tra <code>01-johari-numerology.pdf</code> tại Chương 1 mục "Name Number" (trang 10 sách / trang 8 PDF): hình ảnh bảng quy đổi chữ cái bị khuyết trong bản scan PDF. Tuyệt đối không tự điền bằng bảng Chaldean/Cheiro trên mạng.</td>
+                    <td class="text-xs">
+                        <span class="badge badge-veda">CHUA_CO_DU_LIEU</span> — Hiển thị thông báo minh bạch ở Khám phá và cung cấp form quản trị 26 chữ cái A–Z tại <a th:href="@{/kho/bang-chu-cai/unit-system}" class="text-indigo-600 font-bold hover:underline">/kho/bang-chu-cai/unit-system</a>.
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong class="text-slate-900">Công thức Số Nhân cách (Personality Number) của Hans Decoz</strong> (Mục 6.2 &amp; 8.1)</td>
+                    <td class="text-xs text-slate-600 leading-relaxed">Đã tra cứu trực tiếp <code>04-decoz-key-to-inner-self.pdf</code> Chương 3 (trang in 102–111 / PDF tr.118–127): công thức chuẩn ở trang 103 là cộng phụ âm từng phần tên với <code>reduceKeepMaster</code> rồi cộng các phần lại (ví dụ Thomas John Hancock = 6+5+3 = 14 → 5).</td>
+                    <td class="text-xs">
+                        <span class="badge badge-tin-cay-CAO">ĐÃ XÁC MINH TỪ PDF</span> — Đã cài đặt trong <code>DecozCalculator</code> và bổ sung đầy đủ các đơn vị Nhân cách 1–9, 11, 22.
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong class="text-slate-900">Công thức Tháng cá nhân (Personal Month)</strong> (Mục 6.1 &amp; 6.2)</td>
+                    <td class="text-xs text-slate-600 leading-relaxed">Đã đối chiếu <code>03-phillips-complete-book.pdf</code> Chương 9 ("Monthly Variations", trang in 127–168 / PDF tr.107–129) và <code>04-decoz-key-to-inner-self.pdf</code> Chương 6 (trang in 188–192 / PDF tr.204–208).</td>
+                    <td class="text-xs">
+                        <span class="badge badge-tin-cay-CAO">ĐÃ XÁC MINH TỪ PDF</span> — Đã cài đặt công thức <code>reduceTo9(PYN + tháng hiện tại)</code> kèm trích dẫn số trang.
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong class="text-slate-900">Số chìa khoá (Key Number) ở Chương XIV của Sepharial</strong> (Mục 6.4 &amp; Xung đột #12)</td>
+                    <td class="text-xs text-slate-600 leading-relaxed">Đã đối chiếu <code>08-sepharial-kabala-of-numbers.pdf</code> Chương IV (tr.43: bỏ 2 chữ số thế kỷ) và Chương XIV (tr.138–142 / PDF tr.149–153: chỉ nói cộng ngày, tháng, năm mà không nói rõ có bỏ thế kỷ hay không).</td>
+                    <td class="text-xs">
+                        <span class="badge badge-veda">CHO_XAC_MINH (XD-12)</span> — Mặc định dùng quy tắc bỏ chữ số thế kỷ của Ch.IV và hiển thị đồng thời giá trị nếu giữ 4 chữ số năm để minh hoạ xung đột nội bộ.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

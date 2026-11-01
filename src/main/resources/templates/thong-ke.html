@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Thống kê Quản trị Tri thức KMS')}"></head>
+<body class="min-h-screen flex flex-col">
+
+<header th:replace="~{fragments/layout :: navbar('thong-ke')}"></header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-grow w-full">
+
+    <section class="light-card rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-white via-emerald-50/25 to-cyan-50/20">
+        <span class="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-emerald-800 mb-2 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+            <i class="fa-solid fa-chart-pie text-xs"></i> Bảng Điều Khiển Quản Trị Tri Thức (KMS Analytics)
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            Thống Kê Hệ Thống Quản Lý Tri Thức (NKMS)
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1.5">
+            Mục 10.3: Tổng hợp số lượng đơn vị tri thức theo trường phái, nguồn sách, nhãn sử dụng, mức tin cậy, trạng thái duyệt và độ phủ số trang trích dẫn (provenance).
+        </p>
+    </section>
+
+    <!-- 4 Thẻ KPI tổng quan (phong cách Frontend.html) -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="light-card light-card-hover rounded-2xl p-5 border-t-4 border-t-indigo-600 space-y-2">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Tổng số Đơn vị Tri thức</span>
+                <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-200">
+                    <i class="fa-solid fa-cubes text-xs"></i>
+                </span>
+            </div>
+            <div class="text-3xl font-black text-indigo-900 font-mono" th:text="${tongDonVi}">477</div>
+            <p class="text-xs text-slate-500">Đã chuẩn hoá từ 5 nguồn sách thuộc 3 trường phái</p>
+        </div>
+
+        <div class="light-card light-card-hover rounded-2xl p-5 border-t-4 border-t-emerald-600 space-y-2">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Độ phủ Số trang Trích dẫn</span>
+                <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200">
+                    <i class="fa-solid fa-book-bookmark text-xs"></i>
+                </span>
+            </div>
+            <div class="text-3xl font-black text-emerald-700 font-mono" th:text="${tyLeSoTrang}">100%</div>
+            <p class="text-xs text-slate-500" th:text="'Có số trang: ' + ${coSoTrang} + ' | Thiếu (tr.?): ' + ${thieuSoTrang}"></p>
+        </div>
+
+        <div class="light-card light-card-hover rounded-2xl p-5 border-t-4 border-t-rose-600 space-y-2">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Hồ sơ Xung đột Tri thức</span>
+                <span class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-200">
+                    <i class="fa-solid fa-scale-unbalanced text-xs"></i>
+                </span>
+            </div>
+            <div class="text-3xl font-black text-rose-700 font-mono" th:text="${tongXungDot}">14</div>
+            <p class="text-xs text-slate-500" th:text="'Đã xử lý: ' + ${xungDotDaXuLy} + ' | Chờ xác minh: ' + ${xungDotChoXacMinh}"></p>
+        </div>
+
+        <div class="light-card light-card-hover rounded-2xl p-5 border-t-4 border-t-purple-600 space-y-2">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Quan hệ &amp; Khái niệm Chuẩn</span>
+                <span class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-200">
+                    <i class="fa-solid fa-diagram-project text-xs"></i>
+                </span>
+            </div>
+            <div class="text-3xl font-black text-purple-800 font-mono" th:text="${tongQuanHe} + ' / ' + ${tongKhaiNiem}">46 / 30</div>
+            <p class="text-xs text-slate-500" th:text="'Công thức thủ tục: ' + ${tongCongThuc}"></p>
+        </div>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 1. Theo trường phái -->
+        <section class="light-card rounded-3xl p-6 space-y-4">
+            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-landmark-dome text-indigo-600"></i>
+                <span>1. Phân bố theo Trường phái (<code>truong_phai</code>)</span>
+            </h3>
+            <div class="overflow-hidden rounded-2xl border border-slate-200">
+                <table class="kms-table">
+                    <thead>
+                    <tr>
+                        <th>Trường phái</th>
+                        <th class="w-32">Số đơn vị</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry : ${theoTruongPhai}">
+                        <td class="font-semibold text-slate-800" th:text="${entry.key}">Pythagoras</td>
+                        <td><strong class="font-mono text-indigo-700 text-sm" th:text="${entry.value}">0</strong></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 2. Theo nguồn sách -->
+        <section class="light-card rounded-3xl p-6 space-y-4">
+            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-book text-amber-600"></i>
+                <span>2. Phân bố theo Nguồn sách (<code>nguon</code>)</span>
+            </h3>
+            <div class="overflow-hidden rounded-2xl border border-slate-200">
+                <table class="kms-table">
+                    <thead>
+                    <tr>
+                        <th>Nguồn sách</th>
+                        <th class="w-32">Số đơn vị</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry : ${theoNguon}">
+                        <td class="font-semibold text-slate-800" th:text="${entry.key}">PHILLIPS</td>
+                        <td><strong class="font-mono text-amber-700 text-sm" th:text="${entry.value}">0</strong></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 3. Theo nhãn sử dụng -->
+        <section class="light-card rounded-3xl p-6 space-y-4">
+            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+                <span>3. Quản trị Chất lượng theo Nhãn sử dụng (<code>nhan_su_dung</code>)</span>
+            </h3>
+            <div class="overflow-hidden rounded-2xl border border-slate-200">
+                <table class="kms-table">
+                    <thead>
+                    <tr>
+                        <th>Nhãn sử dụng &amp; Quy tắc kiểm duyệt</th>
+                        <th class="w-32">Số đơn vị</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry : ${theoNhan}">
+                        <td class="text-xs sm:text-sm text-slate-700" th:text="${entry.key}">DUNG</td>
+                        <td><strong class="font-mono text-emerald-700 text-sm" th:text="${entry.value}">0</strong></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 4. Theo mức tin cậy & trạng thái duyệt -->
+        <section class="light-card rounded-3xl p-6 space-y-4">
+            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-certificate text-purple-600"></i>
+                <span>4. Phân bố theo Mức tin cậy &amp; Trạng thái duyệt</span>
+            </h3>
+            <div class="overflow-hidden rounded-2xl border border-slate-200">
+                <table class="kms-table">
+                    <thead>
+                    <tr>
+                        <th>Mức tin cậy (<code>muc_tin_cay</code>)</th>
+                        <th class="w-32">Số đơn vị</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry : ${theoTinCay}">
+                        <td class="text-xs sm:text-sm text-slate-700" th:text="${entry.key}">CAO</td>
+                        <td><strong class="font-mono text-purple-700 text-sm" th:text="${entry.value}">0</strong></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="overflow-hidden rounded-2xl border border-slate-200">
+                <table class="kms-table">
+                    <thead>
+                    <tr>
+                        <th>Trạng thái duyệt (<code>trang_thai</code>)</th>
+                        <th class="w-32">Số đơn vị</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry : ${theoTrangThai}">
+                        <td class="text-xs sm:text-sm text-slate-700" th:text="${entry.key}">DA_DUYET</td>
+                        <td><strong class="font-mono text-slate-800 text-sm" th:text="${entry.value}">0</strong></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

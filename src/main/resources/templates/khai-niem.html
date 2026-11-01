@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Từ điển Khái niệm, Đồng nghĩa &amp; Công thức')}"></head>
+<body class="min-h-screen flex flex-col">
+
+<header th:replace="~{fragments/layout :: navbar('khai-niem')}"></header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-grow w-full">
+
+    <section class="light-card rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-white via-purple-50/25 to-indigo-50/20">
+        <span class="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-purple-800 mb-2 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200">
+            <i class="fa-solid fa-tags text-xs"></i> Chuẩn Hoá Thuật Ngữ &amp; Tri Thức Thủ Tục (Ontology &amp; Formulas)
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            Từ Điển Khái Niệm Chuẩn, Bảng Đồng Nghĩa &amp; Công Thức
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1.5">
+            Mục 7.1: Ánh xạ các thuật ngữ khác nhau giữa 5 tác giả (Ruling Number, Life Path, Destiny Number, Key Number...) về hệ thống khái niệm chuẩn để đối chiếu.
+        </p>
+    </section>
+
+    <section class="light-card rounded-3xl p-6 space-y-4">
+        <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-book-journal-whills text-purple-600"></i>
+            <span>1. Từ điển Khái niệm Chuẩn (<code>khai_niem</code>) &amp; Thuật ngữ Đồng nghĩa theo Nguồn (<code>dong_nghia</code>)</span>
+        </h3>
+        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="kms-table">
+                <thead>
+                <tr>
+                    <th>Mã khái niệm</th>
+                    <th>Tên khái niệm chuẩn</th>
+                    <th>Nhóm</th>
+                    <th>Mô tả</th>
+                    <th>Các thuật ngữ đồng nghĩa trong từng nguồn sách</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="kn : ${dsKhaiNiem}">
+                    <td>
+                        <a th:href="@{/kho(khaiNiemId=${kn.id})}"
+                           class="font-mono font-bold text-xs text-purple-800 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200 inline-block"
+                           th:text="${kn.ma}">CON_SO_CHU_DAO</a>
+                    </td>
+                    <td><strong class="text-slate-900 text-sm" th:text="${kn.tenChuan}">Con số chủ đạo</strong></td>
+                    <td><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono text-[11px] font-bold" th:text="${kn.nhom}">CHI_SO_COT_LOI</span></td>
+                    <td class="text-xs text-slate-600 leading-relaxed" th:text="${kn.moTa}">Mô tả khái niệm</td>
+                    <td>
+                        <div th:if="${dongNghiaMap.get(kn.id) == null}" class="text-xs text-slate-400 italic">
+                            Khái niệm đặc thù
+                        </div>
+                        <ul th:if="${dongNghiaMap.get(kn.id) != null}" class="space-y-1 text-xs">
+                            <li th:each="dn : ${dongNghiaMap.get(kn.id)}" class="flex flex-wrap items-center gap-1.5">
+                                <strong class="text-slate-800" th:text="${dn.ten}">Ruling Number</strong>
+                                <span class="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 text-[10px] font-bold" th:text="${dn.loai}">DONG_NGHIA</span>
+                                <span th:if="${dn.ghiChu != null}" class="text-slate-500" th:text="'— (' + ${dn.ghiChu} + ')'"></span>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="light-card rounded-3xl p-6 space-y-4">
+        <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-square-root-variable text-indigo-600"></i>
+            <span>2. Danh mục Công thức Tính toán (Tri thức Thủ tục — <code>cong_thuc</code>)</span>
+        </h3>
+        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="kms-table">
+                <thead>
+                <tr>
+                    <th>Mã công thức</th>
+                    <th>Tên công thức</th>
+                    <th>Khái niệm</th>
+                    <th>Trường phái / Nguồn</th>
+                    <th>Mô tả thuật toán &amp; Tập giá trị đích</th>
+                    <th>Trích dẫn</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ct : ${dsCongThuc}">
+                    <td><code class="font-mono font-bold text-xs text-indigo-700 bg-indigo-50 px-2 py-1 rounded border border-indigo-200" th:text="${ct.ma}">CT_QH_CHU_DAO</code></td>
+                    <td><strong class="text-slate-900 text-xs sm:text-sm" th:text="${ct.khaiNiem != null ? ct.khaiNiem.tenChuan : ct.ma}">Công thức Con số chủ đạo</strong></td>
+                    <td class="font-mono text-xs text-slate-600" th:text="${ct.khaiNiem != null ? ct.khaiNiem.ma : '—'}">CON_SO_CHU_DAO</td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${ct.nguon.truongPhai.ma == 'PYTHAGORAS'} ? 'badge-pythagoras' : (${ct.nguon.truongPhai.ma == 'VEDA'} ? 'badge-veda' : 'badge-kabbalah')"
+                              th:text="${ct.nguon.truongPhai.ma} + ' / ' + ${ct.nguon.ma}"></span>
+                    </td>
+                    <td class="space-y-1">
+                        <div class="text-xs text-slate-700 leading-relaxed" th:text="${ct.moTaCacBuoc}">Mô tả</div>
+                        <div class="text-[11px] text-cyan-800 font-medium">
+                            Tập giá trị: <strong class="font-mono" th:text="${ct.tapGiaTri}">2–11, 22/4</strong> |
+                            Hàm xử lý Java: <code class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-900 font-mono" th:text="${ct.maHamJava}">reduceQH</code>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge-citation"
+                              th:text="${ct.nguon.ma} + ', ' + (${ct.chuong != null ? ct.chuong : ''}) + (${ct.trangTu != null ? ', tr.' + ct.trangTu : ', tr.?'})"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>
