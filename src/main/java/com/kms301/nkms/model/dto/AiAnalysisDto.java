@@ -5,7 +5,11 @@ import java.util.Map;
 
 /**
  * DTO chứa kết quả luận giải cá nhân hoá từ AI Analysis Engine (Gemini 3.5 Flash).
- * Đọc Hồ sơ thần số học tổng hợp -> Truy xuất tri thức -> Đối chiếu 3 trường phái -> Diễn giải cá nhân hoá.
+ * Thiết kế theo chuẩn phân tích tâm lý & khai vấn cuộc đời sâu sắc:
+ * - Chân dung tính cách cốt lõi
+ * - Năng lực bẩm sinh & thế mạnh vượt trội
+ * - Điểm mù & mâu thuẫn nội tâm cần gỡ bỏ
+ * - Định hướng phát triển & lời khuyên hành động thực tế
  */
 public class AiAnalysisDto {
 
@@ -60,6 +64,10 @@ public class AiAnalysisDto {
 
     public static class QuestionAiAnalysis {
         private String phanTichTongHop;
+        private String chanDung;         // Bản ngã & chân dung cốt lõi
+        private String theManh;          // Thế mạnh vượt trội & năng khiếu
+        private String vungToi;          // Điểm mù & mâu thuẫn nội tâm
+        private String loiKhuyen;        // Lời khuyên định hướng & hành động
         private String diemDongThuanAI;
         private String diemKhacBietAI;
         private String gocNhinPythagoras;
@@ -75,6 +83,38 @@ public class AiAnalysisDto {
 
         public void setPhanTichTongHop(String phanTichTongHop) {
             this.phanTichTongHop = phanTichTongHop;
+        }
+
+        public String getChanDung() {
+            return chanDung;
+        }
+
+        public void setChanDung(String chanDung) {
+            this.chanDung = chanDung;
+        }
+
+        public String getTheManh() {
+            return theManh;
+        }
+
+        public void setTheManh(String theManh) {
+            this.theManh = theManh;
+        }
+
+        public String getVungToi() {
+            return vungToi;
+        }
+
+        public void setVungToi(String vungToi) {
+            this.vungToi = vungToi;
+        }
+
+        public String getLoiKhuyen() {
+            return loiKhuyen;
+        }
+
+        public void setLoiKhuyen(String loiKhuyen) {
+            this.loiKhuyen = loiKhuyen;
         }
 
         public String getDiemDongThuanAI() {
@@ -118,4 +158,3 @@ public class AiAnalysisDto {
         }
     }
 }
-

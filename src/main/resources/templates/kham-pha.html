@@ -125,57 +125,18 @@
             </span>
         </section>
 
-        <!-- KHUNG KIẾN TRÚC 5 TẦNG & TỔNG QUAN CÁ NHÂN HOÁ BỞI AI ANALYSIS ENGINE (GEMINI 3.5 FLASH) -->
-        <section class="light-card rounded-3xl p-5 sm:p-6 border border-indigo-200 bg-gradient-to-br from-indigo-50/70 via-white to-purple-50/40 space-y-4">
-            <!-- Sơ đồ luồng xử lý 5 bước theo đúng khung chương trình -->
-            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[11px]">
-                <div class="p-2.5 rounded-xl bg-slate-900 text-white flex items-center gap-2">
-                    <span class="w-5 h-5 rounded-lg bg-white/15 flex items-center justify-center font-mono font-bold shrink-0">1</span>
-                    <div class="leading-tight">
-                        <div class="font-bold">Thông tin người dùng</div>
-                        <div class="text-[10px] text-slate-300">Họ tên + Ngày sinh</div>
-                    </div>
-                </div>
-                <div class="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 flex items-center gap-2">
-                    <span class="w-5 h-5 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-mono font-bold shrink-0">2</span>
-                    <div class="leading-tight">
-                        <div class="font-bold">Bộ máy tính toán</div>
-                        <div class="text-[10px] text-slate-500">Pythagoras • Vệ Đà • Kabala</div>
-                    </div>
-                </div>
-                <div class="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 flex items-center gap-2">
-                    <span class="w-5 h-5 rounded-lg bg-cyan-100 text-cyan-700 flex items-center justify-center font-mono font-bold shrink-0">3</span>
-                    <div class="leading-tight">
-                        <div class="font-bold">Hồ sơ tổng hợp</div>
-                        <div class="text-[10px] text-slate-500">Chỉ số, công thức &amp; nguồn</div>
-                    </div>
-                </div>
-                <div class="p-2.5 rounded-xl bg-indigo-950 text-white flex items-center gap-2 shadow-xs">
-                    <span class="w-5 h-5 rounded-lg bg-indigo-500/30 text-indigo-200 flex items-center justify-center font-mono font-bold shrink-0">4</span>
-                    <div class="leading-tight">
-                        <div class="font-bold text-indigo-200">AI Analysis Engine</div>
-                        <div class="text-[10px] text-slate-300">Đọc hồ sơ • Đối chiếu</div>
-                    </div>
-                </div>
-                <div class="col-span-2 sm:col-span-1 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 flex items-center gap-2">
-                    <span class="w-5 h-5 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-mono font-bold shrink-0">5</span>
-                    <div class="leading-tight">
-                        <div class="font-bold">Phân tích cá nhân hoá</div>
-                        <div class="text-[10px] text-emerald-700">Giải đáp 3 câu hỏi</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Hộp Tổng quan Hồ sơ Cá nhân hoá từ Gemini 3.5 Flash -->
-            <div class="p-4 sm:p-5 rounded-2xl bg-white border border-indigo-200/80 shadow-xs space-y-2.5">
+        <!-- KHỐI TỔNG QUAN HỒ SƠ & BỘ CHỈ SỐ CỐT LÕI (AI LIFE COACH + CHIPS NHẤN ĐỂ MỞ LỚP 2) -->
+        <section class="light-card rounded-3xl p-5 sm:p-6 border border-indigo-200/80 bg-gradient-to-br from-white via-indigo-50/20 to-purple-50/30 space-y-4 shadow-sm">
+            <!-- Hộp Tổng quan Khai vấn từ Gemini 3.5 Flash -->
+            <div class="space-y-3">
                 <div class="flex items-center justify-between gap-2 flex-wrap">
                     <div class="flex items-center gap-2">
-                        <span class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1.5">
-                            <i class="fa-solid fa-microchip"></i>
-                            <span>AI Analysis Engine</span>
+                        <span class="px-2.5 py-1 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 shadow-xs">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>AI Life Coach</span>
                         </span>
-                        <h3 class="text-sm sm:text-base font-extrabold text-slate-900">
-                            Bức Tranh Tổng Hợp Cá Nhân Hoá Đa Trường Phái
+                        <h3 class="text-base sm:text-lg font-black text-slate-900">
+                            Bức Tranh Bản Thể Toàn Diện Qua 3 Trường Phái
                         </h3>
                     </div>
                     <div class="flex items-center gap-2">
@@ -184,16 +145,208 @@
                             <span>Đang phân tích bằng Gemini 3.5 Flash...</span>
                         </span>
                         <button type="button" onclick="triggerAiAnalysis(true)"
-                                class="px-3 py-1 rounded-xl bg-slate-100 hover:bg-indigo-100 text-slate-700 hover:text-indigo-800 text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1"
+                                class="px-3 py-1 rounded-xl bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-slate-700 hover:text-indigo-800 text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 shadow-xs"
                                 title="Yêu cầu Gemini 3.5 Flash phân tích lại hồ sơ này">
                             <i class="fa-solid fa-rotate"></i>
                             <span>Phân tích lại</span>
                         </button>
                     </div>
                 </div>
-                <p id="ai-tongquan-hoso" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                    Đang đọc tổ hợp chỉ số từ 3 trường phái (Pythagoras, Vệ Đà, Kabbalah) và truy xuất các đơn vị tri thức từ 5 cuốn sách nguồn để tạo bức tranh phân tích cá nhân hoá dành riêng cho bạn...
+                <p id="ai-tongquan-hoso" class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal bg-white/80 p-4 rounded-2xl border border-indigo-100 shadow-xs">
+                    Đang kết nối AI Analysis Engine (Gemini 3.5 Flash) để đọc tổ hợp năng lượng của bạn và tổng hợp bức tranh phân tích cá nhân hoá ấm áp, sâu sắc...
                 </p>
+            </div>
+
+            <!-- THANH BỘ CHỈ SỐ CỐT LÕI (NHẤN VÀO TỪNG Ô ĐỂ XEM CÔNG THỨC & NGUỒN SÁCH GỐC - LAYER 2) -->
+            <div class="pt-2 border-t border-indigo-100/70 space-y-2">
+                <div class="flex items-center justify-between gap-2 flex-wrap text-xs">
+                    <span class="font-bold text-slate-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-shapes text-indigo-600"></i>
+                        <span>Bộ Chỉ Số Căn Bản:</span>
+                        <span class="text-[11px] text-slate-400 font-normal hidden sm:inline">(Nhấn vào từng chỉ số để mở Lớp 2 xem công thức &amp; sách trích dẫn)</span>
+                    </span>
+                    <span class="text-[10px] text-indigo-600 font-semibold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-150">
+                        <i class="fa-regular fa-hand-pointer mr-1"></i>Bấm để tra cứu
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+                    <!-- 1. Chủ Đạo / Đường Đời -->
+                    <div onclick="inspectKnowledgeCard(this)"
+                         th:attr="
+                            data-title='Con Số Chủ Đạo (QH/Phillips) &amp; Số Đường Đời (Decoz)',
+                            data-kms-tag='CT_QH_CHU_DAO • CT_DECOZ_DUONG_DOI',
+                            data-domain='Trường phái Pythagoras (QH/Phillips &amp; Decoz)',
+                            data-formula='QH/Phillips: reduceQH(tổng chữ số Ngày + Tháng + Năm) → {2..11, 22/4} | Decoz: reduceKeepMaster(rút gọn Ngày + rút gọn Tháng + rút gọn Năm) → {1..9, 11, 22}',
+                            data-steps='• Nhánh QH/Phillips: ' + ${hs.qh.conSoChuDao.steps} + ' (Kết quả: ' + ${hs.qh.conSoChuDao.displayValue} + ') | • Nhánh Mỹ Decoz: ' + ${hs.decoz.soDuongDoi.steps} + ' (Kết quả: ' + ${hs.decoz.soDuongDoi.displayValue} + ')',
+                            data-book='The Complete Book of Numerology &amp; Numerology: Key to Your Inner Self',
+                            data-book-sub='Bản tiếng Việt: Thay Đổi Cuộc Sống Với Nhân Số Học (Lê Đỗ Quỳnh Hương)',
+                            data-author='David A. Phillips (1980/2005), Lê Đỗ Quỳnh Hương &amp; Hans Decoz (1994)',
+                            data-publisher='Hay House / First News / Perigee Books',
+                            data-chapter='Phillips Ch.7 (tr.69–98) • QH Phần 5 (tr.38–124) • Decoz Ch.2 (tr.15–62)',
+                            data-apa='Phillips, D. A. (2005). The Complete Book of Numerology. Hay House.',
+                            data-rationale='Chỉ số quan trọng nhất trả lời câu hỏi Tôi là ai?. Xung đột #1: QH giữ số 10 và không có số 1 chủ đạo; Decoz rút gọn 10 → 1 và giữ Master 11, 22.'
+                         "
+                         class="cursor-pointer group p-2.5 rounded-xl bg-white hover:bg-indigo-50/60 border border-indigo-200/80 hover:border-indigo-400 transition-all text-center shadow-xs">
+                        <div class="text-[9px] font-bold uppercase text-indigo-700">Chủ Đạo</div>
+                        <div class="text-lg font-black text-indigo-900 font-mono" th:text="${hs.qh.conSoChuDao.displayValue}">10</div>
+                        <div class="text-[9px] text-slate-400 font-mono" th:text="'(Decoz: ' + ${hs.decoz.soDuongDoi.displayValue} + ')'"></div>
+                    </div>
+
+                    <!-- 2. Ngày Sinh -->
+                    <div onclick="inspectKnowledgeCard(this)"
+                         th:attr="
+                            data-title='Con Số Ngày Sinh (Day Number)',
+                            data-kms-tag='CT_QH_NGAY_SINH',
+                            data-domain='Trường phái Pythagoras (QH/Phillips)',
+                            data-formula='Ngày 1..11 giữ nguyên; Ngày 22 → 22/4; Các ngày khác cộng chữ số (digitSum)',
+                            data-steps='Ngày sinh của bạn: ' + ${hs.qh.conSoNgaySinh.steps} + ' → Kết quả: ' + ${hs.qh.conSoNgaySinh.displayValue},
+                            data-book='The Complete Book of Numerology &amp; Thay Đổi Cuộc Sống Với Nhân Số Học',
+                            data-book-sub='Phân tích năng lực đặc thù của ngày sinh trong tháng',
+                            data-author='David A. Phillips &amp; Lê Đỗ Quỳnh Hương',
+                            data-publisher='Hay House (2005) / First News',
+                            data-chapter='Phillips Chương 8 (tr.99–114) • Quỳnh Hương Phần 8 (tr.227–246)',
+                            data-apa='Phillips, D. A. (2005). The Complete Book of Numerology (Ch. 8). Hay House.',
+                            data-rationale='Con số ngày sinh bổ sung sắc thái cá tính bẩm sinh cho Con số chủ đạo.'
+                         "
+                         class="cursor-pointer group p-2.5 rounded-xl bg-white hover:bg-indigo-50/60 border border-slate-200 hover:border-indigo-400 transition-all text-center shadow-xs">
+                        <div class="text-[9px] font-bold uppercase text-slate-600">Ngày Sinh</div>
+                        <div class="text-lg font-black text-slate-900 font-mono" th:text="${hs.qh.conSoNgaySinh.displayValue}">4</div>
+                        <div class="text-[9px] text-slate-400 font-mono">Sắc thái</div>
+                    </div>
+
+                    <!-- 3. Linh Hồn -->
+                    <div onclick="inspectKnowledgeCard(this)"
+                         th:attr="
+                            data-title='Số Linh Hồn (QH) &amp; Khát Vọng Tâm Hồn (Decoz)',
+                            data-kms-tag='CT_QH_LINH_HON • CT_DECOZ_KHAT_VONG',
+                            data-domain='Trường phái Pythagoras (Nguyên âm Họ tên)',
+                            data-formula='Tổng giá trị các nguyên âm trong họ tên chuẩn hoá',
+                            data-steps='• QH: ' + ${hs.qh.conSoLinhHon.steps} + ' | • Decoz: ' + ${hs.decoz.khatVongTamHon.steps},
+                            data-book='Thay Đổi Cuộc Sống Với Nhân Số Học &amp; Numerology: Key to Your Inner Self',
+                            data-book-sub='Quy tắc KMS: Coi Y luôn là nguyên âm trong tiếng Việt',
+                            data-author='Lê Đỗ Quỳnh Hương &amp; Hans Decoz (1994)',
+                            data-publisher='First News / Perigee Books',
+                            data-chapter='Quỳnh Hương Phần 12 (tr.285–312) • Decoz Chương 3 (tr.82–101)',
+                            data-apa='Decoz, H., &amp; Monte, T. (1994). Numerology: Key to Your Inner Self. Perigee.',
+                            data-rationale='Phản ánh động lực nội tâm, khao khát tinh thần sâu kín bên trong.'
+                         "
+                         class="cursor-pointer group p-2.5 rounded-xl bg-white hover:bg-indigo-50/60 border border-slate-200 hover:border-indigo-400 transition-all text-center shadow-xs">
+                        <div class="text-[9px] font-bold uppercase text-purple-700">Linh Hồn</div>
+                        <div class="text-lg font-black text-purple-900 font-mono" th:text="${hs.qh.conSoLinhHon.displayValue}">3</div>
+                        <div class="text-[9px] text-slate-400 font-mono">Nội tâm</div>
+                    </div>
+
+                    <!-- 4. Biểu Đạt -->
+                    <div onclick="inspectKnowledgeCard(this)"
+                         th:attr="
+                            data-title='Số Biểu Đạt (QH) &amp; Nhân Cách (Decoz)',
+                            data-kms-tag='CT_QH_BIEU_DAT • CT_DECOZ_NHAN_CACH',
+                            data-domain='Trường phái Pythagoras (Phụ âm Họ tên)',
+                            data-formula='Tổng giá trị các phụ âm trong họ tên chuẩn hoá',
+                            data-steps='• Biểu đạt (QH): ' + ${hs.qh.conSoBieuDat.steps} + ' | • Nhân cách (Decoz): ' + ${hs.decoz.nhanCach.steps},
+                            data-book='Thay Đổi Cuộc Sống Với Nhân Số Học &amp; Numerology',
+                            data-book-sub='Xung đột #3: Biểu đạt QH tương ứng Nhân cách Decoz',
+                            data-author='Lê Đỗ Quỳnh Hương &amp; Hans Decoz',
+                            data-publisher='First News / Perigee',
+                            data-chapter='Quỳnh Hương Phần 12 • Decoz Chương 3',
+                            data-apa='Decoz, H., &amp; Monte, T. (1994). Numerology.',
+                            data-rationale='Phản ánh phong cách biểu đạt ra bên ngoài và năng lực hành động xã hội.'
+                         "
+                         class="cursor-pointer group p-2.5 rounded-xl bg-white hover:bg-indigo-50/60 border border-slate-200 hover:border-indigo-400 transition-all text-center shadow-xs">
+                        <div class="text-[9px] font-bold uppercase text-cyan-700">Biểu Đạt</div>
+                        <div class="text-lg font-black text-cyan-900 font-mono" th:text="${hs.qh.conSoBieuDat.displayValue}">5</div>
+                        <div class="text-[9px] text-slate-400 font-mono">Hành vi</div>
+                    </div>
+
+                    <!-- 5. Tâm Hồn Vệ Đà -->
+                    <div onclick="inspectKnowledgeCard(this)"
+                         th:attr="
+                            data-title='Số Tâm Hồn — Psychic Number (Harish Johari)',
+                            data-kms-tag='CT_JOHARI_TAM_HON',
+                            data-domain='Trường phái Ấn Độ / Vệ Đà (Harish Johari)',
+                            data-formula='PsychicNumber = reduceTo9(Ngày sinh trong tháng) → {1..9}',
+                            data-steps='Ngày sinh: ' + ${hs.johari.soTamHon.steps} + ' → Số tâm hồn: ' + ${hs.johari.soTamHon.displayValue} + ' • Hành tinh: ' + ${hs.johari.hanhTinhTamHon},
+                            data-book='Numerology: With Tantra, Ayurveda, and Astrology',
+                            data-book-sub='Chương 1: Psychic Number — Chỉ số tự nhận thức bản thân',
+                            data-author='Harish Johari (1990/2012)',
+                            data-publisher='Destiny Books',
+                            data-chapter='Chương 1 (§1, tr.7–9) &amp; Chương 3–11 (tr.27–168)',
+                            data-apa='Johari, H. (1990). Numerology. Destiny Books.',
+                            data-rationale='Cách cá nhân tự nhìn nhận mình theo truyền thống Vệ Đà.'
+                         "
+                         class="cursor-pointer group p-2.5 rounded-xl bg-white hover:bg-amber-50/60 border border-amber-200/80 hover:border-amber-400 transition-all text-center shadow-xs">
+                        <div class="text-[9px] font-bold uppercase text-amber-700">Tâm Hồn (Vệ Đà)</div>
+                        <div class="text-lg font-black text-amber-900 font-mono" th:text="${hs.johari.soTamHon.displayValue}">4</div>
+                        <div class="text-[9px] text-amber-700 font-semibold truncate" th:text="${hs.johari.hanhTinhTamHon}">Rahu</div>
+                    </div>
+
+                    <!-- 6. Định Mệnh Vệ Đà -->
+                    <div onclick="inspectKnowledgeCard(this)"
+                         th:attr="
+                            data-title='Số Định Mệnh — Destiny Number (Harish Johari)',
+                            data-kms-tag='CT_JOHARI_DINH_MENH',
+                            data-domain='Trường phái Ấn Độ / Vệ Đà (Harish Johari)',
+                            data-formula='DestinyNumber = reduceTo9(tổng chữ số Ngày + Tháng + Năm) → {1..9}',
+                            data-steps='Ngày tháng năm sinh: ' + ${hs.johari.soDinhMenh.steps} + ' → Số định mệnh: ' + ${hs.johari.soDinhMenh.displayValue} + ' • Hành tinh: ' + ${hs.johari.hanhTinhDinhMenh},
+                            data-book='Numerology: With Tantra, Ayurveda, and Astrology',
+                            data-book-sub='Xung đột #1 &amp; #2: Johari luôn rút về 1–9',
+                            data-author='Harish Johari (1990/2012)',
+                            data-publisher='Destiny Books',
+                            data-chapter='Chương 1 (§1, tr.9–10) &amp; Chương 3–11',
+                            data-apa='Johari, H. (1990). Numerology. Destiny Books.',
+                            data-rationale='Phản ánh thế giới quan và nghiệp quả tích luỹ (rõ sau tuổi 35).'
+                         "
+                         class="cursor-pointer group p-2.5 rounded-xl bg-white hover:bg-amber-50/60 border border-amber-200/80 hover:border-amber-400 transition-all text-center shadow-xs">
+                        <div class="text-[9px] font-bold uppercase text-orange-700">Định Mệnh (Vệ Đà)</div>
+                        <div class="text-lg font-black text-orange-900 font-mono" th:text="${hs.johari.soDinhMenh.displayValue}">1</div>
+                        <div class="text-[9px] text-orange-700 font-semibold truncate" th:text="${hs.johari.hanhTinhDinhMenh}">Mặt Trời</div>
+                    </div>
+
+                    <!-- 7. Chìa Khóa Kabbalah -->
+                    <div onclick="inspectKnowledgeCard(this)"
+                         th:attr="
+                            data-title='Số Chìa Khoá — Key Number (Sepharial)',
+                            data-kms-tag='CT_SEPHARIAL_CHIA_KHOA • XD-12',
+                            data-domain='Trường phái Kabbalah / Chaldean (Sepharial 1911)',
+                            data-formula='Ch.IV (tr.43): reduceTo9(Ngày + Tháng + 2 chữ số cuối của Năm)',
+                            data-steps='• Quy tắc Ch.IV: ' + ${hs.sepharial.soChiaKhoa.steps} + ' (Kết quả: ' + ${hs.sepharial.soChiaKhoa.displayValue} + ') • Hành tinh: ' + ${hs.sepharial.hanhTinhChinh},
+                            data-book='The Kabala of Numbers (Part I)',
+                            data-book-sub='Tác phẩm kinh điển (Public Domain, 1911)',
+                            data-author='Sepharial (1911)',
+                            data-publisher='William Rider &amp; Son, London',
+                            data-chapter='Chương IV (tr.43) &amp; Chương XIV (tr.138–142)',
+                            data-apa='Sepharial. (1911). The Kabala of Numbers. London.',
+                            data-rationale='Quy tắc bỏ 2 số thế kỷ khi tính theo Sepharial.'
+                         "
+                         class="cursor-pointer group p-2.5 rounded-xl bg-white hover:bg-purple-50/60 border border-purple-200/80 hover:border-purple-400 transition-all text-center shadow-xs">
+                        <div class="text-[9px] font-bold uppercase text-purple-700">Kabbalah</div>
+                        <div class="text-lg font-black text-purple-900 font-mono" th:text="${hs.sepharial.soChiaKhoa.displayValue}">9</div>
+                        <div class="text-[9px] text-purple-700 font-semibold truncate" th:text="${hs.sepharial.hanhTinhChinh}">Sao Hoả</div>
+                    </div>
+
+                    <!-- 8. Năm Cá Nhân 2026 -->
+                    <div onclick="inspectKnowledgeCard(this)"
+                         th:attr="
+                            data-title='Năm Cá Nhân Hiện Tại (' + ${hs.namHienTai} + ')',
+                            data-kms-tag='CT_QH_NAM_CA_NHAN',
+                            data-domain='Trường phái Pythagoras (Chu kỳ 9 năm)',
+                            data-formula='Năm cá nhân = reduceTo9(Ngày sinh + Tháng sinh + Năm hiện tại)',
+                            data-steps='• Năm cá nhân ' + ${hs.namHienTai} + ': ' + ${hs.qh.namCaNhan.steps},
+                            data-book='The Complete Book of Numerology &amp; Thay Đổi Cuộc Sống Với Nhân Số Học',
+                            data-book-sub='Mô hình chu kỳ 9 năm (9-Year Epicycle)',
+                            data-author='David A. Phillips &amp; Lê Đỗ Quỳnh Hương',
+                            data-publisher='Hay House / First News',
+                            data-chapter='Phillips Chương 9 • Quỳnh Hương Phần 10',
+                            data-apa='Phillips, D. A. (2005). The Complete Book of Numerology.',
+                            data-rationale='Cho biết nhịp năng lượng thời vận hiện tại của bạn.'
+                         "
+                         class="cursor-pointer group p-2.5 rounded-xl bg-white hover:bg-emerald-50/60 border border-emerald-200/80 hover:border-emerald-400 transition-all text-center shadow-xs">
+                        <div class="text-[9px] font-bold uppercase text-emerald-700">Năm <span th:text="${hs.namHienTai}">2026</span></div>
+                        <div class="text-lg font-black text-emerald-900 font-mono" th:text="${hs.qh.namCaNhan.displayValue}">5</div>
+                        <div class="text-[9px] text-slate-400 font-mono">Thời vận</div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -228,29 +381,40 @@
 
         <!-- ===================================================================
              TAB CÂU HỎI 1: TÔI LÀ AI?
-             (Phần trên: Chỉ số Bản thể & Biểu đồ bẩm sinh • Phần dưới: Lời giải)
              =================================================================== -->
         <section id="pane-AI" class="question-pane active space-y-6">
 
-            <!-- PHẦN 1A: CÁC CHỈ SỐ LIÊN QUAN TỚI "TÔI LÀ AI?" (NHẤN ĐỂ MỞ LỚP 2) -->
-            <div class="light-card rounded-3xl p-5 sm:p-6 border-l-4 border-l-cyan-600 space-y-5">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                    <div>
-                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-cyan-700 block">
-                            Câu hỏi 01 • Các chỉ số định danh bản thể
-                        </span>
-                        <h3 class="text-lg sm:text-xl font-extrabold text-slate-900">
-                            Tôi Là Ai? — Các Thông Số Căn Tính Theo 3 Trường Phái
-                        </h3>
-                    </div>
-                    <span class="text-xs text-slate-500 flex items-center gap-1.5">
-                        <i class="fa-solid fa-circle-nodes text-cyan-600"></i>
-                        <span>Nhấn vào từng ô chỉ số để xem công thức &amp; sách gốc</span>
-                    </span>
-                </div>
+            <!-- 1. LỜI GIẢI CÁ NHÂN HOÁ TRỌNG TÂM CÂU HỎI 1 (AI LIFE COACH) -->
+            <div th:replace="~{fragments/layout :: questionSection(${ketQua.getCauHoi('AI')}, ${hs}, false, false)}"></div>
 
-                <!-- Lưới 3 trường phái cho các chỉ số của Câu hỏi 1 -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <!-- 2. BẢNG THÔNG SỐ KỸ THUẬT & BIỂU ĐỒ BẢN THỂ (ACCORDION THU GỌN) -->
+            <details class="group rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs transition-all">
+                <summary class="cursor-pointer list-none flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-slate-800 font-bold select-none">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center font-bold text-sm border border-cyan-200">
+                            <i class="fa-solid fa-calculator"></i>
+                        </span>
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider text-cyan-700 font-extrabold block">Bảng Kỹ Thuật Lớp 1</span>
+                            <span class="text-sm sm:text-base font-extrabold text-slate-900">Chi Tiết Các Chỉ Số &amp; Biểu Đồ Bản Thể (Pythagoras • Vệ Đà • Kabbalah)</span>
+                        </div>
+                    </div>
+                    <span class="px-3.5 py-1.5 rounded-xl bg-slate-100 group-open:bg-cyan-600 group-open:text-white text-xs font-bold transition-all flex items-center gap-1.5 self-end sm:self-auto shadow-xs">
+                        <span class="group-open:hidden">Mở rộng bảng thông số <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i></span>
+                        <span class="hidden group-open:inline">Thu gọn <i class="fa-solid fa-chevron-up text-[10px] ml-1"></i></span>
+                    </span>
+                </summary>
+
+                <div class="mt-5 pt-5 border-t border-slate-100 space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <span class="text-xs text-slate-500 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-nodes text-cyan-600"></i>
+                            <span>Nhấn vào từng ô chỉ số để xem công thức toán học &amp; sách trích dẫn (Layer 2)</span>
+                        </span>
+                    </div>
+
+                    <!-- Lưới 3 trường phái cho các chỉ số của Câu hỏi 1 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
                     <!-- Chỉ số Câu 1 - Trường phái 1: Pythagoras -->
                     <div class="p-4 rounded-2xl bg-indigo-50/40 border border-indigo-200/80 space-y-3">
@@ -604,38 +768,45 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </div>
-
-            <!-- PHẦN 1B: LỜI GIẢI CHO CÂU HỎI "TÔI LÀ AI?" -->
-            <div th:replace="~{fragments/layout :: questionSection(${ketQua.getCauHoi('AI')}, ${hs}, false, false)}"></div>
+            </details>
         </section>
 
         <!-- ===================================================================
              TAB CÂU HỎI 2: TÔI ĐANG GẶP GÌ?
-             (Phần trên: Chỉ số Chu kỳ, Đỉnh đời & Điểm nghẽn • Phần dưới: Lời giải)
              =================================================================== -->
         <section id="pane-GAP_GI" class="question-pane space-y-6">
 
-            <!-- PHẦN 2A: CÁC CHỈ SỐ LIÊN QUAN TỚI "TÔI ĐANG GẶP GÌ?" (NHẤN ĐỂ MỞ LỚP 2) -->
-            <div class="light-card rounded-3xl p-5 sm:p-6 border-l-4 border-l-amber-500 space-y-5">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                    <div>
-                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-700 block">
-                            Câu hỏi 02 • Các chỉ số chu kỳ thời vận &amp; điểm nghẽn hiện tại
-                        </span>
-                        <h3 class="text-lg sm:text-xl font-extrabold text-slate-900">
-                            Tôi Đang Gặp Gì? — Thông Số Chu Kỳ Năm <span th:text="${hs.namHienTai}">2026</span> &amp; Thách Thức
-                        </h3>
-                    </div>
-                    <span class="text-xs text-slate-500 flex items-center gap-1.5">
-                        <i class="fa-solid fa-circle-nodes text-amber-600"></i>
-                        <span>Nhấn vào từng ô chỉ số để xem công thức &amp; sách gốc</span>
-                    </span>
-                </div>
+            <!-- 1. LỜI GIẢI CÁ NHÂN HOÁ TRỌNG TÂM CÂU HỎI 2 (AI LIFE COACH) -->
+            <div th:replace="~{fragments/layout :: questionSection(${ketQua.getCauHoi('GAP_GI')}, ${hs}, false, true)}"></div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <!-- 2. BẢNG THÔNG SỐ KỸ THUẬT & CHU KỲ NĂM (ACCORDION THU GỌN) -->
+            <details class="group rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs transition-all">
+                <summary class="cursor-pointer list-none flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-slate-800 font-bold select-none">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-sm border border-amber-200">
+                            <i class="fa-solid fa-compass"></i>
+                        </span>
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider text-amber-700 font-extrabold block">Bảng Kỹ Thuật Lớp 1</span>
+                            <span class="text-sm sm:text-base font-extrabold text-slate-900">Chi Tiết Thông Số Chu Kỳ Năm <span th:text="${hs.namHienTai}">2026</span>, Kim Tự Tháp &amp; Điểm Nghẽn</span>
+                        </div>
+                    </div>
+                    <span class="px-3.5 py-1.5 rounded-xl bg-slate-100 group-open:bg-amber-600 group-open:text-white text-xs font-bold transition-all flex items-center gap-1.5 self-end sm:self-auto shadow-xs">
+                        <span class="group-open:hidden">Mở rộng bảng thông số <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i></span>
+                        <span class="hidden group-open:inline">Thu gọn <i class="fa-solid fa-chevron-up text-[10px] ml-1"></i></span>
+                    </span>
+                </summary>
+
+                <div class="mt-5 pt-5 border-t border-slate-100 space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <span class="text-xs text-slate-500 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-nodes text-amber-600"></i>
+                            <span>Nhấn vào từng ô chỉ số để xem công thức toán học &amp; sách trích dẫn (Layer 2)</span>
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
                     <!-- Chỉ số Câu 2 - Trường phái 1: Pythagoras -->
                     <div class="p-4 rounded-2xl bg-indigo-50/40 border border-indigo-200/80 space-y-3">
@@ -840,38 +1011,45 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </div>
-
-            <!-- PHẦN 2B: LỜI GIẢI CHO CÂU HỎI "TÔI ĐANG GẶP GÌ?" -->
-            <div th:replace="~{fragments/layout :: questionSection(${ketQua.getCauHoi('GAP_GI')}, ${hs}, false, true)}"></div>
+            </details>
         </section>
 
         <!-- ===================================================================
              TAB CÂU HỎI 3: TÔI NÊN ĐI THẾ NÀO?
-             (Phần trên: Chỉ số Định hướng, Phá thế & Cân bằng • Phần dưới: Lời giải)
              =================================================================== -->
         <section id="pane-DI_THE_NAO" class="question-pane space-y-6">
 
-            <!-- PHẦN 3A: CÁC CHỈ SỐ LIÊN QUAN TỚI "TÔI NÊN ĐI THẾ NÀO?" (NHẤN ĐỂ MỞ LỚP 2) -->
-            <div class="light-card rounded-3xl p-5 sm:p-6 border-l-4 border-l-emerald-600 space-y-5">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                    <div>
-                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 block">
-                            Câu hỏi 03 • Các chỉ số định hướng hành động, nghề nghiệp &amp; rèn luyện bù đắp
-                        </span>
-                        <h3 class="text-lg sm:text-xl font-extrabold text-slate-900">
-                            Tôi Nên Đi Thế Nào? — Thông Số Chuyển Hoá &amp; Bù Đắp Theo 3 Trường Phái
-                        </h3>
-                    </div>
-                    <span class="text-xs text-slate-500 flex items-center gap-1.5">
-                        <i class="fa-solid fa-circle-nodes text-emerald-600"></i>
-                        <span>Nhấn vào từng ô chỉ số để xem công thức &amp; sách gốc</span>
-                    </span>
-                </div>
+            <!-- 1. LỜI GIẢI CÁ NHÂN HOÁ TRỌNG TÂM CÂU HỎI 3 (AI LIFE COACH) -->
+            <div th:replace="~{fragments/layout :: questionSection(${ketQua.getCauHoi('DI_THE_NAO')}, ${hs}, true, false)}"></div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <!-- 2. BẢNG THÔNG SỐ KỸ THUẬT & CHUYỂN HOÁ (ACCORDION THU GỌN) -->
+            <details class="group rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs transition-all">
+                <summary class="cursor-pointer list-none flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-slate-800 font-bold select-none">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-sm border border-emerald-200">
+                            <i class="fa-solid fa-route"></i>
+                        </span>
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider text-emerald-700 font-extrabold block">Bảng Kỹ Thuật Lớp 1</span>
+                            <span class="text-sm sm:text-base font-extrabold text-slate-900">Chi Tiết Thông Số Bù Đắp Họ Tên, Tương Quan Hành Tinh &amp; Ma Phương</span>
+                        </div>
+                    </div>
+                    <span class="px-3.5 py-1.5 rounded-xl bg-slate-100 group-open:bg-emerald-600 group-open:text-white text-xs font-bold transition-all flex items-center gap-1.5 self-end sm:self-auto shadow-xs">
+                        <span class="group-open:hidden">Mở rộng bảng thông số <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i></span>
+                        <span class="hidden group-open:inline">Thu gọn <i class="fa-solid fa-chevron-up text-[10px] ml-1"></i></span>
+                    </span>
+                </summary>
+
+                <div class="mt-5 pt-5 border-t border-slate-100 space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <span class="text-xs text-slate-500 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-nodes text-emerald-600"></i>
+                            <span>Nhấn vào từng ô chỉ số để xem công thức toán học &amp; sách trích dẫn (Layer 2)</span>
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
                     <!-- Chỉ số Câu 3 - Trường phái 1: Pythagoras (Bù đắp biểu đồ tên & Định hướng) -->
                     <div class="p-4 rounded-2xl bg-indigo-50/40 border border-indigo-200/80 space-y-3">
@@ -1062,12 +1240,8 @@
                             <i class="fa-solid fa-circle-info text-purple-400 group-hover:text-purple-600"></i>
                         </div>
                     </div>
-
                 </div>
-            </div>
-
-            <!-- PHẦN 3B: LỜI GIẢI CHO CÂU HỎI "TÔI NÊN ĐI THẾ NÀO?" -->
-            <div th:replace="~{fragments/layout :: questionSection(${ketQua.getCauHoi('DI_THE_NAO')}, ${hs}, true, false)}"></div>
+            </details>
         </section>
 
     </div>
@@ -1357,6 +1531,10 @@
                 };
 
                 setTxt('ai-tonghop-', qData.phanTichTongHop);
+                setTxt('ai-chandung-', qData.chanDung);
+                setTxt('ai-themanh-', qData.theManh);
+                setTxt('ai-vungtoi-', qData.vungToi);
+                setTxt('ai-loikhuyen-', qData.loiKhuyen);
                 setTxt('ai-dongthuan-', qData.diemDongThuanAI);
                 setTxt('ai-khacbiet-', qData.diemKhacBietAI);
                 setTxt('ai-pythagoras-', qData.gocNhinPythagoras);

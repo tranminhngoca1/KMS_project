@@ -179,116 +179,240 @@
      ===================================================================== -->
 <div th:fragment="questionSection(qResult, hoSoSo, showCulturalBlock, showKabbalahGapGiNote)" class="space-y-6">
 
-    <!-- 0. KHỐI LUẬN GIẢI CÁ NHÂN HOÁ TRỌNG TÂM TỪ AI ANALYSIS ENGINE (GEMINI 3.5 FLASH) -->
-    <div class="light-card rounded-3xl p-5 sm:p-6 border-t-4 border-t-indigo-600 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white shadow-lg space-y-3">
-        <div class="flex items-center justify-between gap-2 flex-wrap">
-            <div class="flex items-center gap-2.5">
-                <span class="w-8 h-8 rounded-xl bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 flex items-center justify-center">
-                    <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+    <!-- ===================================================================
+         0. HERO SECTION: KHAI VẤN BẢN THỂ CÁ NHÂN HÓA (GEMINI 3.5 FLASH)
+         Lời văn ấm áp, sâu sắc, tâm lý, mang phong cách Chuyên gia Khai vấn Cuộc đời
+         =================================================================== -->
+    <div class="light-card rounded-3xl p-6 sm:p-8 border border-indigo-200/90 bg-gradient-to-br from-white via-indigo-50/25 to-purple-50/30 shadow-md space-y-6">
+        <!-- Tiêu đề & Trạng thái AI -->
+        <div class="flex items-center justify-between gap-3 flex-wrap border-b border-indigo-100 pb-4">
+            <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 shadow-xs">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>AI Life Coach</span>
+                    </span>
+                    <span class="text-xs text-indigo-700 font-bold uppercase tracking-wider">
+                        Phân Tích Tâm Lý &amp; Khai Vấn Độc Bản
+                    </span>
+                </div>
+                <h4 class="text-xl sm:text-2xl font-black text-slate-900 leading-snug"
+                    th:text="${qResult.tenCauHoi}">
+                    Giải Đáp Cá Nhân Hoá
+                </h4>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="ai-status-pill px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold flex items-center gap-1.5 shadow-xs">
+                    <i class="fa-solid fa-circle-notch fa-spin text-[11px] text-emerald-600 ai-spinner"></i>
+                    <span class="ai-status-label">Đang nạp luận giải cá nhân hoá...</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- 4 Trụ Cột Luận Giải Sâu Sắc Dành Cho Người Dùng (Grid 2x2) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+            <!-- Trụ 1: Chân dung & Bản ngã cốt lõi -->
+            <div class="p-5 rounded-2xl bg-white border border-indigo-100 hover:border-indigo-300 shadow-xs hover:shadow-sm transition-all space-y-2.5">
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-fingerprint"></i>
+                        </span>
+                        <h5 class="text-sm font-extrabold text-indigo-950">Bản Ngã Cốt Lõi &amp; Chân Dung Tâm Lý</h5>
+                    </div>
+                    <span class="text-[10px] uppercase font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Cốt lõi</span>
+                </div>
+                <p th:id="'ai-chandung-' + ${qResult.maCauHoi}"
+                   class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
+                    Đang thấu cảm chân dung tâm lý và bản ngã cốt lõi của bạn...
+                </p>
+            </div>
+
+            <!-- Trụ 2: Thế mạnh vượt trội & Năng lực bẩm sinh -->
+            <div class="p-5 rounded-2xl bg-white border border-emerald-100 hover:border-emerald-300 shadow-xs hover:shadow-sm transition-all space-y-2.5">
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-gem"></i>
+                        </span>
+                        <h5 class="text-sm font-extrabold text-emerald-950">Thế Mạnh Vượt Trội &amp; Năng Lực Bẩm Sinh</h5>
+                    </div>
+                    <span class="text-[10px] uppercase font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Thế mạnh</span>
+                </div>
+                <p th:id="'ai-themanh-' + ${qResult.maCauHoi}"
+                   class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
+                    Đang nhận diện các thế mạnh và tài năng thiên bẩm của bạn...
+                </p>
+            </div>
+
+            <!-- Trụ 3: Điểm mù & Mâu thuẫn nội tâm -->
+            <div class="p-5 rounded-2xl bg-white border border-rose-100 hover:border-rose-300 shadow-xs hover:shadow-sm transition-all space-y-2.5">
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </span>
+                        <h5 class="text-sm font-extrabold text-rose-950">Điểm Mù &amp; Mâu Thuẫn Cần Gỡ Bỏ</h5>
+                    </div>
+                    <span class="text-[10px] uppercase font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">Thấu suốt</span>
+                </div>
+                <p th:id="'ai-vungtoi-' + ${qResult.maCauHoi}"
+                   class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
+                    Đang soi chiếu các điểm mù vô thức và xung đột nội tâm cần chuyển hoá...
+                </p>
+            </div>
+
+            <!-- Trụ 4: Lời khuyên định hướng & Hành động thực tế -->
+            <div class="p-5 rounded-2xl bg-white border border-cyan-100 hover:border-cyan-300 shadow-xs hover:shadow-sm transition-all space-y-2.5">
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-compass"></i>
+                        </span>
+                        <h5 class="text-sm font-extrabold text-cyan-950">Định Hướng Hành Động &amp; Lời Khuyên Khai Vấn</h5>
+                    </div>
+                    <span class="text-[10px] uppercase font-bold text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded">Hành động</span>
+                </div>
+                <p th:id="'ai-loikhuyen-' + ${qResult.maCauHoi}"
+                   class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
+                    Đang đúc kết lời khuyên và chiến lược phát triển cá nhân hoá dành cho bạn...
+                </p>
+            </div>
+        </div>
+
+        <!-- Thông Điệp Khai Vấn Dành Riêng Cho Bạn -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/50 to-indigo-50/90 border border-indigo-200/80 space-y-2">
+            <div class="flex items-center gap-2 text-indigo-900 font-extrabold text-xs uppercase tracking-wider">
+                <i class="fa-solid fa-feather-pointed text-indigo-600"></i>
+                <span>Thông Điệp Khai Vấn Dành Riêng Cho Bạn</span>
+            </div>
+            <p th:id="'ai-tonghop-' + ${qResult.maCauHoi}"
+               class="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
+                Đang kết nối AI Analysis Engine (Gemini 3.5 Flash) để viết thông điệp khai vấn độc bản cho bạn...
+            </p>
+        </div>
+    </div>
+
+    <!-- ===================================================================
+         GÓC CHUYÊN SÂU HỌC THUẬT: ĐỐI CHIẾU 3 TRƯỜNG PHÁI & QUẢN TRỊ XUNG ĐỘT (KMS301)
+         Tổ chức dưới dạng Accordion đóng/mở (<details>):
+         - Giữ nguyên vẹn 100% CSDL tri thức, nguồn sách trích dẫn, 14 mã xung đột (XD-01..14) cho Giảng viên & Hội đồng chấm điểm
+         - Người dùng phổ thông không bị rối mắt hoặc ngộp thông tin học thuật
+         =================================================================== -->
+    <details class="group rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs transition-all">
+        <summary class="cursor-pointer list-none flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-slate-800 select-none">
+            <div class="flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0 border border-indigo-200">
+                    <i class="fa-solid fa-microscope text-base"></i>
                 </span>
                 <div>
-                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-300 block">
-                        AI Analysis Engine • Gemini 3.5 Flash
-                    </span>
-                    <h4 class="text-sm sm:text-base font-extrabold text-white"
-                        th:text="'Giải Đáp Cá Nhân Hoá: ' + ${qResult.tenCauHoi}">
-                        Giải Đáp Cá Nhân Hoá
-                    </h4>
-                </div>
-            </div>
-            <span class="ai-status-pill px-2.5 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 text-[11px] font-semibold flex items-center gap-1.5">
-                <i class="fa-solid fa-circle-notch fa-spin text-[10px] ai-spinner"></i>
-                <span class="ai-status-label">Đang đọc hồ sơ &amp; tổng hợp tri thức...</span>
-            </span>
-        </div>
-        <p th:id="'ai-tonghop-' + ${qResult.maCauHoi}"
-           class="text-xs sm:text-sm text-slate-200 leading-relaxed bg-white/5 border border-white/10 rounded-2xl p-4">
-            Đang kết nối AI Analysis Engine (Gemini 3.5 Flash) để phân tích sự giao thoa độc bản giữa các chỉ số của bạn trên cả 3 trường phái...
-        </p>
-    </div>
-
-    <!-- 1. TỔNG HỢP ĐỐI CHIẾU: ĐỒNG THUẬN ĐỨNG TRƯỚC, KHÁC BIỆT ĐỨNG SAU -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <!-- 1A. CÁC TRƯỜNG PHÁI ĐỒNG Ý (ĐỨNG TRƯỚC) -->
-        <div class="light-card rounded-3xl p-5 border-t-4 border-t-emerald-600 bg-gradient-to-br from-emerald-50/50 via-white to-white space-y-3">
-            <div class="flex items-center justify-between gap-2 flex-wrap">
-                <h4 class="text-sm sm:text-base font-extrabold text-emerald-900 flex items-center gap-2">
-                    <span class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center border border-emerald-200">
-                        <i class="fa-solid fa-handshake-simple text-xs"></i>
-                    </span>
-                    <span>Các trường phái đồng ý</span>
-                </h4>
-                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold"
-                      th:text="${qResult.dongThuan.size()} + ' điểm chung CSDL'">0 điểm</span>
-            </div>
-
-            <!-- Tổng hợp đồng thuận từ AI -->
-            <div class="p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-200/90 text-xs sm:text-sm text-emerald-950 space-y-1">
-                <div class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
-                    <i class="fa-solid fa-sparkles text-[10px]"></i>
-                    <span>Đối chiếu giao thoa (AI Analysis Engine):</span>
-                </div>
-                <p th:id="'ai-dongthuan-' + ${qResult.maCauHoi}" class="leading-relaxed text-slate-700">
-                    Đang đối chiếu điểm giao thoa giữa Pythagoras, Vệ Đà và Kabbalah trên hồ sơ của bạn...
-                </p>
-            </div>
-
-            <ul th:if="${!qResult.dongThuan.isEmpty()}" class="space-y-2.5">
-                <li th:each="cItem : ${qResult.dongThuan}" class="p-3.5 rounded-2xl bg-white border border-emerald-200/80 shadow-xs space-y-1.5">
-                    <div class="text-xs sm:text-sm font-bold text-emerald-950 leading-snug" th:text="${cItem.cauTomTat}">Tóm tắt đồng thuận</div>
-                    <div class="flex flex-wrap items-center gap-1.5 pt-1">
-                        <span class="text-[11px] text-slate-500">Nguồn đối chiếu:</span>
-                        <a th:each="ev : ${cItem.danChung}"
-                           th:href="@{/kho/{id}(id=${ev.donVi.id})}"
-                           class="badge-citation text-[11px]"
-                           th:text="${ev.donVi.nguon.ma} + ' (' + ${ev.chiSoKichHoat} + ')'">PHILLIPS</a>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                            Học phần KMS301
+                        </span>
+                        <span class="text-xs text-slate-500 font-semibold hidden sm:inline">CSDL Tri Thức &amp; Quản Trị Đa Trường Phái</span>
                     </div>
-                </li>
-            </ul>
-        </div>
-
-        <!-- 1B. CÁC TRƯỜNG PHÁI KHÁC NHAU Ở... (ĐỨNG SAU) -->
-        <div class="light-card rounded-3xl p-5 border-t-4 border-t-rose-600 bg-gradient-to-br from-rose-50/50 via-white to-white space-y-3">
-            <div class="flex items-center justify-between gap-2 flex-wrap">
-                <h4 class="text-sm sm:text-base font-extrabold text-rose-900 flex items-center gap-2">
-                    <span class="w-7 h-7 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center border border-rose-200">
-                        <i class="fa-solid fa-scale-unbalanced text-xs"></i>
-                    </span>
-                    <span>Các trường phái khác nhau ở…</span>
-                </h4>
-                <span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold"
-                      th:text="${qResult.khacBiet.size()} + ' điểm khác biệt CSDL'">0 điểm</span>
-            </div>
-
-            <!-- Tổng hợp khác biệt từ AI -->
-            <div class="p-3.5 rounded-2xl bg-rose-50/90 border border-rose-200/90 text-xs sm:text-sm text-rose-950 space-y-1">
-                <div class="text-[11px] font-extrabold uppercase tracking-wider text-rose-700 flex items-center gap-1.5">
-                    <i class="fa-solid fa-code-compare text-[10px]"></i>
-                    <span>Phân tích góc nhìn khác biệt &amp; bổ khuyết (AI):</span>
+                    <h5 class="text-sm sm:text-base font-extrabold text-slate-900 leading-snug">
+                        🔬 Góc Chuyên Sâu Học Thuật: Đối Chiếu 3 Trường Phái &amp; Quản Trị Xung Đột Tri Thức
+                    </h5>
                 </div>
-                <p th:id="'ai-khacbiet-' + ${qResult.maCauHoi}" class="leading-relaxed text-slate-700">
-                    Đang phân tích sự khác biệt giữa 3 trường phái trên tổ hợp số của bạn...
-                </p>
             </div>
 
-            <ul th:if="${!qResult.khacBiet.isEmpty()}" class="space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
-                <li th:each="dItem : ${qResult.khacBiet}" class="p-3.5 rounded-2xl bg-white border border-rose-200/80 shadow-xs space-y-1.5">
+            <div class="flex items-center gap-2 self-end sm:self-auto">
+                <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-[11px] font-medium hidden md:inline">
+                    Dành cho Giảng viên &amp; Thẩm định
+                </span>
+                <span class="px-3.5 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 group-open:bg-indigo-600 group-open:text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs">
+                    <span class="group-open:hidden">Mở rộng góc học thuật <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i></span>
+                    <span class="hidden group-open:inline">Thu gọn <i class="fa-solid fa-chevron-up text-[10px] ml-1"></i></span>
+                </span>
+            </div>
+        </summary>
+
+        <div class="mt-6 pt-6 border-t border-slate-200/80 space-y-6">
+            <!-- 1. TỔNG HỢP ĐỐI CHIẾU: ĐỒNG THUẬN ĐỨNG TRƯỚC, KHÁC BIỆT ĐỨNG SAU -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                <!-- 1A. CÁC TRƯỜNG PHÁI ĐỒNG Ý (ĐỨNG TRƯỚC) -->
+                <div class="light-card rounded-3xl p-5 border-t-4 border-t-emerald-600 bg-gradient-to-br from-emerald-50/50 via-white to-white space-y-3">
                     <div class="flex items-center justify-between gap-2 flex-wrap">
-                        <strong class="text-xs sm:text-sm text-rose-950" th:text="${dItem.tieuDe}">Tiêu đề khác biệt</strong>
-                        <a th:if="${dItem.maXungDot != null}" th:href="@{/xung-dot}"
-                           class="px-2 py-0.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-mono font-bold transition-all"
-                           title="Xem hồ sơ giải quyết xung đột trong KMS">
-                            <i class="fa-solid fa-scale-balanced mr-1"></i><span th:text="${dItem.maXungDot}">XD-01</span>
-                        </a>
+                        <h4 class="text-sm sm:text-base font-extrabold text-emerald-900 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center border border-emerald-200">
+                                <i class="fa-solid fa-handshake-simple text-xs"></i>
+                            </span>
+                            <span>Các trường phái đồng ý</span>
+                        </h4>
+                        <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold"
+                              th:text="${qResult.dongThuan.size()} + ' điểm chung CSDL'">0 điểm</span>
                     </div>
-                    <p class="text-xs text-slate-600 leading-relaxed" th:text="${dItem.moTa}">Mô tả chi tiết khác biệt</p>
-                </li>
-            </ul>
-        </div>
-    </div>
 
-    <!-- 2. LỜI GIẢI CHI TIẾT THEO 3 TRƯỜNG PHÁI ĐẶT NGANG HÀNG, SONG SONG NHAU -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    <!-- Tổng hợp đồng thuận từ AI -->
+                    <div class="p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-200/90 text-xs sm:text-sm text-emerald-950 space-y-1">
+                        <div class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+                            <i class="fa-solid fa-sparkles text-[10px]"></i>
+                            <span>Đối chiếu giao thoa (AI Analysis Engine):</span>
+                        </div>
+                        <p th:id="'ai-dongthuan-' + ${qResult.maCauHoi}" class="leading-relaxed text-slate-700">
+                            Đang đối chiếu điểm giao thoa giữa Pythagoras, Vệ Đà và Kabbalah trên hồ sơ của bạn...
+                        </p>
+                    </div>
+
+                    <ul th:if="${!qResult.dongThuan.isEmpty()}" class="space-y-2.5">
+                        <li th:each="cItem : ${qResult.dongThuan}" class="p-3.5 rounded-2xl bg-white border border-emerald-200/80 shadow-xs space-y-1.5">
+                            <div class="text-xs sm:text-sm font-bold text-emerald-950 leading-snug" th:text="${cItem.cauTomTat}">Tóm tắt đồng thuận</div>
+                            <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                                <span class="text-[11px] text-slate-500">Nguồn đối chiếu:</span>
+                                <a th:each="ev : ${cItem.danChung}"
+                                   th:href="@{/kho/{id}(id=${ev.donVi.id})}"
+                                   class="badge-citation text-[11px]"
+                                   th:text="${ev.donVi.nguon.ma} + ' (' + ${ev.chiSoKichHoat} + ')'">PHILLIPS</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 1B. CÁC TRƯỜNG PHÁI KHÁC NHAU Ở... (ĐỨNG SAU) -->
+                <div class="light-card rounded-3xl p-5 border-t-4 border-t-rose-600 bg-gradient-to-br from-rose-50/50 via-white to-white space-y-3">
+                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                        <h4 class="text-sm sm:text-base font-extrabold text-rose-900 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center border border-rose-200">
+                                <i class="fa-solid fa-scale-unbalanced text-xs"></i>
+                            </span>
+                            <span>Các trường phái khác nhau ở…</span>
+                        </h4>
+                        <span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold"
+                              th:text="${qResult.khacBiet.size()} + ' điểm khác biệt CSDL'">0 điểm</span>
+                    </div>
+
+                    <!-- Tổng hợp khác biệt từ AI -->
+                    <div class="p-3.5 rounded-2xl bg-rose-50/90 border border-rose-200/90 text-xs sm:text-sm text-rose-950 space-y-1">
+                        <div class="text-[11px] font-extrabold uppercase tracking-wider text-rose-700 flex items-center gap-1.5">
+                            <i class="fa-solid fa-code-compare text-[10px]"></i>
+                            <span>Phân tích góc nhìn khác biệt &amp; bổ khuyết (AI):</span>
+                        </div>
+                        <p th:id="'ai-khacbiet-' + ${qResult.maCauHoi}" class="leading-relaxed text-slate-700">
+                            Đang phân tích sự khác biệt giữa 3 trường phái trên tổ hợp số của bạn...
+                        </p>
+                    </div>
+
+                    <ul th:if="${!qResult.khacBiet.isEmpty()}" class="space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
+                        <li th:each="dItem : ${qResult.khacBiet}" class="p-3.5 rounded-2xl bg-white border border-rose-200/80 shadow-xs space-y-1.5">
+                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                <strong class="text-xs sm:text-sm text-rose-950" th:text="${dItem.tieuDe}">Tiêu đề khác biệt</strong>
+                                <a th:if="${dItem.maXungDot != null}" th:href="@{/xung-dot}"
+                                   class="px-2 py-0.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-mono font-bold transition-all"
+                                   title="Xem hồ sơ giải quyết xung đột trong KMS">
+                                    <i class="fa-solid fa-scale-balanced mr-1"></i><span th:text="${dItem.maXungDot}">XD-01</span>
+                                </a>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed" th:text="${dItem.moTa}">Mô tả chi tiết khác biệt</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 2. LỜI GIẢI CHI TIẾT THEO 3 TRƯỜNG PHÁI ĐẶT NGANG HÀNG, SONG SONG NHAU -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
         <!-- CỘT 1: TRƯỜNG PHÁI PYTHAGORAS PHƯƠNG TÂY -->
         <div class="light-card rounded-3xl overflow-hidden border-t-4 border-t-indigo-600">
@@ -463,6 +587,10 @@
         </div>
 
     </div>
+    <!-- Kết thúc nội dung mở rộng Góc chuyên sâu học thuật KMS301 -->
+    </div>
+    </details>
+
 </div>
 
 <!-- =====================================================================
