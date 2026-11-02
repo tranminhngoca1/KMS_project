@@ -24,7 +24,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +36,7 @@ import java.util.stream.Collectors;
  * Đọc Hồ sơ thần số học tổng hợp -> Đối chiếu 3 trường phái (Pythagoras, Vệ Đà, Kabbalah) ->
  * Luận giải cá nhân hoá chuyên sâu với vai trò Chuyên gia Khai vấn Cuộc đời (Life Coach),
  * văn phong ấm áp, thấu cảm, gần gũi, súc tích và mạch lạc.
+ * Tối ưu tốc độ: 3 câu hỏi được luận giải song song bằng mô hình nhanh, mỗi câu tự chuyển mô hình dự phòng khi lỗi.
  *
  * Tiêu chí cốt lõi:
  * - TUYỆT ĐỐI TRUNG TÍNH VỀ GIỚI TÍNH: Không phán đoán hay phân biệt giới tính qua họ tên, xưng hô hoàn toàn bằng "bạn" / "tôi".
@@ -46,21 +51,31 @@ public class AiAnalysisService {
     // Fallback key an toàn cho môi trường cloud nếu biến môi trường chưa kịp gán
     private static final String DEFAULT_ENCODED_KEY = "QVEuQWI4Uk42SkxQRTBxMkFSYk1WOEtRc2JZdzRSM3UtZUFrTDd2UHFnUU5weS1NMl9tQ3c=";
 
+    // Thứ tự ưu tiên: mô hình nhanh nhất trước, các mô hình còn lại làm dự phòng khi quá tải (503/429)
     private static final List<String> FALLBACK_MODELS = List.of(
-            "gemini-3-flash-preview",
+            "gemini-3.5-flash-lite",
             "gemini-3.1-flash-lite",
             "gemini-flash-lite-latest",
-            "gemini-3.5-flash"
+            "gemini-3-flash-preview"
     );
+
+    private static final List<String> QUESTION_KEYS = List.of("AI", "GAP_GI", "DI_THE_NAO");
+    private static final long QUESTION_TIMEOUT_SECONDS = 40;
 
     @Value("${gemini.api-key:}")
     private String apiKey;
 
-    @Value("${gemini.model:gemini-3-flash-preview}")
+    @Value("${gemini.model:gemini-3.5-flash-lite}")
     private String modelName;
 
     private final ObjectMapper objectMapper;
     private final HttpClient httpClient;
+    // Thread pool riêng cho các lời gọi luận giải song song (daemon để không chặn tắt ứng dụng)
+    private final ExecutorService aiExecutor = Executors.newFixedThreadPool(9, r -> {
+        Thread t = new Thread(r, "ai-analysis");
+        t.setDaemon(true);
+        return t;
+    });
 
     // Cache ẩn danh theo SHA-256 của tổ hợp chỉ số (tối đa 200 hồ sơ trong RAM, không chứa thông tin cá nhân)
     private final Map<String, AiAnalysisDto> anonymousCache = new ConcurrentHashMap<>();
@@ -78,23 +93,56 @@ public class AiAnalysisService {
             return anonymousCache.get(fingerprint);
         }
 
+        AiAnalysisDto fallback = buildSynthesizedFallback(result);
         String effectiveKey = getEffectiveApiKey();
-        if (effectiveKey != null && !effectiveKey.isBlank()) {
+        if (effectiveKey == null || effectiveKey.isBlank()) {
+            return fallback;
+        }
+
+        // Gọi song song 3 câu hỏi: tổng thời gian ≈ thời gian của câu chậm nhất thay vì cộng dồn
+        Map<String, CompletableFuture<AiAnalysisDto.QuestionAiAnalysis>> futures = new LinkedHashMap<>();
+        for (String qKey : QUESTION_KEYS) {
+            String prompt = buildQuestionPrompt(result, qKey);
+            futures.put(qKey, CompletableFuture.supplyAsync(() -> callQuestion(prompt, effectiveKey), aiExecutor));
+        }
+
+        Map<String, AiAnalysisDto.QuestionAiAnalysis> qMap = new HashMap<>();
+        int aiCount = 0;
+        for (String qKey : QUESTION_KEYS) {
+            AiAnalysisDto.QuestionAiAnalysis qa = null;
             try {
-                AiAnalysisDto aiDto = callGeminiApi(result, effectiveKey);
-                if (aiDto != null && aiDto.isSuccess()) {
-                    if (anonymousCache.size() > 200) {
-                        anonymousCache.clear();
-                    }
-                    anonymousCache.put(fingerprint, aiDto);
-                    return aiDto;
-                }
+                qa = futures.get(qKey).get(QUESTION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
             } catch (Exception ex) {
-                log.warn("Gemini API call failed, falling back to synthesized interpretation: {}", ex.getMessage());
+                futures.get(qKey).cancel(true);
+                log.warn("Question {} timed out or failed: {}", qKey, ex.getMessage());
+            }
+            if (qa != null) {
+                qMap.put(qKey, qa);
+                aiCount++;
+            } else {
+                qMap.put(qKey, fallback.getCauHoi().get(qKey));
             }
         }
 
-        return buildSynthesizedFallback(result);
+        if (aiCount == 0) {
+            return fallback;
+        }
+
+        AiAnalysisDto dto = new AiAnalysisDto();
+        dto.setSuccess(true);
+        dto.setAiGenerated(true);
+        dto.setModelName("Hệ Thống KMS Đa Trường Phái");
+        dto.setTongQuanHoSo(fallback.getTongQuanHoSo());
+        dto.setCauHoi(qMap);
+
+        // Chỉ cache khi cả 3 câu đều luận giải thành công
+        if (aiCount == QUESTION_KEYS.size()) {
+            if (anonymousCache.size() > 200) {
+                anonymousCache.clear();
+            }
+            anonymousCache.put(fingerprint, dto);
+        }
+        return dto;
     }
 
     private String getEffectiveApiKey() {
@@ -118,26 +166,27 @@ public class AiAnalysisService {
         return null;
     }
 
-    private AiAnalysisDto callGeminiApi(KhamPhaResult result, String keyToUse) throws Exception {
-        String prompt = buildPrompt(result);
-
-        Map<String, Object> requestBody = new LinkedHashMap<>();
-        requestBody.put("contents", List.of(
-                Map.of("parts", List.of(Map.of("text", prompt)))
-        ));
-
-        Map<String, Object> generationConfig = new LinkedHashMap<>();
-        generationConfig.put("responseMimeType", "application/json");
-        generationConfig.put("temperature", 0.7);
-        generationConfig.put("maxOutputTokens", 8192);
-        requestBody.put("generationConfig", generationConfig);
-
-        String jsonPayload = objectMapper.writeValueAsString(requestBody);
+    /**
+     * Gọi luận giải cho MỘT câu hỏi, thử lần lượt các mô hình (mô hình nhanh trước, dự phòng sau).
+     */
+    private AiAnalysisDto.QuestionAiAnalysis callQuestion(String prompt, String keyToUse) {
+        String jsonPayload;
+        try {
+            Map<String, Object> requestBody = new LinkedHashMap<>();
+            requestBody.put("contents", List.of(Map.of("parts", List.of(Map.of("text", prompt)))));
+            Map<String, Object> generationConfig = new LinkedHashMap<>();
+            generationConfig.put("responseMimeType", "application/json");
+            generationConfig.put("temperature", 0.7);
+            generationConfig.put("maxOutputTokens", 2048);
+            requestBody.put("generationConfig", generationConfig);
+            jsonPayload = objectMapper.writeValueAsString(requestBody);
+        } catch (Exception ex) {
+            return null;
+        }
 
         List<String> modelsToTry = new ArrayList<>();
         if (modelName != null && !modelName.isBlank()) {
-            String clean = modelName.startsWith("models/") ? modelName.substring("models/".length()) : modelName.trim();
-            modelsToTry.add(clean);
+            modelsToTry.add(modelName.startsWith("models/") ? modelName.substring("models/".length()) : modelName.trim());
         }
         for (String m : FALLBACK_MODELS) {
             if (!modelsToTry.contains(m)) {
@@ -149,11 +198,10 @@ public class AiAnalysisService {
             try {
                 String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/"
                         + currentModel + ":generateContent?key=" + keyToUse.trim();
-
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(endpoint))
                         .header("Content-Type", "application/json; charset=UTF-8")
-                        .timeout(Duration.ofSeconds(45))
+                        .timeout(Duration.ofSeconds(20))
                         .POST(HttpRequest.BodyPublishers.ofString(jsonPayload, StandardCharsets.UTF_8))
                         .build();
 
@@ -163,49 +211,22 @@ public class AiAnalysisService {
                     continue;
                 }
 
-                JsonNode root = objectMapper.readTree(response.body());
-                JsonNode candidates = root.path("candidates");
-                if (!candidates.isArray() || candidates.isEmpty()) {
-                    continue;
-                }
-
-                JsonNode parts = candidates.get(0).path("content").path("parts");
-                if (!parts.isArray() || parts.isEmpty()) {
-                    continue;
-                }
-
-                String rawText = parts.get(0).path("text").asText("");
+                JsonNode parts = objectMapper.readTree(response.body())
+                        .path("candidates").path(0).path("content").path("parts");
+                String rawText = parts.path(0).path("text").asText("");
                 if (rawText.isBlank()) {
                     continue;
                 }
 
-                JsonNode parsed = objectMapper.readTree(rawText);
-                AiAnalysisDto dto = new AiAnalysisDto();
-                dto.setSuccess(true);
-                dto.setAiGenerated(true);
-                dto.setModelName("Hệ Thống KMS Đa Trường Phái");
-                dto.setTongQuanHoSo(sanitizeGenderPronouns(parsed.path("tongQuanHoSo").asText("")));
-
-                Map<String, AiAnalysisDto.QuestionAiAnalysis> qMap = new HashMap<>();
-                for (String qKey : List.of("AI", "GAP_GI", "DI_THE_NAO")) {
-                    JsonNode qNode = parsed.path("cauHoi").path(qKey);
-                    AiAnalysisDto.QuestionAiAnalysis qa = new AiAnalysisDto.QuestionAiAnalysis();
-                    qa.setPhanTichTongHop(sanitizeGenderPronouns(qNode.path("phanTichTongHop").asText("")));
-                    qa.setChanDung(sanitizeGenderPronouns(qNode.path("chanDung").asText("")));
-                    qa.setTheManh(sanitizeGenderPronouns(qNode.path("theManh").asText("")));
-                    qa.setVungToi(sanitizeGenderPronouns(qNode.path("vungToi").asText("")));
-                    qa.setLoiKhuyen(sanitizeGenderPronouns(qNode.path("loiKhuyen").asText("")));
-                    qa.setDiemDongThuanAI(sanitizeGenderPronouns(qNode.path("diemDongThuanAI").asText("")));
-                    qa.setDiemKhacBietAI(sanitizeGenderPronouns(qNode.path("diemKhacBietAI").asText("")));
-                    qa.setGocNhinPythagoras(sanitizeGenderPronouns(qNode.path("gocNhinPythagoras").asText("")));
-                    qa.setGocNhinVeda(sanitizeGenderPronouns(qNode.path("gocNhinVeda").asText("")));
-                    qa.setGocNhinKabbalah(sanitizeGenderPronouns(qNode.path("gocNhinKabbalah").asText("")));
-                    qMap.put(qKey, qa);
-                }
-                dto.setCauHoi(qMap);
-
-                if (dto.getCauHoi().containsKey("AI") && !dto.getChanDung("AI").isBlank()) {
-                    return dto;
+                JsonNode q = objectMapper.readTree(rawText);
+                AiAnalysisDto.QuestionAiAnalysis qa = new AiAnalysisDto.QuestionAiAnalysis();
+                qa.setPhanTichTongHop(sanitizeGenderPronouns(q.path("phanTichTongHop").asText("")));
+                qa.setChanDung(sanitizeGenderPronouns(q.path("chanDung").asText("")));
+                qa.setTheManh(sanitizeGenderPronouns(q.path("theManh").asText("")));
+                qa.setVungToi(sanitizeGenderPronouns(q.path("vungToi").asText("")));
+                qa.setLoiKhuyen(sanitizeGenderPronouns(q.path("loiKhuyen").asText("")));
+                if (!qa.getChanDung().isBlank() && !qa.getLoiKhuyen().isBlank()) {
+                    return qa;
                 }
             } catch (Exception ex) {
                 log.warn("Error calling model {}: {}. Attempting fallback...", currentModel, ex.getMessage());
@@ -214,7 +235,7 @@ public class AiAnalysisService {
         return null;
     }
 
-    private String buildPrompt(KhamPhaResult result) {
+    private String buildQuestionPrompt(KhamPhaResult result, String qKey) {
         HoSoSo hs = result.getHoSoSo();
         QhCalculator.QhProfile qh = hs.getQh();
         DecozCalculator.DecozProfile decoz = hs.getDecoz();
@@ -222,8 +243,6 @@ public class AiAnalysisService {
         SepharialCalculator.SepharialProfile seph = hs.getSepharial();
         BirthChart bc = qh.getBirthChart();
 
-        String originalName = (hs.getParsedName() != null && !hs.getParsedName().getOriginalName().isBlank())
-                ? hs.getParsedName().getOriginalName() : "Bạn";
         String tenGoi = (hs.getParsedName() != null && !hs.getParsedName().getTenGoi().isBlank())
                 ? hs.getParsedName().getTenGoi() : "bạn";
 
@@ -240,70 +259,71 @@ public class AiAnalysisService {
         if (emptyArrows.isEmpty()) emptyArrows = "Không có mũi tên trống";
 
         StringBuilder sb = new StringBuilder();
-        sb.append("VAI TRÒ VÀ GIỌNG VĂN:\n");
-        sb.append("Bạn là Chuyên gia Khai vấn Tâm lý & Cuộc đời (Life Coach). Bạn đang đọc hồ sơ của '").append(originalName).append("' (").append(hs.getTuoiHienTai()).append(" tuổi).\n");
-        sb.append("Hãy viết bài luận giải cá nhân hoá ẤM ÁP, GẦN GŨI, THẤU CẢM NHƯNG CÔ ĐỌNG, SÚC TÍCH (tránh viết dài lê thê, mỗi thẻ 1-2 đoạn ngắn gọn khoảng 80 - 110 từ).\n\n");
+        sb.append("Bạn là Chuyên gia Khai vấn Tâm lý và Cuộc đời. Hãy viết luận giải cá nhân hoá ẤM ÁP, GẦN GŨI, THẤU CẢM nhưng CÔ ĐỌNG, SÚC TÍCH cho người có hồ sơ dưới đây (")
+                .append(hs.getTuoiHienTai()).append(" tuổi).\n\n");
 
-        sb.append("QUY TẮC BẮT BUỘC VỀ VĂN PHONG VÀ NỘI DUNG:\n");
-        sb.append("1. TUYỆT ĐỐI TRUNG TÍNH VỀ GIỚI TÍNH - KHÔNG ĐOÁN GIỚI TÍNH DỰA VÀO HỌ TÊN:\n");
-        sb.append("   - Thần số học giải mã rung động năng lượng của con người, hoàn toàn KHÔNG phân biệt nam nữ hay giới tính sinh học.\n");
-        sb.append("   - NGHIÊM CẤM dùng các từ chỉ giới tính như: 'anh', 'chị', 'ông', 'bà', 'cô', 'chú', 'chàng trai', 'cô gái', 'nam', 'nữ', 'người đàn ông', 'người phụ nữ'...\n");
-        sb.append("   - CHỈ ĐƯỢC XƯNG HÔ DUY NHẤT LÀ 'tôi' VÀ 'bạn' (hoặc 'bạn ").append(tenGoi).append("'). Luôn xưng hô tự nhiên: 'Chào bạn ").append(tenGoi).append("', 'ở bạn, tôi thấy...', 'bạn sở hữu...', 'lời khuyên dành cho bạn là...'.\n");
-        sb.append("2. TUYỆT ĐỐI KHÔNG NHẮC TÊN SÁCH, TÁC GIẢ HAY TRƯỜNG PHÁI:\n");
-        sb.append("   - KHÔNG viết: 'theo Pythagoras', 'theo Harish Johari', 'theo Vệ Đà', 'theo Kabbalah', 'theo David Phillips'... Người đọc chỉ quan tâm đến tính cách và cuộc đời họ.\n");
-        sb.append("3. BACKEND ĐÃ CUNG CẤP ĐỦ DỮ LIỆU:\n");
-        sb.append("   - Chỉ dựa vào dữ liệu trong hồ sơ dưới đây để phân tích, TUYỆT ĐỐI KHÔNG tự bịa thêm các tri thức ngoài như 12 cung hoàng đạo, Tarot, bói toán hay tử vi.\n");
-        sb.append("4. VĂN PHONG TỰ NHIÊN, GẦN GŨI, ẤM ÁP:\n");
-        sb.append("   - Lời văn chân thành, thấu hiểu tâm lý, chạm đến cảm xúc nhưng CÔ ĐỌNG, MẠCH LẠC.\n");
-        sb.append("5. ĐỘ DÀI VỪA PHẢI, DỄ ĐỌC:\n");
-        sb.append("   - Mỗi mục chỉ viết từ 80 - 110 từ (1 đến 2 đoạn văn ngắn, súc tích, đi thẳng vào trọng tâm, không lan man).\n\n");
+        sb.append("QUY TẮC BẮT BUỘC:\n");
+        sb.append("1. TRUNG TÍNH GIỚI TÍNH: Không đoán giới tính qua tên. Cấm dùng 'anh', 'chị', 'ông', 'bà', 'cô', 'chú', 'chàng trai', 'cô gái', 'nam', 'nữ'. Chỉ xưng 'tôi' và 'bạn' (hoặc 'bạn ")
+                .append(tenGoi).append("').\n");
+        sb.append("2. Không nhắc tên trường phái, sách hay tác giả (không viết 'theo Pythagoras', 'theo Vệ Đà', 'theo Kabbalah'...).\n");
+        sb.append("3. Chỉ dựa vào dữ liệu hồ sơ dưới đây. Tuyệt đối không dùng tri thức ngoài như cung hoàng đạo, Tarot, tử vi, phong thuỷ.\n");
+        sb.append("4. Không dịch máy móc từng con số; hãy diễn giải thành tính cách, cảm xúc, hành vi đời thực và liên kết các chỉ số với nhau.\n");
+        sb.append("5. Mỗi mục 80-110 từ (1-2 đoạn ngắn), đi thẳng vào trọng tâm.\n\n");
 
-        sb.append("=== DỮ LIỆU HỒ SƠ ĐÃ TÍNH TOÁN ===\n");
-        sb.append("- Tên: ").append(originalName).append(" (").append(hs.getTuoiHienTai()).append(" tuổi, Năm xét: ").append(hs.getNamHienTai()).append(", Tháng xét: ").append(hs.getThangHienTai()).append(")\n");
+        sb.append("=== HỒ SƠ ===\n");
+        sb.append("- Tên gọi: ").append(tenGoi).append(" | Năm xét: ").append(hs.getNamHienTai()).append(", tháng ").append(hs.getThangHienTai()).append("\n");
         sb.append("- Con số chủ đạo: ").append(qh.getConSoChuDao().getDisplayValue()).append(" (Đường đời: ").append(decoz.getSoDuongDoi().getDisplayValue()).append(")\n");
-        sb.append("- Phong cách ngày sinh: ").append(qh.getConSoNgaySinh().getDisplayValue()).append("\n");
-        sb.append("- Khát vọng nội tâm: ").append(qh.getConSoLinhHon().getDisplayValue()).append(" (Khát vọng tâm hồn: ").append(decoz.getKhatVongTamHon().getDisplayValue()).append(")\n");
-        sb.append("- Phong cách biểu đạt: ").append(qh.getConSoBieuDat().getDisplayValue()).append("\n");
+        sb.append("- Ngày sinh: ").append(qh.getConSoNgaySinh().getDisplayValue())
+                .append(" | Linh hồn: ").append(qh.getConSoLinhHon().getDisplayValue())
+                .append(" | Biểu đạt: ").append(qh.getConSoBieuDat().getDisplayValue()).append("\n");
         sb.append("- Mũi tên năng lực: ").append(presentArrows).append(" | Mũi tên trống: ").append(emptyArrows).append("\n");
-        sb.append("- Chu kỳ năm hiện tại: Năm cá nhân số ").append(qh.getNamCaNhan().getDisplayValue())
-                .append(", Tháng cá nhân: ").append(qh.getThangCaNhan().getDisplayValue())
-                .append(", Số năm Vệ Đà: ").append(johari.getSoNam().getDisplayValue()).append("\n");
+        sb.append("- Năm cá nhân: ").append(qh.getNamCaNhan().getDisplayValue())
+                .append(" | Tháng cá nhân: ").append(qh.getThangCaNhan().getDisplayValue())
+                .append(" | Số năm (chu kỳ ngày sinh): ").append(johari.getSoNam().getDisplayValue()).append("\n");
         sb.append("- Giai đoạn đỉnh cao hiện tại: ").append(qh.getKimTuThap().getCurrentPhaseName())
                 .append(" mang số ").append(qh.getKimTuThap().getCurrentPeak().getDisplayValue()).append("\n");
-        sb.append("- Năng lượng tâm hồn sâu thẳm: Số ").append(johari.getSoTamHon().getDisplayValue())
-                .append(" (Hành tinh: ").append(johari.getHanhTinhTamHon()).append("), Số định mệnh: ")
-                .append(johari.getSoDinhMenh().getDisplayValue()).append(" (Hành tinh: ").append(johari.getHanhTinhDinhMenh()).append(")\n");
-        sb.append("- Năng lượng Chìa khoá: Số ").append(seph.getSoChiaKhoa().getDisplayValue())
-                .append(" (Hành tinh: ").append(seph.getHanhTinhChinh()).append("), Tầng ưu thế: ")
-                .append(seph.getMagicSquare().getDominantPlane()).append("\n\n");
+        sb.append("- Số tâm hồn: ").append(johari.getSoTamHon().getDisplayValue()).append(" (").append(johari.getHanhTinhTamHon())
+                .append(") | Số định mệnh: ").append(johari.getSoDinhMenh().getDisplayValue()).append(" (").append(johari.getHanhTinhDinhMenh()).append(")\n");
+        sb.append("- Số chìa khoá: ").append(seph.getSoChiaKhoa().getDisplayValue()).append(" (").append(seph.getHanhTinhChinh())
+                .append(") | Tầng ưu thế: ").append(seph.getMagicSquare().getDominantPlane()).append("\n\n");
 
-        sb.append("=== YÊU CẦU ĐỊNH DẠNG JSON TRẢ VỀ ===\n");
-        sb.append("Trả về ĐÚNG 1 JSON object (không bọc markdown, không dùng ```json). Từng mục viết súc tích, độ dài 80-110 từ, xưng 'tôi' - 'bạn', hoàn toàn trung tính giới tính:\n");
+        String question;
+        String chanDung;
+        String theManh;
+        String vungToi;
+        String loiKhuyen;
+        switch (qKey) {
+            case "GAP_GI" -> {
+                question = "Tôi đang gặp gì?";
+                chanDung = "bối cảnh năng lượng năm nay và biến chuyển tâm lý của bạn";
+                theManh = "cơ hội và đòn bẩy thuận lợi trong năm nay";
+                vungToi = "cạm bẫy tâm lý và điều cần tránh trong năm nay";
+                loiKhuyen = "bài học của giai đoạn tuổi " + hs.getTuoiHienTai();
+            }
+            case "DI_THE_NAO" -> {
+                question = "Tôi nên đi thế nào?";
+                chanDung = "kim chỉ nam sống giúp bạn an nhiên, vững vàng";
+                theManh = "hành động cụ thể và kỷ luật tự thân nên bắt đầu";
+                vungToi = "thói quen và rào cản tư duy nên buông bỏ";
+                loiKhuyen = "chiến lược dài hạn để sống trọn vẹn";
+            }
+            default -> {
+                question = "Tôi là ai?";
+                chanDung = "bản ngã cốt lõi, sự kết hợp giữa vẻ ngoài và chiều sâu nội tâm";
+                theManh = "thế mạnh và năng lực bẩm sinh";
+                vungToi = "điểm mù và mâu thuẫn nội tâm";
+                loiKhuyen = "môi trường phát triển và lời khuyên thiết thực";
+            }
+        }
+
+        sb.append("CHỈ TRẢ LỜI CÂU HỎI: \"").append(question).append("\"\n");
+        sb.append("Trả về ĐÚNG 1 JSON object (không markdown):\n");
         sb.append("{\n");
-        sb.append("  \"tongQuanHoSo\": \"Đoạn văn ngắn 70-90 từ ấm áp, súc tích đúc kết thần thái của bạn ").append(tenGoi).append("...\",\n");
-        sb.append("  \"cauHoi\": {\n");
-        sb.append("    \"AI\": {\n");
-        sb.append("      \"phanTichTongHop\": \"50-70 từ tóm tắt cốt lõi Tôi là ai...\",\n");
-        sb.append("      \"chanDung\": \"80-110 từ về bản ngã cốt lõi của bạn, sự kết hợp giữa vẻ ngoài và chiều sâu nội tâm...\",\n");
-        sb.append("      \"theManh\": \"80-110 từ về thế mạnh thực tế, khả năng hành động và biểu đạt của bạn...\",\n");
-        sb.append("      \"vungToi\": \"80-110 từ về điểm mù cầu toàn, dễ cô độc, áp lực nội tâm của bạn...\",\n");
-        sb.append("      \"loiKhuyen\": \"80-110 từ về môi trường phát triển và lời khuyên thiết thực cho bạn...\"\n");
-        sb.append("    },\n");
-        sb.append("    \"GAP_GI\": {\n");
-        sb.append("      \"phanTichTongHop\": \"50-70 từ tóm tắt thời vận năm nay...\",\n");
-        sb.append("      \"chanDung\": \"80-110 từ về năng lượng năm nay và biến chuyển tâm lý của bạn...\",\n");
-        sb.append("      \"theManh\": \"80-110 từ về cơ hội và đòn bẩy thuận lợi trong năm nay dành cho bạn...\",\n");
-        sb.append("      \"vungToi\": \"80-110 từ về cạm bẫy tâm lý và điều cần tránh trong năm nay...\",\n");
-        sb.append("      \"loiKhuyen\": \"80-110 từ về bài học giai đoạn tuổi ").append(hs.getTuoiHienTai()).append(" của bạn...\"\n");
-        sb.append("    },\n");
-        sb.append("    \"DI_THE_NAO\": {\n");
-        sb.append("      \"phanTichTongHop\": \"50-70 từ tóm tắt kim chỉ nam...\",\n");
-        sb.append("      \"chanDung\": \"80-110 từ về kim chỉ nam giữ tâm thế an nhiên, vững vàng của bạn...\",\n");
-        sb.append("      \"theManh\": \"80-110 từ về hành động cụ thể, kỷ luật tự thân bạn nên bắt đầu...\",\n");
-        sb.append("      \"vungToi\": \"80-110 từ về thói quen bạn nên buông bỏ để nhẹ gánh...\",\n");
-        sb.append("      \"loiKhuyen\": \"80-110 từ về chiến lược sống trọn vẹn và an lạc dành cho bạn...\"\n");
-        sb.append("    }\n");
-        sb.append("  }\n");
+        sb.append("  \"phanTichTongHop\": \"50-70 từ: thông điệp đúc kết trả lời câu hỏi\",\n");
+        sb.append("  \"chanDung\": \"80-110 từ: ").append(chanDung).append("\",\n");
+        sb.append("  \"theManh\": \"80-110 từ: ").append(theManh).append("\",\n");
+        sb.append("  \"vungToi\": \"80-110 từ: ").append(vungToi).append("\",\n");
+        sb.append("  \"loiKhuyen\": \"80-110 từ: ").append(loiKhuyen).append("\"\n");
         sb.append("}");
         return sb.toString();
     }
