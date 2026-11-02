@@ -62,17 +62,62 @@ public class AiAnalysisDto {
         this.cauHoi = cauHoi;
     }
 
+    public String getChanDung(String maCauHoi) {
+        if (cauHoi == null) return "Đang phân tích chân dung tâm lý và bản ngã cốt lõi của bạn...";
+        QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
+        if (qa == null || qa.getChanDung() == null || qa.getChanDung().isBlank()) {
+            return "Đang phân tích chân dung tâm lý và bản ngã cốt lõi của bạn...";
+        }
+        return qa.getChanDung();
+    }
+
+    public String getTheManh(String maCauHoi) {
+        if (cauHoi == null) return "Đang nhận diện các thế mạnh và tài năng thiên bẩm của bạn...";
+        QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
+        if (qa == null || qa.getTheManh() == null || qa.getTheManh().isBlank()) {
+            return "Đang nhận diện các thế mạnh và tài năng thiên bẩm của bạn...";
+        }
+        return qa.getTheManh();
+    }
+
+    public String getVungToi(String maCauHoi) {
+        if (cauHoi == null) return "Đang soi chiếu các điểm mù và thách thức nội tâm cần chuyển hoá...";
+        QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
+        if (qa == null || qa.getVungToi() == null || qa.getVungToi().isBlank()) {
+            return "Đang soi chiếu các điểm mù và thách thức nội tâm cần chuyển hoá...";
+        }
+        return qa.getVungToi();
+    }
+
+    public String getLoiKhuyen(String maCauHoi) {
+        if (cauHoi == null) return "Đang đúc kết lời khuyên và chiến lược phát triển cá nhân hoá dành cho bạn...";
+        QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
+        if (qa == null || qa.getLoiKhuyen() == null || qa.getLoiKhuyen().isBlank()) {
+            return "Đang đúc kết lời khuyên và chiến lược phát triển cá nhân hoá dành cho bạn...";
+        }
+        return qa.getLoiKhuyen();
+    }
+
+    public String getTongHop(String maCauHoi) {
+        if (cauHoi == null) return "Đang phân tích và đúc kết thông điệp định hướng dành riêng cho bạn...";
+        QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
+        if (qa == null || qa.getPhanTichTongHop() == null || qa.getPhanTichTongHop().isBlank()) {
+            return "Đang phân tích và đúc kết thông điệp định hướng dành riêng cho bạn...";
+        }
+        return qa.getPhanTichTongHop();
+    }
+
     public static class QuestionAiAnalysis {
-        private String phanTichTongHop;
-        private String chanDung;         // Bản ngã & chân dung cốt lõi
-        private String theManh;          // Thế mạnh vượt trội & năng khiếu
-        private String vungToi;          // Điểm mù & mâu thuẫn nội tâm
-        private String loiKhuyen;        // Lời khuyên định hướng & hành động
-        private String diemDongThuanAI;
-        private String diemKhacBietAI;
-        private String gocNhinPythagoras;
-        private String gocNhinVeda;
-        private String gocNhinKabbalah;
+        private String phanTichTongHop = "";
+        private String chanDung = "";         // Bản ngã & chân dung cốt lõi
+        private String theManh = "";          // Thế mạnh vượt trội & năng khiếu
+        private String vungToi = "";          // Điểm mù & mâu thuẫn nội tâm
+        private String loiKhuyen = "";        // Lời khuyên định hướng & hành động
+        private String diemDongThuanAI = "";
+        private String diemKhacBietAI = "";
+        private String gocNhinPythagoras = "";
+        private String gocNhinVeda = "";
+        private String gocNhinKabbalah = "";
 
         public QuestionAiAnalysis() {
         }

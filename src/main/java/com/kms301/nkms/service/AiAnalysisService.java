@@ -302,7 +302,7 @@ public class AiAnalysisService {
         AiAnalysisDto dto = new AiAnalysisDto();
         dto.setSuccess(true);
         dto.setAiGenerated(false);
-        dto.setModelName("Bản Luận Giải Cá Nhân Hoá NKMS");
+        dto.setModelName("Bản Luận Giải Cá Nhân Hoá KMS");
 
         dto.setTongQuanHoSo(String.format(
                 "Bạn sở hữu một tổ hợp năng lượng vô cùng đặc biệt: Được dẫn dắt bởi Con số chủ đạo %s của tư duy và số Ngày sinh %s, kết hợp cùng năng lượng nội tâm sâu thẳm của hành tinh %s (Số Tâm hồn %s) và %s (Số Định mệnh %s). Bạn là người vừa có khát vọng cống hiến lớn lao, vừa có đời sống cảm xúc phong phú nhưng đôi lúc phải đối mặt với những giằng xé nội tâm sâu sắc.",

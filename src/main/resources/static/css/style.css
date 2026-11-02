@@ -24,6 +24,13 @@ body {
     color: #0f172a;
     overflow-x: hidden;
     margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Đảm bảo toàn bộ form input, select, textarea, button dùng chung font chữ chuẩn tiếng Việt */
+input, select, textarea, button {
+    font-family: var(--font-main) !important;
 }
 
 /* Thẻ card trắng nổi bật với viền mảnh và bóng đổ nhẹ (từ Frontend.html) */

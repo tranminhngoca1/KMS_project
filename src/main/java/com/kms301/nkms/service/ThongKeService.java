@@ -25,6 +25,17 @@ public class ThongKeService {
     private final XungDotRepository xungDotRepository;
     private final BangChuCaiRepository bangChuCaiRepository;
 
+    private Map<String, Object> cachedThongKeData;
+    private long thongKeCachedAt = 0;
+    private static final long CACHE_TTL_MS = 300_000; // 5 phút cache
+
+    private List<Nguon> cachedNguon;
+    private Map<Long, Long> cachedUnitCountByNguon;
+    private List<KhaiNiem> cachedKhaiNiem;
+    private Map<Long, List<DongNghia>> cachedDongNghiaMap;
+    private List<CongThuc> cachedCongThuc;
+    private List<BangChuCai> cachedBangChuCai;
+
     public ThongKeService(TruongPhaiRepository truongPhaiRepository,
                           NguonRepository nguonRepository,
                           KhaiNiemRepository khaiNiemRepository,
@@ -46,7 +57,12 @@ public class ThongKeService {
     }
 
     @Transactional(readOnly = true)
-    public Map<String, Object> buildThongKeData() {
+    public synchronized Map<String, Object> buildThongKeData() {
+        long now = System.currentTimeMillis();
+        if (cachedThongKeData != null && (now - thongKeCachedAt < CACHE_TTL_MS)) {
+            return new LinkedHashMap<>(cachedThongKeData);
+        }
+
         Map<String, Object> data = new LinkedHashMap<>();
 
         long tongDonVi = donViTriThucRepository.count();
@@ -104,20 +120,26 @@ public class ThongKeService {
         data.put("tongKhaiNiem", khaiNiemRepository.count());
         data.put("tongCongThuc", congThucRepository.count());
 
+        cachedThongKeData = data;
+        thongKeCachedAt = now;
         return data;
     }
 
     @Transactional(readOnly = true)
-    public List<Nguon> getAllNguon() {
-        return nguonRepository.findAll();
+    public synchronized List<Nguon> getAllNguon() {
+        if (cachedNguon != null) return cachedNguon;
+        cachedNguon = nguonRepository.findAll();
+        return cachedNguon;
     }
 
     @Transactional(readOnly = true)
-    public Map<Long, Long> getUnitCountByNguon() {
+    public synchronized Map<Long, Long> getUnitCountByNguon() {
+        if (cachedUnitCountByNguon != null) return cachedUnitCountByNguon;
         Map<Long, Long> map = new LinkedHashMap<>();
-        for (Nguon n : nguonRepository.findAll()) {
+        for (Nguon n : getAllNguon()) {
             map.put(n.getId(), donViTriThucRepository.countByNguonId(n.getId()));
         }
+        cachedUnitCountByNguon = map;
         return map;
     }
 
@@ -128,29 +150,37 @@ public class ThongKeService {
     }
 
     @Transactional(readOnly = true)
-    public List<KhaiNiem> getAllKhaiNiem() {
-        return khaiNiemRepository.findAllByOrderByIdAsc();
+    public synchronized List<KhaiNiem> getAllKhaiNiem() {
+        if (cachedKhaiNiem != null) return cachedKhaiNiem;
+        cachedKhaiNiem = khaiNiemRepository.findAllByOrderByIdAsc();
+        return cachedKhaiNiem;
     }
 
     @Transactional(readOnly = true)
-    public Map<Long, List<DongNghia>> getDongNghiaByKhaiNiem() {
+    public synchronized Map<Long, List<DongNghia>> getDongNghiaByKhaiNiem() {
+        if (cachedDongNghiaMap != null) return cachedDongNghiaMap;
         Map<Long, List<DongNghia>> map = new LinkedHashMap<>();
         for (DongNghia dn : dongNghiaRepository.findAllByOrderByKhaiNiemIdAscIdAsc()) {
             if (dn.getKhaiNiem() != null) {
                 map.computeIfAbsent(dn.getKhaiNiem().getId(), k -> new ArrayList<>()).add(dn);
             }
         }
+        cachedDongNghiaMap = map;
         return map;
     }
 
     @Transactional(readOnly = true)
-    public List<CongThuc> getAllCongThuc() {
-        return congThucRepository.findAllByOrderByIdAsc();
+    public synchronized List<CongThuc> getAllCongThuc() {
+        if (cachedCongThuc != null) return cachedCongThuc;
+        cachedCongThuc = congThucRepository.findAllByOrderByIdAsc();
+        return cachedCongThuc;
     }
 
     @Transactional(readOnly = true)
-    public List<BangChuCai> getAllBangChuCai() {
-        return bangChuCaiRepository.findAll();
+    public synchronized List<BangChuCai> getAllBangChuCai() {
+        if (cachedBangChuCai != null) return cachedBangChuCai;
+        cachedBangChuCai = bangChuCaiRepository.findAll();
+        return cachedBangChuCai;
     }
 }
 

@@ -305,8 +305,32 @@ public class KhoTriThucService {
         return bangChuCaiRepository.findByMa("UNIT_SYSTEM");
     }
 
-    public List<TruongPhai> getAllTruongPhai() { return truongPhaiRepository.findAll(); }
-    public List<Nguon> getAllNguon() { return nguonRepository.findAll(); }
-    public List<KhaiNiem> getAllKhaiNiem() { return khaiNiemRepository.findAllByOrderByIdAsc(); }
-    public List<The> getAllThe() { return theRepository.findAllByOrderByNhomAscTenAsc(); }
+    private List<TruongPhai> cachedTruongPhai;
+    private List<Nguon> cachedNguon;
+    private List<KhaiNiem> cachedKhaiNiem;
+    private List<The> cachedThe;
+
+    public synchronized List<TruongPhai> getAllTruongPhai() {
+        if (cachedTruongPhai != null) return cachedTruongPhai;
+        cachedTruongPhai = truongPhaiRepository.findAll();
+        return cachedTruongPhai;
+    }
+
+    public synchronized List<Nguon> getAllNguon() {
+        if (cachedNguon != null) return cachedNguon;
+        cachedNguon = nguonRepository.findAll();
+        return cachedNguon;
+    }
+
+    public synchronized List<KhaiNiem> getAllKhaiNiem() {
+        if (cachedKhaiNiem != null) return cachedKhaiNiem;
+        cachedKhaiNiem = khaiNiemRepository.findAllByOrderByIdAsc();
+        return cachedKhaiNiem;
+    }
+
+    public synchronized List<The> getAllThe() {
+        if (cachedThe != null) return cachedThe;
+        cachedThe = theRepository.findAllByOrderByNhomAscTenAsc();
+        return cachedThe;
+    }
 }
