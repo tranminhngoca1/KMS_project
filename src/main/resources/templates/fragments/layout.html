@@ -3,14 +3,14 @@
 <head th:fragment="head(pageTitle)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${pageTitle} + ' — Hệ Thống Quản Lý Tri Thức Thần Số Học (NKMS - KMS301)'">Hệ Thống Quản Lý Tri Thức Thần Số Học (NKMS)</title>
+    <title th:text="${pageTitle} + ' — Hệ Thống Quản Lý Tri Thức Thần Số Học (KMS - KMS301)'">Hệ Thống Quản Lý Tri Thức Thần Số Học (KMS)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Be Vietnam Pro, Plus Jakarta Sans & JetBrains Mono -->
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome 6.4.0 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom NKMS Styles -->
+    <!-- Custom KMS Styles -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="min-h-screen flex flex-col selection:bg-indigo-600 selection:text-white">
@@ -41,7 +41,7 @@
                     <span class="hidden sm:inline-block text-[10px] font-mono text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 font-semibold">3 Trường Phái</span>
                 </div>
                 <h1 class="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 mt-0.5">
-                    NKMS <span class="font-normal text-slate-400 text-xs mx-0.5">/</span> <span class="gradient-text-indigo">Thần Số Học Đa Trường Phái</span>
+                    KMS <span class="font-normal text-slate-400 text-xs mx-0.5">/</span> <span class="gradient-text-indigo">Thần Số Học Đa Trường Phái</span>
                 </h1>
             </div>
         </a>
@@ -118,7 +118,7 @@
         data-formula=${mu.donVi.dieuKienJson != null ? mu.donVi.dieuKienJson : 'Quy tắc diễn giải theo chỉ số ' + mu.chiSoKichHoat},
         data-steps=${mu.cacBuocTinh != null ? mu.cacBuocTinh : ('Kích hoạt bởi: ' + mu.chiSoKichHoat)},
         data-book=${mu.donVi.nguon.tenSach},
-        data-book-sub=${mu.donVi.nguon.nguonGoc != null ? ('Phái sinh ' + mu.donVi.nguon.tyLePhaiSinh + ' từ ' + mu.donVi.nguon.nguonGoc.tenSach) : 'Nguồn sách gốc độc lập trong Kho tri thức NKMS'},
+        data-book-sub=${mu.donVi.nguon.nguonGoc != null ? ('Phái sinh ' + mu.donVi.nguon.tyLePhaiSinh + ' từ ' + mu.donVi.nguon.nguonGoc.tenSach) : 'Nguồn sách gốc độc lập trong Kho tri thức KMS'},
         data-author=${mu.donVi.nguon.tacGia},
         data-publisher='Năm xuất bản: ' + ${mu.donVi.nguon.namXuatBan} + ' • Mã nguồn: ' + ${mu.donVi.nguon.ma},
         data-chapter=${mu.donVi.trichDanHienThi},
@@ -185,28 +185,15 @@
          =================================================================== -->
     <div class="light-card rounded-3xl p-6 sm:p-8 border border-indigo-200/90 bg-gradient-to-br from-white via-indigo-50/25 to-purple-50/30 shadow-md space-y-6">
         <!-- Tiêu đề & Trạng thái AI -->
-        <div class="flex items-center justify-between gap-3 flex-wrap border-b border-indigo-100 pb-4">
+        <div class="border-b border-indigo-100 pb-4">
             <div class="space-y-1">
-                <div class="flex items-center gap-2">
-                    <span class="px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 shadow-xs">
-                        <i class="fa-solid fa-compass-drafting"></i>
-                        <span>Chuyên Gia Luận Giải</span>
-                    </span>
-                    <span class="text-xs text-indigo-700 font-bold uppercase tracking-wider">
-                        Phân Tích Tâm Lý &amp; Luận Giải Độc Bản
-                    </span>
-                </div>
+                <span class="text-xs text-indigo-700 font-bold uppercase tracking-wider">
+                    Phân Tích Tâm Lý &amp; Luận Giải Độc Bản
+                </span>
                 <h4 class="text-xl sm:text-2xl font-black text-slate-900 leading-snug"
                     th:text="${qResult.tenCauHoi}">
                     Giải Đáp Cá Nhân Hoá
                 </h4>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <span class="ai-status-pill px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold flex items-center gap-1.5 shadow-xs">
-                    <i class="fa-solid fa-circle-notch fa-spin text-[11px] text-emerald-600 ai-spinner"></i>
-                    <span class="ai-status-label">Đang phân tích &amp; tổng hợp hồ sơ...</span>
-                </span>
             </div>
         </div>
 
@@ -302,7 +289,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-slate-500">
             <p>
-                Dự án Môn học <strong>KMS301 — Hệ thống Quản lý Tri thức Thần số học (NKMS)</strong> • Đối chiếu 3 Trường phái (Pythagoras, Vệ Đà, Kabbalah).
+                Dự án Môn học <strong>KMS301 — Hệ thống Quản lý Tri thức Thần số học (KMS)</strong> • Đối chiếu 3 Trường phái (Pythagoras, Vệ Đà, Kabbalah).
             </p>
             <p class="text-[11px] text-slate-400 flex items-center gap-1.5">
                 <i class="fa-solid fa-shield-halved text-emerald-600"></i>

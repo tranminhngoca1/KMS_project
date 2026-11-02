@@ -80,7 +80,7 @@ class NkmsWebIntegrationTest {
                             .param("ngaySinh", tc[1]))
                     .andExpect(status().isOk())
                     .andExpect(content().string(containsString("Khám Phá Bản Thể Qua Thần Số Học")))
-                    .andExpect(content().string(containsString("Chuyên Gia Luận Giải")))
+                    .andExpect(content().string(containsString("Phân Tích Tâm Lý &amp; Luận Giải Độc Bản")))
                     .andExpect(content().string(containsString("Bản Ngã Cốt Lõi &amp; Chân Dung Tâm Lý")))
                     .andExpect(content().string(containsString("Thế Mạnh Vượt Trội &amp; Năng Lực Bẩm Sinh")))
                     .andExpect(content().string(containsString("Điểm Mù &amp; Mâu Thuẫn Cần Gỡ Bỏ")))
