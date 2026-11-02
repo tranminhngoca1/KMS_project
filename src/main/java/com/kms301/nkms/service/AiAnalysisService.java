@@ -153,7 +153,7 @@ public class AiAnalysisService {
         AiAnalysisDto dto = new AiAnalysisDto();
         dto.setSuccess(true);
         dto.setAiGenerated(true);
-        dto.setModelName("Gemini 3.5 Flash");
+        dto.setModelName("Hệ Thống NKMS Đa Trường Phái");
         dto.setTongQuanHoSo(parsed.path("tongQuanHoSo").asText(""));
 
         Map<String, AiAnalysisDto.QuestionAiAnalysis> qMap = new HashMap<>();
