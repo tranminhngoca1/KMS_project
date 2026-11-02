@@ -536,96 +536,121 @@
             </div>
         </div>
 
-        <!-- 4 Trụ Cột Luận Giải Sâu Sắc Dành Cho Người Dùng (Grid 2x2) -->
+        <!-- 4 Trụ Cột Luận Giải Sâu Sắc Dành Cho Người Dùng (Grid 2x2 — Chuẩn Huấn Luyện KMS Đa Trường Phái) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-            <!-- Trụ 1: Chân dung & Bản ngã cốt lõi -->
+            <!-- Trụ 1: Bản ngã cốt lõi (Q1) / Bối cảnh năm (Q2) / Kim chỉ nam (Q3) -->
             <div class="p-5 rounded-2xl bg-white border border-indigo-100 hover:border-indigo-300 shadow-xs hover:shadow-sm transition-all space-y-2.5">
                 <div class="flex items-center justify-between gap-2">
                     <div class="flex items-center gap-2.5">
                         <span class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-sm">
-                            <i class="fa-solid fa-fingerprint"></i>
+                            <i th:class="${qResult.maCauHoi == 'GAP_GI' ? 'fa-solid fa-calendar-check' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'fa-solid fa-compass' : 'fa-solid fa-fingerprint')}"></i>
                         </span>
-                        <h5 class="text-sm font-extrabold text-indigo-950"
-                            th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Bối Cảnh Thời Vận Và Năng Lượng Năm Nay' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Kim Chỉ Nam Sống Và Tư Duy Cốt Lõi' : 'Bản Ngã Cốt Lõi Và Chân Dung Tâm Lý')}">
-                            Bản Ngã Cốt Lõi Và Chân Dung Tâm Lý
-                        </h5>
+                        <div>
+                            <h5 class="text-sm font-extrabold text-indigo-950 leading-tight"
+                                th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Bối Cảnh Thời Vận Và Năng Lượng Năm Nay' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Kim Chỉ Nam Sống Và Tư Duy Dẫn Đường' : 'Bản Ngã Cốt Lõi Và Con Người Thực Sự')}">
+                                Bản Ngã Cốt Lõi Và Con Người Thực Sự
+                            </h5>
+                            <span class="text-[10px] text-slate-400 font-medium block"
+                                  th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Năm cá nhân 9 năm • Năm Vệ Đà' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Chủ đạo / Đường đời • Hành tinh định mệnh' : 'Chủ đạo QH • Đường đời Decoz • Định mệnh Vệ Đà')}">
+                                Đối chiếu 3 trường phái
+                            </span>
+                        </div>
                     </div>
-                    <span class="text-[10px] uppercase font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded"
-                          th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Thời vận' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Kim chỉ nam' : 'Cốt lõi')}">Cốt lõi</span>
+                    <span class="text-[10px] uppercase font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded shrink-0"
+                          th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Thời vận' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Kim chỉ nam' : 'Bản ngã')}">Bản ngã</span>
                 </div>
-                <p th:id="'ai-chandung-' + ${qResult.maCauHoi}"
-                   th:text="${aiAnalysis != null ? aiAnalysis.getChanDung(qResult.maCauHoi) : 'Đang phân tích chân dung tâm lý và bản ngã cốt lõi của bạn...'}"
+                <p th:id="'ai-the1-' + ${qResult.maCauHoi}"
+                   th:text="${aiAnalysis != null ? aiAnalysis.getThe1(qResult.maCauHoi) : 'Đang phân tích bản ngã cốt lõi và con người thực sự của bạn...'}"
                    class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
-                    Đang phân tích chân dung tâm lý và bản ngã cốt lõi của bạn...
+                    Đang phân tích bản ngã cốt lõi và con người thực sự của bạn...
                 </p>
             </div>
 
-            <!-- Trụ 2: Thế mạnh vượt trội & Năng lực bẩm sinh -->
-            <div class="p-5 rounded-2xl bg-white border border-emerald-100 hover:border-emerald-300 shadow-xs hover:shadow-sm transition-all space-y-2.5">
+            <!-- Trụ 2: Thế giới nội tâm (Q1) / Nhịp tháng (Q2) / Kỷ luật thực tế (Q3) -->
+            <div class="p-5 rounded-2xl bg-white border border-purple-100 hover:border-purple-300 shadow-xs hover:shadow-sm transition-all space-y-2.5">
                 <div class="flex items-center justify-between gap-2">
                     <div class="flex items-center gap-2.5">
-                        <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-sm">
-                            <i class="fa-solid fa-gem"></i>
+                        <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center font-bold text-sm">
+                            <i th:class="${qResult.maCauHoi == 'GAP_GI' ? 'fa-solid fa-clock-rotate-left' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'fa-solid fa-bullseye' : 'fa-solid fa-heart')}"></i>
                         </span>
-                        <h5 class="text-sm font-extrabold text-emerald-950"
-                            th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Cơ Hội Đột Phá Và Đòn Bẩy Thuận Lợi' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Hành Động Ưu Tiên Và Kỷ Luật Tự Thân' : 'Thế Mạnh Vượt Trội Và Năng Lực Bẩm Sinh')}">
-                            Thế Mạnh Vượt Trội Và Năng Lực Bẩm Sinh
-                        </h5>
+                        <div>
+                            <h5 class="text-sm font-extrabold text-purple-950 leading-tight"
+                                th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Nhịp Điệu Tâm Lý Và Biến Chuyển Ngắn Hạn' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Kỷ Luật Hàng Ngày Và Môi Trường Phù Hợp' : 'Thế Giới Nội Tâm Và Khát Vọng Linh Hồn')}">
+                                Thế Giới Nội Tâm Và Khát Vọng Linh Hồn
+                            </h5>
+                            <span class="text-[10px] text-slate-400 font-medium block"
+                                  th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Tháng cá nhân QH/Decoz' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Rèn luyện Vệ Đà • Môi trường Sepharial' : 'Linh hồn QH • Khát vọng Decoz • Psychic Vệ Đà')}">
+                                Chiều sâu tâm thức
+                            </span>
+                        </div>
                     </div>
-                    <span class="text-[10px] uppercase font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded"
-                          th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Cơ hội' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Thực thi' : 'Thế mạnh')}">Thế mạnh</span>
+                    <span class="text-[10px] uppercase font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded shrink-0"
+                          th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Tháng cá nhân' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Kỷ luật' : 'Nội tâm')}">Nội tâm</span>
                 </div>
-                <p th:id="'ai-themanh-' + ${qResult.maCauHoi}"
-                   th:text="${aiAnalysis != null ? aiAnalysis.getTheManh(qResult.maCauHoi) : 'Đang nhận diện các thế mạnh và tài năng thiên bẩm của bạn...'}"
+                <p th:id="'ai-the2-' + ${qResult.maCauHoi}"
+                   th:text="${aiAnalysis != null ? aiAnalysis.getThe2(qResult.maCauHoi) : 'Đang khám phá thế giới nội tâm và khát vọng linh hồn của bạn...'}"
                    class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
-                    Đang nhận diện các thế mạnh và tài năng thiên bẩm của bạn...
+                    Đang khám phá thế giới nội tâm và khát vọng linh hồn của bạn...
                 </p>
             </div>
 
-            <!-- Trụ 3: Điểm mù & Mâu thuẫn nội tâm -->
-            <div class="p-5 rounded-2xl bg-white border border-rose-100 hover:border-rose-300 shadow-xs hover:shadow-sm transition-all space-y-2.5">
-                <div class="flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-2.5">
-                        <span class="w-8 h-8 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center font-bold text-sm">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                        </span>
-                        <h5 class="text-sm font-extrabold text-rose-950"
-                            th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Cạm Bẫy Tâm Lý Và Thử Thách Cần Tránh' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Rào Cản Tư Duy Và Thói Quen Cần Buông Bỏ' : 'Điểm Mù Và Mâu Thuẫn Cần Gỡ Bỏ')}">
-                            Điểm Mù Và Mâu Thuẫn Cần Gỡ Bỏ
-                        </h5>
-                    </div>
-                    <span class="text-[10px] uppercase font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded"
-                          th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Cảnh báo' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Chuyển hoá' : 'Thấu suốt')}">Thấu suốt</span>
-                </div>
-                <p th:id="'ai-vungtoi-' + ${qResult.maCauHoi}"
-                   th:text="${aiAnalysis != null ? aiAnalysis.getVungToi(qResult.maCauHoi) : 'Đang soi chiếu các điểm mù và thách thức nội tâm cần chuyển hoá...'}"
-                   class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
-                    Đang soi chiếu các điểm mù và thách thức nội tâm cần chuyển hoá...
-                </p>
-            </div>
-
-            <!-- Trụ 4: Lời khuyên định hướng & Hành động thực tế -->
+            <!-- Trụ 3: Khí chất biểu đạt (Q1) / Đỉnh cao hiện tại (Q2) / Chuyển hóa điểm khuyết (Q3) -->
             <div class="p-5 rounded-2xl bg-white border border-cyan-100 hover:border-cyan-300 shadow-xs hover:shadow-sm transition-all space-y-2.5">
                 <div class="flex items-center justify-between gap-2">
                     <div class="flex items-center gap-2.5">
                         <span class="w-8 h-8 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center font-bold text-sm">
-                            <i class="fa-solid fa-compass"></i>
+                            <i th:class="${qResult.maCauHoi == 'GAP_GI' ? 'fa-solid fa-mountain' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'fa-solid fa-wand-magic-sparkles' : 'fa-solid fa-masks-theater')}"></i>
                         </span>
-                        <h5 class="text-sm font-extrabold text-cyan-950"
-                            th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Bài Học Giai Đoạn Và Đỉnh Cao Đời Người' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Chiến Lược Dài Hạn Và Khai Phóng Tiềm Năng' : 'Định Hướng Hành Động Và Lời Khuyên Khai Vấn')}">
-                            Định Hướng Hành Động Và Lời Khuyên Khai Vấn
-                        </h5>
+                        <div>
+                            <h5 class="text-sm font-extrabold text-cyan-950 leading-tight"
+                                th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Đại Vận Đỉnh Cao Và Cột Mốc Hiện Tại' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Chuyển Hóa Điểm Khuyết Và Hóa Giải Thách Thức' : 'Khí Chất Giao Tiếp Và Phong Cách Biểu Đạt')}">
+                                Khí Chất Giao Tiếp Và Phong Cách Biểu Đạt
+                            </h5>
+                            <span class="text-[10px] text-slate-400 font-medium block"
+                                  th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Kim tự tháp Phillips • Pinnacle Decoz' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Phá thế tên riêng • Nợ nghiệp Decoz' : 'Biểu đạt QH • Nhân cách Decoz • Ngày sinh')}">
+                                Tương tác & Hiện thực hoá
+                            </span>
+                        </div>
                     </div>
-                    <span class="text-[10px] uppercase font-bold text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded"
-                          th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Bài học' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Chiến lược' : 'Hành động')}">Hành động</span>
+                    <span class="text-[10px] uppercase font-bold text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded shrink-0"
+                          th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Đỉnh cao' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Chuyển hoá' : 'Biểu đạt')}">Biểu đạt</span>
                 </div>
-                <p th:id="'ai-loikhuyen-' + ${qResult.maCauHoi}"
-                   th:text="${aiAnalysis != null ? aiAnalysis.getLoiKhuyen(qResult.maCauHoi) : 'Đang đúc kết lời khuyên và chiến lược phát triển cá nhân hoá dành cho bạn...'}"
+                <p th:id="'ai-the3-' + ${qResult.maCauHoi}"
+                   th:text="${aiAnalysis != null ? aiAnalysis.getThe3(qResult.maCauHoi) : 'Đang nhận diện khí chất giao tiếp và phong cách biểu đạt của bạn...'}"
                    class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
-                    Đang đúc kết lời khuyên và chiến lược phát triển cá nhân hoá dành cho bạn...
+                    Đang nhận diện khí chất giao tiếp và phong cách biểu đạt của bạn...
+                </p>
+            </div>
+
+            <!-- Trụ 4: Cấu trúc năng lượng (Q1) / Cạm bẫy giai đoạn (Q2) / Chiến lược dài hạn (Q3) -->
+            <div class="p-5 rounded-2xl bg-white border border-amber-100 hover:border-amber-300 shadow-xs hover:shadow-sm transition-all space-y-2.5">
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-sm">
+                            <i th:class="${qResult.maCauHoi == 'GAP_GI' ? 'fa-solid fa-triangle-exclamation' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'fa-solid fa-flag-checkered' : 'fa-solid fa-cubes')}"></i>
+                        </span>
+                        <div>
+                            <h5 class="text-sm font-extrabold text-amber-950 leading-tight"
+                                th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Cạm Bẫy Tâm Lý Và Thách Thức Giai Đoạn' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Chiến Lược Dài Hạn Và Đích Đến Viên Mãn' : 'Cấu Trúc Năng Lượng Và Điểm Khuyết Bẩm Sinh')}">
+                                Cấu Trúc Năng Lượng Và Điểm Khuyết Bẩm Sinh
+                            </h5>
+                            <span class="text-[10px] text-slate-400 font-medium block"
+                                  th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Cảnh báo thời vận chu kỳ' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Đỉnh kế tiếp • Nghề nghiệp Sepharial' : 'Ma trận 3x3 • Mũi tên Phillips • Ma phương Sepharial')}">
+                                Bản đồ tiềm năng
+                            </span>
+                        </div>
+                    </div>
+                    <span class="text-[10px] uppercase font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded shrink-0"
+                          th:text="${qResult.maCauHoi == 'GAP_GI' ? 'Cảnh báo' : (qResult.maCauHoi == 'DI_THE_NAO' ? 'Chiến lược' : 'Cấu trúc')}">Cấu trúc</span>
+                </div>
+                <p th:id="'ai-the4-' + ${qResult.maCauHoi}"
+                   th:text="${aiAnalysis != null ? aiAnalysis.getThe4(qResult.maCauHoi) : 'Đang soi chiếu cấu trúc năng lượng và điểm khuyết bẩm sinh của bạn...'}"
+                   class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
+                    Đang soi chiếu cấu trúc năng lượng và điểm khuyết bẩm sinh của bạn...
                 </p>
             </div>
         </div>
+
 
         <!-- Thông Điệp Khai Vấn Dành Riêng Cho Bạn -->
         <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/50 to-indigo-50/90 border border-indigo-200/80 space-y-2">

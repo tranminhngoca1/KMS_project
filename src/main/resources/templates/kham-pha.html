@@ -544,10 +544,14 @@
                         if (node && val) node.innerText = val;
                     };
                     setTxt('ai-tonghop-', qData.phanTichTongHop);
-                    setTxt('ai-chandung-', qData.chanDung);
-                    setTxt('ai-themanh-', qData.theManh);
-                    setTxt('ai-vungtoi-', qData.vungToi);
-                    setTxt('ai-loikhuyen-', qData.loiKhuyen);
+                    setTxt('ai-the1-', qData.the1 || qData.chanDung);
+                    setTxt('ai-the2-', qData.the2 || qData.theManh);
+                    setTxt('ai-the3-', qData.the3 || qData.vungToi);
+                    setTxt('ai-the4-', qData.the4 || qData.loiKhuyen);
+                    setTxt('ai-chandung-', qData.the1 || qData.chanDung);
+                    setTxt('ai-themanh-', qData.the2 || qData.theManh);
+                    setTxt('ai-vungtoi-', qData.the3 || qData.vungToi);
+                    setTxt('ai-loikhuyen-', qData.the4 || qData.loiKhuyen);
                 });
             }
             finishDecodingModal();

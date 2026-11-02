@@ -62,40 +62,82 @@ public class AiAnalysisDto {
         this.cauHoi = cauHoi;
     }
 
-    public String getChanDung(String maCauHoi) {
-        if (cauHoi == null) return "Đang phân tích chân dung tâm lý và bản ngã cốt lõi của bạn...";
+    public String getThe1(String maCauHoi) {
+        if (cauHoi == null) return getDefaultLoadingText(maCauHoi, 1);
         QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
-        if (qa == null || qa.getChanDung() == null || qa.getChanDung().isBlank()) {
-            return "Đang phân tích chân dung tâm lý và bản ngã cốt lõi của bạn...";
+        if (qa == null || qa.getThe1() == null || qa.getThe1().isBlank()) {
+            return getDefaultLoadingText(maCauHoi, 1);
         }
-        return qa.getChanDung();
+        return qa.getThe1();
+    }
+
+    public String getThe2(String maCauHoi) {
+        if (cauHoi == null) return getDefaultLoadingText(maCauHoi, 2);
+        QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
+        if (qa == null || qa.getThe2() == null || qa.getThe2().isBlank()) {
+            return getDefaultLoadingText(maCauHoi, 2);
+        }
+        return qa.getThe2();
+    }
+
+    public String getThe3(String maCauHoi) {
+        if (cauHoi == null) return getDefaultLoadingText(maCauHoi, 3);
+        QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
+        if (qa == null || qa.getThe3() == null || qa.getThe3().isBlank()) {
+            return getDefaultLoadingText(maCauHoi, 3);
+        }
+        return qa.getThe3();
+    }
+
+    public String getThe4(String maCauHoi) {
+        if (cauHoi == null) return getDefaultLoadingText(maCauHoi, 4);
+        QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
+        if (qa == null || qa.getThe4() == null || qa.getThe4().isBlank()) {
+            return getDefaultLoadingText(maCauHoi, 4);
+        }
+        return qa.getThe4();
+    }
+
+    // Backward-compatible aliases
+    public String getChanDung(String maCauHoi) {
+        return getThe1(maCauHoi);
     }
 
     public String getTheManh(String maCauHoi) {
-        if (cauHoi == null) return "Đang nhận diện các thế mạnh và tài năng thiên bẩm của bạn...";
-        QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
-        if (qa == null || qa.getTheManh() == null || qa.getTheManh().isBlank()) {
-            return "Đang nhận diện các thế mạnh và tài năng thiên bẩm của bạn...";
-        }
-        return qa.getTheManh();
+        return getThe2(maCauHoi);
     }
 
     public String getVungToi(String maCauHoi) {
-        if (cauHoi == null) return "Đang soi chiếu các điểm mù và thách thức nội tâm cần chuyển hoá...";
-        QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
-        if (qa == null || qa.getVungToi() == null || qa.getVungToi().isBlank()) {
-            return "Đang soi chiếu các điểm mù và thách thức nội tâm cần chuyển hoá...";
-        }
-        return qa.getVungToi();
+        return getThe3(maCauHoi);
     }
 
     public String getLoiKhuyen(String maCauHoi) {
-        if (cauHoi == null) return "Đang đúc kết lời khuyên và chiến lược phát triển cá nhân hoá dành cho bạn...";
-        QuestionAiAnalysis qa = cauHoi.get(maCauHoi);
-        if (qa == null || qa.getLoiKhuyen() == null || qa.getLoiKhuyen().isBlank()) {
-            return "Đang đúc kết lời khuyên và chiến lược phát triển cá nhân hoá dành cho bạn...";
+        return getThe4(maCauHoi);
+    }
+
+    private String getDefaultLoadingText(String maCauHoi, int theIndex) {
+        if ("GAP_GI".equalsIgnoreCase(maCauHoi)) {
+            return switch (theIndex) {
+                case 1 -> "Đang phân tích bối cảnh thời vận và năng lượng năm nay của bạn...";
+                case 2 -> "Đang nắm bắt nhịp điệu tâm lý và biến chuyển ngắn hạn của bạn...";
+                case 3 -> "Đang giải mã đại vận đỉnh cao và cột mốc trưởng thành của bạn...";
+                default -> "Đang soi chiếu cạm bẫy tâm lý và thách thức giai đoạn cần lưu tâm...";
+            };
+        } else if ("DI_THE_NAO".equalsIgnoreCase(maCauHoi)) {
+            return switch (theIndex) {
+                case 1 -> "Đang định vị kim chỉ nam sống và tư duy dẫn đường cho bạn...";
+                case 2 -> "Đang thiết lập kỷ luật hàng ngày và môi trường phù hợp cho bạn...";
+                case 3 -> "Đang gợi mở giải pháp chuyển hóa điểm khuyết và buông bỏ rào cản...";
+                default -> "Đang kiến tạo chiến lược dài hạn và đích đến viên mãn cho bạn...";
+            };
+        } else {
+            return switch (theIndex) {
+                case 1 -> "Đang phân tích bản ngã cốt lõi và con người thực sự của bạn...";
+                case 2 -> "Đang khám phá thế giới nội tâm và khát vọng linh hồn của bạn...";
+                case 3 -> "Đang nhận diện khí chất giao tiếp và phong cách biểu đạt của bạn...";
+                default -> "Đang soi chiếu cấu trúc năng lượng và điểm khuyết bẩm sinh của bạn...";
+            };
         }
-        return qa.getLoiKhuyen();
     }
 
     public String getTongHop(String maCauHoi) {
@@ -109,10 +151,14 @@ public class AiAnalysisDto {
 
     public static class QuestionAiAnalysis {
         private String phanTichTongHop = "";
-        private String chanDung = "";         // Bản ngã & chân dung cốt lõi
-        private String theManh = "";          // Thế mạnh vượt trội & năng khiếu
-        private String vungToi = "";          // Điểm mù & mâu thuẫn nội tâm
-        private String loiKhuyen = "";        // Lời khuyên định hướng & hành động
+        private String the1 = "";             // Thẻ 1 theo từng câu hỏi
+        private String the2 = "";             // Thẻ 2 theo từng câu hỏi
+        private String the3 = "";             // Thẻ 3 theo từng câu hỏi
+        private String the4 = "";             // Thẻ 4 theo từng câu hỏi
+        private String chanDung = "";         // Alias tương thích cũ
+        private String theManh = "";          // Alias tương thích cũ
+        private String vungToi = "";          // Alias tương thích cũ
+        private String loiKhuyen = "";        // Alias tương thích cũ
         private String diemDongThuanAI = "";
         private String diemKhacBietAI = "";
         private String gocNhinPythagoras = "";
@@ -130,36 +176,72 @@ public class AiAnalysisDto {
             this.phanTichTongHop = phanTichTongHop;
         }
 
+        public String getThe1() {
+            return (the1 != null && !the1.isBlank()) ? the1 : (chanDung != null ? chanDung : "");
+        }
+
+        public void setThe1(String the1) {
+            this.the1 = the1;
+            this.chanDung = the1;
+        }
+
+        public String getThe2() {
+            return (the2 != null && !the2.isBlank()) ? the2 : (theManh != null ? theManh : "");
+        }
+
+        public void setThe2(String the2) {
+            this.the2 = the2;
+            this.theManh = the2;
+        }
+
+        public String getThe3() {
+            return (the3 != null && !the3.isBlank()) ? the3 : (vungToi != null ? vungToi : "");
+        }
+
+        public void setThe3(String the3) {
+            this.the3 = the3;
+            this.vungToi = the3;
+        }
+
+        public String getThe4() {
+            return (the4 != null && !the4.isBlank()) ? the4 : (loiKhuyen != null ? loiKhuyen : "");
+        }
+
+        public void setThe4(String the4) {
+            this.the4 = the4;
+            this.loiKhuyen = the4;
+        }
+
         public String getChanDung() {
-            return chanDung;
+            return getThe1();
         }
 
         public void setChanDung(String chanDung) {
-            this.chanDung = chanDung;
+            setThe1(chanDung);
         }
 
         public String getTheManh() {
-            return theManh;
+            return getThe2();
         }
 
         public void setTheManh(String theManh) {
-            this.theManh = theManh;
+            setThe2(theManh);
         }
 
         public String getVungToi() {
-            return vungToi;
+            return getThe3();
         }
 
         public void setVungToi(String vungToi) {
-            this.vungToi = vungToi;
+            setThe3(vungToi);
         }
 
         public String getLoiKhuyen() {
-            return loiKhuyen;
+            return getThe4();
         }
 
         public void setLoiKhuyen(String loiKhuyen) {
-            this.loiKhuyen = loiKhuyen;
+            setThe4(loiKhuyen);
         }
 
         public String getDiemDongThuanAI() {
