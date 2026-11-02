@@ -85,6 +85,12 @@ public class KhamPhaController {
 
         KhamPhaResult ketQua = khamPhaService.khamPha(hoTen, birthDate);
         model.addAttribute("ketQua", ketQua);
+
+        try {
+            AiAnalysisDto aiAnalysis = aiAnalysisService.analyzeProfile(ketQua, false);
+            model.addAttribute("aiAnalysis", aiAnalysis);
+        } catch (Exception ignored) {
+        }
         return "kham-pha";
     }
 

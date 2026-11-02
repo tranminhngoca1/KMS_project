@@ -211,6 +211,7 @@
                     <span class="text-[10px] uppercase font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Cốt lõi</span>
                 </div>
                 <p th:id="'ai-chandung-' + ${qResult.maCauHoi}"
+                   th:text="${aiAnalysis != null and aiAnalysis.cauHoi != null and aiAnalysis.cauHoi.get(qResult.maCauHoi) != null and !aiAnalysis.cauHoi.get(qResult.maCauHoi).chanDung.isBlank() ? aiAnalysis.cauHoi.get(qResult.maCauHoi).chanDung : 'Đang phân tích chân dung tâm lý và bản ngã cốt lõi của bạn...'}"
                    class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
                     Đang phân tích chân dung tâm lý và bản ngã cốt lõi của bạn...
                 </p>
@@ -228,6 +229,7 @@
                     <span class="text-[10px] uppercase font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Thế mạnh</span>
                 </div>
                 <p th:id="'ai-themanh-' + ${qResult.maCauHoi}"
+                   th:text="${aiAnalysis != null and aiAnalysis.cauHoi != null and aiAnalysis.cauHoi.get(qResult.maCauHoi) != null and !aiAnalysis.cauHoi.get(qResult.maCauHoi).theManh.isBlank() ? aiAnalysis.cauHoi.get(qResult.maCauHoi).theManh : 'Đang nhận diện các thế mạnh và tài năng thiên bẩm của bạn...'}"
                    class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
                     Đang nhận diện các thế mạnh và tài năng thiên bẩm của bạn...
                 </p>
@@ -245,6 +247,7 @@
                     <span class="text-[10px] uppercase font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">Thấu suốt</span>
                 </div>
                 <p th:id="'ai-vungtoi-' + ${qResult.maCauHoi}"
+                   th:text="${aiAnalysis != null and aiAnalysis.cauHoi != null and aiAnalysis.cauHoi.get(qResult.maCauHoi) != null and !aiAnalysis.cauHoi.get(qResult.maCauHoi).vungToi.isBlank() ? aiAnalysis.cauHoi.get(qResult.maCauHoi).vungToi : 'Đang soi chiếu các điểm mù và thách thức nội tâm cần chuyển hoá...'}"
                    class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
                     Đang soi chiếu các điểm mù và thách thức nội tâm cần chuyển hoá...
                 </p>
@@ -262,6 +265,7 @@
                     <span class="text-[10px] uppercase font-bold text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded">Hành động</span>
                 </div>
                 <p th:id="'ai-loikhuyen-' + ${qResult.maCauHoi}"
+                   th:text="${aiAnalysis != null and aiAnalysis.cauHoi != null and aiAnalysis.cauHoi.get(qResult.maCauHoi) != null and !aiAnalysis.cauHoi.get(qResult.maCauHoi).loiKhuyen.isBlank() ? aiAnalysis.cauHoi.get(qResult.maCauHoi).loiKhuyen : 'Đang đúc kết lời khuyên và chiến lược phát triển cá nhân hoá dành cho bạn...'}"
                    class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
                     Đang đúc kết lời khuyên và chiến lược phát triển cá nhân hoá dành cho bạn...
                 </p>
@@ -275,6 +279,7 @@
                 <span>Thông Điệp Khai Vấn Dành Riêng Cho Bạn</span>
             </div>
             <p th:id="'ai-tonghop-' + ${qResult.maCauHoi}"
+               th:text="${aiAnalysis != null and aiAnalysis.cauHoi != null and aiAnalysis.cauHoi.get(qResult.maCauHoi) != null and !aiAnalysis.cauHoi.get(qResult.maCauHoi).phanTichTongHop.isBlank() ? aiAnalysis.cauHoi.get(qResult.maCauHoi).phanTichTongHop : 'Đang phân tích và đúc kết thông điệp định hướng dành riêng cho bạn...'}"
                class="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
                 Đang phân tích và đúc kết thông điệp định hướng dành riêng cho bạn...
             </p>
