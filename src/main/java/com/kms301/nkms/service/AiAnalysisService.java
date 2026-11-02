@@ -33,9 +33,10 @@ import java.util.stream.Collectors;
  * Luận giải cá nhân hoá chuyên sâu với vai trò Chuyên gia Khai vấn Cuộc đời (Life Coach),
  * văn phong ấm áp, thấu cảm, gần gũi, súc tích và mạch lạc.
  *
- * Lưu ý quan trọng:
- * - Backend kiểm soát nghiêm ngặt chỉ dựa trên tri thức đã cấp, không tự thêm tri thức ngoài (zodiac, tarot, bói toán).
- * - Luận giải tập trung hoàn toàn vào con người người dùng, KHÔNG chèn tên sách, tác giả hay trường phái vào văn bản.
+ * Tiêu chí cốt lõi:
+ * - TUYỆT ĐỐI TRUNG TÍNH VỀ GIỚI TÍNH: Không phán đoán hay phân biệt giới tính qua họ tên, xưng hô hoàn toàn bằng "bạn" / "tôi".
+ * - BẢO MẬT NGUỒN HỌC THUẬT: Backend kiểm soát nghiêm ngặt chỉ dựa trên tri thức đã cấp, không tự thêm tri thức ngoài (zodiac, tarot, bói toán).
+ * - TẬP TRUNG CON NGƯỜI: Không chèn tên sách, tác giả hay trường phái vào văn bản làm loãng trải nghiệm người dùng.
  */
 @Service
 public class AiAnalysisService {
@@ -183,22 +184,22 @@ public class AiAnalysisService {
                 dto.setSuccess(true);
                 dto.setAiGenerated(true);
                 dto.setModelName("Hệ Thống KMS Đa Trường Phái");
-                dto.setTongQuanHoSo(parsed.path("tongQuanHoSo").asText(""));
+                dto.setTongQuanHoSo(sanitizeGenderPronouns(parsed.path("tongQuanHoSo").asText("")));
 
                 Map<String, AiAnalysisDto.QuestionAiAnalysis> qMap = new HashMap<>();
                 for (String qKey : List.of("AI", "GAP_GI", "DI_THE_NAO")) {
                     JsonNode qNode = parsed.path("cauHoi").path(qKey);
                     AiAnalysisDto.QuestionAiAnalysis qa = new AiAnalysisDto.QuestionAiAnalysis();
-                    qa.setPhanTichTongHop(qNode.path("phanTichTongHop").asText(""));
-                    qa.setChanDung(qNode.path("chanDung").asText(""));
-                    qa.setTheManh(qNode.path("theManh").asText(""));
-                    qa.setVungToi(qNode.path("vungToi").asText(""));
-                    qa.setLoiKhuyen(qNode.path("loiKhuyen").asText(""));
-                    qa.setDiemDongThuanAI(qNode.path("diemDongThuanAI").asText(""));
-                    qa.setDiemKhacBietAI(qNode.path("diemKhacBietAI").asText(""));
-                    qa.setGocNhinPythagoras(qNode.path("gocNhinPythagoras").asText(""));
-                    qa.setGocNhinVeda(qNode.path("gocNhinVeda").asText(""));
-                    qa.setGocNhinKabbalah(qNode.path("gocNhinKabbalah").asText(""));
+                    qa.setPhanTichTongHop(sanitizeGenderPronouns(qNode.path("phanTichTongHop").asText("")));
+                    qa.setChanDung(sanitizeGenderPronouns(qNode.path("chanDung").asText("")));
+                    qa.setTheManh(sanitizeGenderPronouns(qNode.path("theManh").asText("")));
+                    qa.setVungToi(sanitizeGenderPronouns(qNode.path("vungToi").asText("")));
+                    qa.setLoiKhuyen(sanitizeGenderPronouns(qNode.path("loiKhuyen").asText("")));
+                    qa.setDiemDongThuanAI(sanitizeGenderPronouns(qNode.path("diemDongThuanAI").asText("")));
+                    qa.setDiemKhacBietAI(sanitizeGenderPronouns(qNode.path("diemKhacBietAI").asText("")));
+                    qa.setGocNhinPythagoras(sanitizeGenderPronouns(qNode.path("gocNhinPythagoras").asText("")));
+                    qa.setGocNhinVeda(sanitizeGenderPronouns(qNode.path("gocNhinVeda").asText("")));
+                    qa.setGocNhinKabbalah(sanitizeGenderPronouns(qNode.path("gocNhinKabbalah").asText("")));
                     qMap.put(qKey, qa);
                 }
                 dto.setCauHoi(qMap);
@@ -243,11 +244,19 @@ public class AiAnalysisService {
         sb.append("Bạn là Chuyên gia Khai vấn Tâm lý & Cuộc đời (Life Coach). Bạn đang đọc hồ sơ của '").append(originalName).append("' (").append(hs.getTuoiHienTai()).append(" tuổi).\n");
         sb.append("Hãy viết bài luận giải cá nhân hoá ẤM ÁP, GẦN GŨI, THẤU CẢM NHƯNG CÔ ĐỌNG, SÚC TÍCH (tránh viết dài lê thê, mỗi thẻ 1-2 đoạn ngắn gọn khoảng 80 - 110 từ).\n\n");
 
-        sb.append("QUY TẮC BẮT BUỘC:\n");
-        sb.append("1. TUYỆT ĐỐI KHÔNG nhắc đến tên trường phái, tên sách hay tác giả trong bài viết (TUYỆT ĐỐI KHÔNG viết: 'theo Pythagoras', 'theo Harish Johari', 'theo Vệ Đà', 'theo Kabbalah', 'theo David Phillips'... Người đọc không quan tâm nguồn sách, họ chỉ muốn nghe về chính con người họ).\n");
-        sb.append("2. BACKEND ĐÃ CUNG CẤP ĐỦ DỮ LIỆU: Chỉ dựa vào dữ liệu trong hồ sơ dưới đây để phân tích, TUYỆT ĐỐI KHÔNG tự bịa thêm các tri thức ngoài như 12 cung hoàng đạo, Tarot, bói toán hay tử vi.\n");
-        sb.append("3. VĂN PHONG TỰ NHIÊN, GẦN GŨI: Xưng 'tôi' - 'bạn' (hoặc gọi thân mật '").append(tenGoi).append("'). Lời văn chân thành, ấm áp, chạm đến cảm xúc nhưng CÔ ĐỌNG, MẠCH LẠC.\n");
-        sb.append("4. ĐỘ DÀI VỪA PHẢI, DỄ ĐỌC: Mỗi mục chỉ viết từ 80 - 110 từ (1 đến 2 đoạn văn ngắn, súc tích, đi thẳng vào trọng tâm, không lan man).\n\n");
+        sb.append("QUY TẮC BẮT BUỘC VỀ VĂN PHONG VÀ NỘI DUNG:\n");
+        sb.append("1. TUYỆT ĐỐI TRUNG TÍNH VỀ GIỚI TÍNH - KHÔNG ĐOÁN GIỚI TÍNH DỰA VÀO HỌ TÊN:\n");
+        sb.append("   - Thần số học giải mã rung động năng lượng của con người, hoàn toàn KHÔNG phân biệt nam nữ hay giới tính sinh học.\n");
+        sb.append("   - NGHIÊM CẤM dùng các từ chỉ giới tính như: 'anh', 'chị', 'ông', 'bà', 'cô', 'chú', 'chàng trai', 'cô gái', 'nam', 'nữ', 'người đàn ông', 'người phụ nữ'...\n");
+        sb.append("   - CHỈ ĐƯỢC XƯNG HÔ DUY NHẤT LÀ 'tôi' VÀ 'bạn' (hoặc 'bạn ").append(tenGoi).append("'). Luôn xưng hô tự nhiên: 'Chào bạn ").append(tenGoi).append("', 'ở bạn, tôi thấy...', 'bạn sở hữu...', 'lời khuyên dành cho bạn là...'.\n");
+        sb.append("2. TUYỆT ĐỐI KHÔNG NHẮC TÊN SÁCH, TÁC GIẢ HAY TRƯỜNG PHÁI:\n");
+        sb.append("   - KHÔNG viết: 'theo Pythagoras', 'theo Harish Johari', 'theo Vệ Đà', 'theo Kabbalah', 'theo David Phillips'... Người đọc chỉ quan tâm đến tính cách và cuộc đời họ.\n");
+        sb.append("3. BACKEND ĐÃ CUNG CẤP ĐỦ DỮ LIỆU:\n");
+        sb.append("   - Chỉ dựa vào dữ liệu trong hồ sơ dưới đây để phân tích, TUYỆT ĐỐI KHÔNG tự bịa thêm các tri thức ngoài như 12 cung hoàng đạo, Tarot, bói toán hay tử vi.\n");
+        sb.append("4. VĂN PHONG TỰ NHIÊN, GẦN GŨI, ẤM ÁP:\n");
+        sb.append("   - Lời văn chân thành, thấu hiểu tâm lý, chạm đến cảm xúc nhưng CÔ ĐỌNG, MẠCH LẠC.\n");
+        sb.append("5. ĐỘ DÀI VỪA PHẢI, DỄ ĐỌC:\n");
+        sb.append("   - Mỗi mục chỉ viết từ 80 - 110 từ (1 đến 2 đoạn văn ngắn, súc tích, đi thẳng vào trọng tâm, không lan man).\n\n");
 
         sb.append("=== DỮ LIỆU HỒ SƠ ĐÃ TÍNH TOÁN ===\n");
         sb.append("- Tên: ").append(originalName).append(" (").append(hs.getTuoiHienTai()).append(" tuổi, Năm xét: ").append(hs.getNamHienTai()).append(", Tháng xét: ").append(hs.getThangHienTai()).append(")\n");
@@ -269,34 +278,56 @@ public class AiAnalysisService {
                 .append(seph.getMagicSquare().getDominantPlane()).append("\n\n");
 
         sb.append("=== YÊU CẦU ĐỊNH DẠNG JSON TRẢ VỀ ===\n");
-        sb.append("Trả về ĐÚNG 1 JSON object (không bọc markdown, không dùng ```json). Từng mục viết súc tích, độ dài 80-110 từ:\n");
+        sb.append("Trả về ĐÚNG 1 JSON object (không bọc markdown, không dùng ```json). Từng mục viết súc tích, độ dài 80-110 từ, xưng 'tôi' - 'bạn', hoàn toàn trung tính giới tính:\n");
         sb.append("{\n");
-        sb.append("  \"tongQuanHoSo\": \"Đoạn văn ngắn 70-90 từ ấm áp, súc tích đúc kết thần thái của ").append(tenGoi).append("...\",\n");
+        sb.append("  \"tongQuanHoSo\": \"Đoạn văn ngắn 70-90 từ ấm áp, súc tích đúc kết thần thái của bạn ").append(tenGoi).append("...\",\n");
         sb.append("  \"cauHoi\": {\n");
         sb.append("    \"AI\": {\n");
         sb.append("      \"phanTichTongHop\": \"50-70 từ tóm tắt cốt lõi Tôi là ai...\",\n");
-        sb.append("      \"chanDung\": \"80-110 từ về bản ngã cốt lõi, sự kết hợp giữa vẻ ngoài và chiều sâu nội tâm...\",\n");
-        sb.append("      \"theManh\": \"80-110 từ về thế mạnh thực tế, khả năng hành động và biểu đạt...\",\n");
-        sb.append("      \"vungToi\": \"80-110 từ về điểm mù cầu toàn, dễ cô độc, áp lực nội tâm...\",\n");
-        sb.append("      \"loiKhuyen\": \"80-110 từ về môi trường phát triển và lời khuyên thiết thực...\"\n");
+        sb.append("      \"chanDung\": \"80-110 từ về bản ngã cốt lõi của bạn, sự kết hợp giữa vẻ ngoài và chiều sâu nội tâm...\",\n");
+        sb.append("      \"theManh\": \"80-110 từ về thế mạnh thực tế, khả năng hành động và biểu đạt của bạn...\",\n");
+        sb.append("      \"vungToi\": \"80-110 từ về điểm mù cầu toàn, dễ cô độc, áp lực nội tâm của bạn...\",\n");
+        sb.append("      \"loiKhuyen\": \"80-110 từ về môi trường phát triển và lời khuyên thiết thực cho bạn...\"\n");
         sb.append("    },\n");
         sb.append("    \"GAP_GI\": {\n");
         sb.append("      \"phanTichTongHop\": \"50-70 từ tóm tắt thời vận năm nay...\",\n");
-        sb.append("      \"chanDung\": \"80-110 từ về năng lượng năm nay và biến chuyển tâm lý...\",\n");
-        sb.append("      \"theManh\": \"80-110 từ về cơ hội và đòn bẩy thuận lợi trong năm nay...\",\n");
+        sb.append("      \"chanDung\": \"80-110 từ về năng lượng năm nay và biến chuyển tâm lý của bạn...\",\n");
+        sb.append("      \"theManh\": \"80-110 từ về cơ hội và đòn bẩy thuận lợi trong năm nay dành cho bạn...\",\n");
         sb.append("      \"vungToi\": \"80-110 từ về cạm bẫy tâm lý và điều cần tránh trong năm nay...\",\n");
-        sb.append("      \"loiKhuyen\": \"80-110 từ về bài học giai đoạn tuổi ").append(hs.getTuoiHienTai()).append("...\"\n");
+        sb.append("      \"loiKhuyen\": \"80-110 từ về bài học giai đoạn tuổi ").append(hs.getTuoiHienTai()).append(" của bạn...\"\n");
         sb.append("    },\n");
         sb.append("    \"DI_THE_NAO\": {\n");
         sb.append("      \"phanTichTongHop\": \"50-70 từ tóm tắt kim chỉ nam...\",\n");
-        sb.append("      \"chanDung\": \"80-110 từ về kim chỉ nam giữ tâm thế an nhiên, vững vàng...\",\n");
-        sb.append("      \"theManh\": \"80-110 từ về hành động cụ thể, kỷ luật tự thân cần bắt đầu...\",\n");
-        sb.append("      \"vungToi\": \"80-110 từ về thói quen cần buông bỏ để nhẹ gánh...\",\n");
-        sb.append("      \"loiKhuyen\": \"80-110 từ về chiến lược sống trọn vẹn và an lạc...\"\n");
+        sb.append("      \"chanDung\": \"80-110 từ về kim chỉ nam giữ tâm thế an nhiên, vững vàng của bạn...\",\n");
+        sb.append("      \"theManh\": \"80-110 từ về hành động cụ thể, kỷ luật tự thân bạn nên bắt đầu...\",\n");
+        sb.append("      \"vungToi\": \"80-110 từ về thói quen bạn nên buông bỏ để nhẹ gánh...\",\n");
+        sb.append("      \"loiKhuyen\": \"80-110 từ về chiến lược sống trọn vẹn và an lạc dành cho bạn...\"\n");
         sb.append("    }\n");
         sb.append("  }\n");
         sb.append("}");
         return sb.toString();
+    }
+
+    /**
+     * Khử bỏ triệt để các đại từ giả định giới tính nếu mô hình vô tình sinh ra,
+     * đảm bảo kết quả trả về cho người dùng luôn trung tính, tôn trọng và văn minh.
+     */
+    private String sanitizeGenderPronouns(String text) {
+        if (text == null || text.isBlank()) return "";
+        return text
+                .replaceAll("(?i)\\b(chào\\s+)?(anh|chị)\\s+", "bạn ")
+                .replaceAll("(?i)\\bở\\s+(anh|chị)\\b", "ở bạn")
+                .replaceAll("(?i)\\bcủa\\s+(anh|chị)\\b", "của bạn")
+                .replaceAll("(?i)\\bcho\\s+(anh|chị)\\b", "cho bạn")
+                .replaceAll("(?i)\\bvới\\s+(anh|chị)\\b", "với bạn")
+                .replaceAll("(?i)\\b(anh|chị)\\s+mang\\b", "bạn mang")
+                .replaceAll("(?i)\\b(anh|chị)\\s+là\\b", "bạn là")
+                .replaceAll("(?i)\\b(anh|chị)\\s+có\\b", "bạn có")
+                .replaceAll("(?i)\\b(anh|chị)\\s+sở\\s+hữu\\b", "bạn sở hữu")
+                .replaceAll("(?i)\\b(anh|chị)\\s+hãy\\b", "bạn hãy")
+                .replaceAll("(?i)\\b(anh|chị)\\s+đang\\b", "bạn đang")
+                .replaceAll("(?i)\\b(anh|chị)\\s+cần\\b", "bạn cần")
+                .replaceAll("(?i)\\b(anh|chị)\\b", "bạn");
     }
 
     private AiAnalysisDto buildSynthesizedFallback(KhamPhaResult result) {
@@ -315,50 +346,50 @@ public class AiAnalysisService {
         dto.setAiGenerated(false);
         dto.setModelName("Hệ Thống KMS Đa Trường Phái");
 
-        dto.setTongQuanHoSo(String.format(
-                "Chào %s, ở tuổi %d, tôi thấy một chân dung đầy bản lĩnh: Bạn là người có tư chất tự chủ, nhạy bén trong hành động nhưng luôn nuôi dưỡng một thế giới nội tâm sâu sắc. Bạn sở hữu sự kiên định để hiện thực hóa các mục tiêu, đồng thời có khả năng thấu cảm và lắng nghe người khác. Đây là giai đoạn bạn bắt đầu tích lũy được sự vững vàng và chín muồi trong nhận thức cuộc sống.",
+        dto.setTongQuanHoSo(sanitizeGenderPronouns(String.format(
+                "Chào bạn %s. Ở tuổi %d, tôi thấy một chân dung đầy bản lĩnh: Bạn là người có tư chất tự chủ, nhạy bén trong hành động nhưng luôn nuôi dưỡng một thế giới nội tâm sâu sắc. Bạn sở hữu sự kiên định để hiện thực hóa các mục tiêu, đồng thời có khả năng thấu cảm và lắng nghe người khác. Đây là giai đoạn bạn bắt đầu tích lũy được sự vững vàng và chín muồi trong nhận thức cuộc sống.",
                 tenGoi, hs.getTuoiHienTai()
-        ));
+        )));
 
         Map<String, AiAnalysisDto.QuestionAiAnalysis> map = new HashMap<>();
 
         // CÂU HỎI 1: TÔI LÀ AI?
         AiAnalysisDto.QuestionAiAnalysis qaAi = new AiAnalysisDto.QuestionAiAnalysis();
-        qaAi.setPhanTichTongHop(String.format(
+        qaAi.setPhanTichTongHop(sanitizeGenderPronouns(String.format(
                 "Bạn mang tố chất của một người độc lập, kiên định và giàu trực giác. Bạn hành động quyết đoán nhưng luôn đòi hỏi sự chân thành và chiều sâu trong mọi việc.",
                 tenGoi
-        ));
-        qaAi.setChanDung(getPersonalityPortrait(chuDao, tenGoi));
-        qaAi.setTheManh(getStrengthsPortrait(chuDao));
-        qaAi.setVungToi(getBlindspotsPortrait(chuDao));
-        qaAi.setLoiKhuyen(getCareerAndLifeAdvice(chuDao, tenGoi));
+        )));
+        qaAi.setChanDung(sanitizeGenderPronouns(getPersonalityPortrait(chuDao, tenGoi)));
+        qaAi.setTheManh(sanitizeGenderPronouns(getStrengthsPortrait(chuDao)));
+        qaAi.setVungToi(sanitizeGenderPronouns(getBlindspotsPortrait(chuDao)));
+        qaAi.setLoiKhuyen(sanitizeGenderPronouns(getCareerAndLifeAdvice(chuDao, tenGoi)));
         map.put("AI", qaAi);
 
         // CÂU HỎI 2: TÔI ĐANG GẶP GÌ?
         AiAnalysisDto.QuestionAiAnalysis qaGap = new AiAnalysisDto.QuestionAiAnalysis();
-        qaGap.setPhanTichTongHop(String.format(
+        qaGap.setPhanTichTongHop(sanitizeGenderPronouns(String.format(
                 "Năm nay (%d, tuổi %d), bạn đang bước vào chu kỳ số %s: Thời điểm quan trọng để bạn điều chỉnh nhịp sống, củng cố nội lực và chuẩn bị cho những bước tiến lớn.",
                 hs.getNamHienTai(), hs.getTuoiHienTai(), qh.getNamCaNhan().getDisplayValue()
-        ));
-        qaGap.setChanDung(getYearEnergyPortrait(namCaNhanNum, hs.getTuoiHienTai(), tenGoi));
-        qaGap.setTheManh(getYearOpportunitiesPortrait(namCaNhanNum));
-        qaGap.setVungToi(getYearChallengesPortrait(namCaNhanNum));
-        qaGap.setLoiKhuyen(String.format("Ở tuổi %d, giai đoạn này nhắc nhở %s cần giữ sự điềm tĩnh, lấy việc rèn luyện sự vững vàng làm gốc rễ thay vì nóng vội tìm kiếm thành quả trước mắt.",
-                hs.getTuoiHienTai(), tenGoi));
+        )));
+        qaGap.setChanDung(sanitizeGenderPronouns(getYearEnergyPortrait(namCaNhanNum, hs.getTuoiHienTai(), tenGoi)));
+        qaGap.setTheManh(sanitizeGenderPronouns(getYearOpportunitiesPortrait(namCaNhanNum)));
+        qaGap.setVungToi(sanitizeGenderPronouns(getYearChallengesPortrait(namCaNhanNum)));
+        qaGap.setLoiKhuyen(sanitizeGenderPronouns(String.format("Ở tuổi %d, giai đoạn này nhắc nhở bạn cần giữ sự điềm tĩnh, lấy việc rèn luyện sự vững vàng làm gốc rễ thay vì nóng vội tìm kiếm thành quả trước mắt.",
+                hs.getTuoiHienTai())));
         map.put("GAP_GI", qaGap);
 
         // CÂU HỎI 3: TÔI NÊN ĐI THẾ NÀO?
         AiAnalysisDto.QuestionAiAnalysis qaDi = new AiAnalysisDto.QuestionAiAnalysis();
-        qaDi.setPhanTichTongHop(String.format(
-                "Kim chỉ nam then chốt dành cho %s là học cách cân bằng giữa hành động thực tế và sự bình yên nội tâm, kiên định với những giá trị cốt lõi.",
+        qaDi.setPhanTichTongHop(sanitizeGenderPronouns(String.format(
+                "Kim chỉ nam then chốt dành cho bạn là học cách cân bằng giữa hành động thực tế và sự bình yên nội tâm, kiên định với những giá trị cốt lõi.",
                 tenGoi
+        )));
+        qaDi.setChanDung(sanitizeGenderPronouns(
+                "Thái độ sống quan trọng nhất là học cách tin tưởng vào trực giác và chấp nhận những điều chưa hoàn hảo. Đừng để nỗi sợ thất bại cản bước, nhưng hãy biết dành thời gian tĩnh lặng để tái tạo năng lượng."
         ));
-        qaDi.setChanDung(String.format(
-                "Thái độ sống quan trọng nhất là học cách tin tưởng vào trực giác và chấp nhận những điều chưa hoàn hảo. Đừng để nỗi sợ thất bại cản bước, nhưng hãy biết dành thời gian tĩnh lặng để tái tạo năng lượng.",
-                tenGoi));
-        qaDi.setTheManh("Hãy thiết lập kỷ luật cá nhân hàng ngày, tập trung hoàn thành dứt điểm từng mục tiêu trọng tâm và chủ động nuôi dưỡng các mối quan hệ có chiều sâu.");
-        qaDi.setVungToi("Hãy buông bỏ thói quen trì hoãn do quá cầu toàn, bớt lo âu về những điều chưa xảy ra và học cách từ chối những việc làm tiêu hao năng lượng.");
-        qaDi.setLoiKhuyen("Chiến lược dài hạn: Hãy kết hợp sự quyết đoán trong hành động với sự điềm tĩnh trong tâm thức để làm chủ cuộc đời mình một cách an nhiên.");
+        qaDi.setTheManh(sanitizeGenderPronouns("Hãy thiết lập kỷ luật cá nhân hàng ngày, tập trung hoàn thành dứt điểm từng mục tiêu trọng tâm và chủ động nuôi dưỡng các mối quan hệ có chiều sâu."));
+        qaDi.setVungToi(sanitizeGenderPronouns("Hãy buông bỏ thói quen trì hoãn do quá cầu toàn, bớt lo âu về những điều chưa xảy ra và học cách từ chối những việc làm tiêu hao năng lượng."));
+        qaDi.setLoiKhuyen(sanitizeGenderPronouns("Chiến lược dài hạn: Hãy kết hợp sự quyết đoán trong hành động với sự điềm tĩnh trong tâm thức để làm chủ cuộc đời mình một cách an nhiên."));
         map.put("DI_THE_NAO", qaDi);
 
         dto.setCauHoi(map);
@@ -368,47 +399,47 @@ public class AiAnalysisService {
     private String getPersonalityPortrait(int chuDao, String tenGoi) {
         return switch (chuDao) {
             case 3 -> String.format(
-                    "%s là người sở hữu tư duy sáng tạo linh hoạt, hoạt ngôn và có khiếu hài hước tự nhiên. Bạn luôn mang lại bầu không khí vui vẻ và tràn đầy năng lượng cho người xung quanh.\n\n" +
+                    "Bạn %s là người sở hữu tư duy sáng tạo linh hoạt, hoạt ngôn và có khiếu hài hước tự nhiên. Bạn luôn mang lại bầu không khí vui vẻ và tràn đầy năng lượng cho người xung quanh.\n\n" +
                     "Tuy nhiên, đằng sau vẻ ngoài sôi nổi là một nội tâm tinh tế, nhạy cảm với cảm xúc và luôn khao khát tìm kiếm sự thấu hiểu chân thành.",
                     tenGoi);
             case 4 -> String.format(
-                    "%s là mẫu người thực tế, cẩn trọng, có tinh thần trách nhiệm và tính kỷ luật cao. Bạn coi trọng sự chuẩn mực, an toàn và luôn làm việc có quy trình rõ ràng.\n\n" +
-                    "Bạn luôn là điểm tựa đáng tin cậy nhất cho gia đình và bạn bè trong những lúc khó khăn nhờ sự kiên định và bền bỉ phi thường.",
+                    "Bạn %s là mẫu người thực tế, cẩn trọng, có tinh thần trách nhiệm và tính kỷ luật cao. Bạn coi trọng sự chuẩn mực, an toàn và luôn làm việc có quy trình rõ ràng.\n\n" +
+                    "Bạn luôn là điểm tựa đáng tin cậy nhất cho những người xung quanh trong những lúc khó khăn nhờ sự kiên định và bền bỉ phi thường.",
                     tenGoi);
             case 5 -> String.format(
-                    "%s là người yêu thích tự do, thích khám phá và ghét sự rập khuôn tẻ nhạt. Bạn có khả năng thích nghi rất nhanh với sự thay đổi và sở hữu tài ngoại giao tự nhiên.\n\n" +
+                    "Bạn %s là người yêu thích tự do, thích khám phá và ghét sự rập khuôn tẻ nhạt. Bạn có khả năng thích nghi rất nhanh với sự thay đổi và sở hữu tài ngoại giao tự nhiên.\n\n" +
                     "Bạn luôn tìm kiếm những trải nghiệm mới để làm phong phú tâm hồn, nhưng đôi lúc cảm thấy khó khăn khi phải gắn bó với những cam kết cố định.",
                     tenGoi);
             case 6 -> String.format(
-                    "%s mang trái tim ấm áp, giàu lòng trắc ẩn và luôn hướng về gia đình. Bạn yêu cái đẹp, sự hài hòa và sẵn sàng chăm sóc, nâng đỡ những người xung quanh.\n\n" +
+                    "Bạn %s mang trái tim ấm áp, giàu lòng trắc ẩn và luôn hướng về gia đình. Bạn yêu cái đẹp, sự hài hòa và sẵn sàng chăm sóc, nâng đỡ những người xung quanh.\n\n" +
                     "Tuy nhiên, bạn có xu hướng lo lắng thái quá và ôm đồm trách nhiệm, dễ khiến bản thân bị quá tải cảm xúc.",
                     tenGoi);
             case 7 -> String.format(
-                    "%s là người thích chiêm nghiệm, sở hữu trí tuệ sâu sắc và trực giác nhạy bén. Bạn không vội tin vào những điều bề nổi mà luôn muốn tự mình tìm hiểu đến tận cùng bản chất sự việc.\n\n" +
+                    "Bạn %s là người thích chiêm nghiệm, sở hữu trí tuệ sâu sắc và trực giác nhạy bén. Bạn không vội tin vào những điều bề nổi mà luôn muốn tự mình tìm hiểu đến tận cùng bản chất sự việc.\n\n" +
                     "Bạn cần những khoảng không gian tĩnh lặng riêng tư để suy ngẫm và tái tạo năng lượng sau những giờ làm việc căng thẳng.",
                     tenGoi);
             case 8 -> String.format(
-                    "%s mang tố chất của một người dẫn đầu độc lập, tư duy sắc bén và khát vọng thành công rõ ràng. Bạn hành động dứt khoát, tự tin và có năng lực quản lý xuất sắc.\n\n" +
+                    "Bạn %s mang tố chất của một người dẫn đầu độc lập, tư duy sắc bén và khát vọng thành công rõ ràng. Bạn hành động dứt khoát, tự tin và có năng lực quản lý xuất sắc.\n\n" +
                     "Bạn coi trọng sự công bằng và tính tự chủ, luôn nỗ lực xây dựng nền tảng vững chắc cho tương lai của mình.",
                     tenGoi);
             case 9 -> String.format(
-                    "%s là người giàu lý tưởng nhân đạo, luôn hướng về cộng đồng và mong muốn đem lại giá trị tốt đẹp cho cuộc sống. Bạn bao dung, chân thành và có sức hút từ sự vị tha.\n\n" +
+                    "Bạn %s là người giàu lý tưởng nhân đạo, luôn hướng về cộng đồng và mong muốn đem lại giá trị tốt đẹp cho cuộc sống. Bạn bao dung, chân thành và có sức hút từ sự vị tha.\n\n" +
                     "Bạn nhìn cuộc đời bằng góc nhìn nhân văn, nhưng đôi khi đặt kỳ vọng quá cao vào người khác để rồi dễ cảm thấy thất vọng.",
                     tenGoi);
             case 10, 1 -> String.format(
-                    "%s mang tư chất của một người tiên phong: Độc lập, quyết đoán, tự tin và có khả năng thích ứng linh hoạt trong mọi hoàn cảnh. Bạn không ngại đối mặt với thử thách mới.\n\n" +
+                    "Bạn %s mang tư chất của một người tiên phong: Độc lập, quyết đoán, tự tin và có khả năng thích ứng linh hoạt trong mọi hoàn cảnh. Bạn không ngại đối mặt với thử thách mới.\n\n" +
                     "Bạn luôn muốn tạo dựng con đường riêng của mình, hành động dứt khoát và có khả năng truyền cảm hứng dẫn dắt đội ngũ.",
                     tenGoi);
             case 11 -> String.format(
-                    "%s là người có trực giác rất nhạy bén, sống chân thành và hướng tới sự hòa hợp sâu sắc. Bạn có khả năng cảm nhận tâm tư của người khác một cách tự nhiên.\n\n" +
+                    "Bạn %s là người có trực giác rất nhạy bén, sống chân thành và hướng tới sự hòa hợp sâu sắc. Bạn có khả năng cảm nhận tâm tư của người khác một cách tự nhiên.\n\n" +
                     "Tiềm năng tinh thần của bạn rất lớn, nhưng bạn cần học cách giữ vững ranh giới cảm xúc để không bị ảnh hưởng bởi năng lượng tiêu cực xung quanh.",
                     tenGoi);
             case 22 -> String.format(
-                    "%s là người vừa có tầm nhìn xa rộng, vừa có năng lực thực thi thực tế siêu việt. Bạn khao khát xây dựng những dự án, công trình mang lại giá trị lâu dài cho xã hội.\n\n" +
+                    "Bạn %s là người vừa có tầm nhìn xa rộng, vừa có năng lực thực thi thực tế siêu việt. Bạn khao khát xây dựng những dự án, công trình mang lại giá trị lâu dài cho xã hội.\n\n" +
                     "Sự bền bỉ và ý chí mạnh mẽ giúp bạn biến những ý tưởng táo bạo thành hiện thực vững chắc.",
                     tenGoi);
             default -> String.format(
-                    "%s là người sở hữu nội lực phong phú, tính cách đa chiều và có khả năng dung hòa tuyệt vời giữa lý trí và cảm xúc.",
+                    "Bạn %s là người sở hữu nội lực phong phú, tính cách đa chiều và có khả năng dung hòa tuyệt vời giữa lý trí và cảm xúc.",
                     tenGoi);
         };
     }
