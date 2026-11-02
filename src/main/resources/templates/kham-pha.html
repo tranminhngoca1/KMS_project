@@ -527,7 +527,7 @@
      =================================================================== -->
 <div id="decodingProgressModal"
      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/75 backdrop-blur-md hidden transition-opacity duration-300">
-    <div class="bg-white max-w-md w-full rounded-3xl p-6 sm:p-8 border border-indigo-100 shadow-2xl space-y-6 relative overflow-hidden">
+    <div class="bg-white max-w-lg w-full rounded-3xl p-6 sm:p-8 border border-indigo-100 shadow-2xl space-y-6 relative overflow-hidden">
         <div class="absolute -right-12 -top-12 w-48 h-48 bg-indigo-200/40 rounded-full blur-2xl pointer-events-none"></div>
         <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-cyan-200/40 rounded-full blur-2xl pointer-events-none"></div>
 
@@ -569,12 +569,12 @@
                 </div>
             </div>
 
-            <div class="pt-2 border-t border-slate-100 grid grid-cols-5 gap-1.5 text-[10px] text-slate-400 font-medium text-center">
-                <div id="step-dot-1" class="p-1 rounded-lg bg-indigo-50 text-indigo-700 font-bold">1. Nhập liệu</div>
-                <div id="step-dot-2" class="p-1 rounded-lg bg-slate-50">2. Pythagoras</div>
-                <div id="step-dot-3" class="p-1 rounded-lg bg-slate-50">3. Vệ Đà</div>
-                <div id="step-dot-4" class="p-1 rounded-lg bg-slate-50">4. Kabbalah</div>
-                <div id="step-dot-5" class="p-1 rounded-lg bg-slate-50">5. Luận giải</div>
+            <div class="pt-3 border-t border-slate-100 grid grid-cols-5 gap-1.5 text-center">
+                <div id="step-dot-1" class="h-8 px-1 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold flex items-center justify-center whitespace-nowrap text-[10px] shadow-2xs">1. Nhập liệu</div>
+                <div id="step-dot-2" class="h-8 px-1 rounded-xl bg-slate-50 border border-slate-100 text-slate-400 font-medium flex items-center justify-center whitespace-nowrap text-[10px]">2. Pythagoras</div>
+                <div id="step-dot-3" class="h-8 px-1 rounded-xl bg-slate-50 border border-slate-100 text-slate-400 font-medium flex items-center justify-center whitespace-nowrap text-[10px]">3. Vệ Đà</div>
+                <div id="step-dot-4" class="h-8 px-1 rounded-xl bg-slate-50 border border-slate-100 text-slate-400 font-medium flex items-center justify-center whitespace-nowrap text-[10px]">4. Kabbalah</div>
+                <div id="step-dot-5" class="h-8 px-1 rounded-xl bg-slate-50 border border-slate-100 text-slate-400 font-medium flex items-center justify-center whitespace-nowrap text-[10px]">5. Luận giải</div>
             </div>
         </div>
     </div>
@@ -637,9 +637,9 @@
                 var dot = document.getElementById('step-dot-' + i);
                 if (!dot) continue;
                 if (i <= dotIndex) {
-                    dot.className = 'p-1 rounded-lg bg-indigo-50 text-indigo-700 font-bold';
+                    dot.className = 'h-8 px-1 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold flex items-center justify-center whitespace-nowrap text-[10px] shadow-2xs';
                 } else {
-                    dot.className = 'p-1 rounded-lg bg-slate-50 text-slate-400';
+                    dot.className = 'h-8 px-1 rounded-xl bg-slate-50 border border-slate-100 text-slate-400 font-medium flex items-center justify-center whitespace-nowrap text-[10px]';
                 }
             }
         }
