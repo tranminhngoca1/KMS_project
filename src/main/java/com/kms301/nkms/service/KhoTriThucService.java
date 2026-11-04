@@ -254,6 +254,7 @@ public class KhoTriThucService {
     @Transactional
     public void saveUnitSystemAlphabet(Map<String, Integer> letterValues) {
         BangChuCai unitSys = bangChuCaiRepository.findByMa("UNIT_SYSTEM")
+                .or(() -> bangChuCaiRepository.findByMa("JOHARI_UNIT_SYSTEM"))
                 .orElseThrow(() -> new IllegalStateException("Không tìm thấy bảng chữ cái UNIT_SYSTEM trong CSDL"));
 
         for (char c = 'A'; c <= 'Z'; c++) {
@@ -290,7 +291,8 @@ public class KhoTriThucService {
     @Transactional(readOnly = true)
     public Map<String, Integer> getUnitSystemMapForView() {
         Map<String, Integer> map = new LinkedHashMap<>();
-        Optional<BangChuCai> opt = bangChuCaiRepository.findByMa("UNIT_SYSTEM");
+        Optional<BangChuCai> opt = bangChuCaiRepository.findByMa("UNIT_SYSTEM")
+                .or(() -> bangChuCaiRepository.findByMa("JOHARI_UNIT_SYSTEM"));
         if (opt.isPresent()) {
             List<BangChuCaiGiaTri> rows = bangChuCaiGiaTriRepository.findByBangChuCaiIdOrderByKyTuAsc(opt.get().getId());
             for (BangChuCaiGiaTri r : rows) {
@@ -302,7 +304,8 @@ public class KhoTriThucService {
 
     @Transactional(readOnly = true)
     public Optional<BangChuCai> getUnitSystemInfo() {
-        return bangChuCaiRepository.findByMa("UNIT_SYSTEM");
+        return bangChuCaiRepository.findByMa("UNIT_SYSTEM")
+                .or(() -> bangChuCaiRepository.findByMa("JOHARI_UNIT_SYSTEM"));
     }
 
     private List<TruongPhai> cachedTruongPhai;

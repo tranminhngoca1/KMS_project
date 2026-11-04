@@ -56,7 +56,8 @@ public class KhamPhaService {
 
         boolean unitSystemActive = false;
         Map<Character, Integer> unitSystemMap = new HashMap<>();
-        Optional<BangChuCai> unitSysOpt = bangChuCaiRepository.findByMa("UNIT_SYSTEM");
+        Optional<BangChuCai> unitSysOpt = bangChuCaiRepository.findByMa("UNIT_SYSTEM")
+                .or(() -> bangChuCaiRepository.findByMa("JOHARI_UNIT_SYSTEM"));
         if (unitSysOpt.isPresent() && "KICH_HOAT".equalsIgnoreCase(unitSysOpt.get().getTrangThai())) {
             List<BangChuCaiGiaTri> rows = bangChuCaiGiaTriRepository.findByBangChuCaiIdOrderByKyTuAsc(unitSysOpt.get().getId());
             for (BangChuCaiGiaTri r : rows) {
