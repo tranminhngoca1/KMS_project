@@ -250,9 +250,10 @@ public class KhoTriThucService {
 
     /**
      * Lưu 26 giá trị A–Z cho bảng Unit System của Johari và tự động chuyển sang trạng thái KICH_HOAT (Mục 5 & 10.2).
+     * Sử dụng synchronized và làm mới dữ liệu để tránh lỗi Duplicate Entry khi người dùng click đúp nút Lưu.
      */
     @Transactional
-    public void saveUnitSystemAlphabet(Map<String, Integer> letterValues) {
+    public synchronized void saveUnitSystemAlphabet(Map<String, Integer> letterValues) {
         BangChuCai unitSys = bangChuCaiRepository.findByMa("UNIT_SYSTEM")
                 .or(() -> bangChuCaiRepository.findByMa("JOHARI_UNIT_SYSTEM"))
                 .orElseThrow(() -> new IllegalStateException("Không tìm thấy bảng chữ cái UNIT_SYSTEM trong CSDL"));
@@ -265,23 +266,21 @@ public class KhoTriThucService {
             }
         }
 
+        // Xóa sạch các giá trị cũ của bảng này để đảm bảo thao tác mang tính lũy đẳng (idempotent),
+        // tránh hoàn toàn lỗi trùng lặp Unique Key (uk_bcc_ky_tu) khi bấm submit nhanh hoặc click đúp.
+        bangChuCaiGiaTriRepository.deleteByBangChuCaiId(unitSys.getId());
+        bangChuCaiGiaTriRepository.flush();
+
+        List<BangChuCaiGiaTri> rowsToInsert = new ArrayList<>();
         for (char c = 'A'; c <= 'Z'; c++) {
             String letter = String.valueOf(c);
-            Integer val = letterValues.get(letter);
-            Optional<BangChuCaiGiaTri> existingRow = bangChuCaiGiaTriRepository
-                    .findByBangChuCaiIdAndKyTu(unitSys.getId(), letter);
-            if (existingRow.isPresent()) {
-                BangChuCaiGiaTri row = existingRow.get();
-                row.setGiaTri(val);
-                bangChuCaiGiaTriRepository.save(row);
-            } else {
-                BangChuCaiGiaTri row = new BangChuCaiGiaTri();
-                row.setBangChuCai(unitSys);
-                row.setKyTu(letter);
-                row.setGiaTri(val);
-                bangChuCaiGiaTriRepository.save(row);
-            }
+            BangChuCaiGiaTri row = new BangChuCaiGiaTri();
+            row.setBangChuCai(unitSys);
+            row.setKyTu(letter);
+            row.setGiaTri(letterValues.get(letter));
+            rowsToInsert.add(row);
         }
+        bangChuCaiGiaTriRepository.saveAll(rowsToInsert);
 
         unitSys.setTrangThai("KICH_HOAT");
         unitSys.setGhiChu("Đã được quản trị viên nhập đủ 26 chữ cái A–Z từ sách in của Harish Johari và kích hoạt.");

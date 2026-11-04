@@ -595,7 +595,53 @@
         document.getElementById('inspectKmsTag').innerText = getAttr('data-kms-tag', 'KMS-UNIT');
         document.getElementById('inspectDomainTag').innerText = getAttr('data-domain', '3 Trường phái');
         document.getElementById('inspectFormulaBox').innerText = getAttr('data-formula', '');
-        document.getElementById('inspectCalculationSteps').innerText = getAttr('data-steps', '');
+        var rawSteps = getAttr('data-steps', '');
+        var stepsContainer = document.getElementById('inspectCalculationSteps');
+        if (stepsContainer) {
+            stepsContainer.innerHTML = '';
+            if (!rawSteps || !rawSteps.trim()) {
+                stepsContainer.innerHTML = '<span class="text-slate-400 italic">Không có bước tính trung gian chi tiết.</span>';
+            } else {
+                // Tách các nguồn / bước tính theo dấu gạch đứng " | " hoặc dấu xuống dòng "\n"
+                var parts = rawSteps.split(/\s*\|\s*|\r?\n/);
+                parts.forEach(function (part) {
+                    var trimmed = part.trim();
+                    if (!trimmed) return;
+
+                    var row = document.createElement('div');
+                    row.className = 'py-2 px-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-2.5 font-mono text-xs sm:text-[13px] text-slate-800 shadow-2xs';
+
+                    var match = trimmed.match(/^([•\-\*]?\s*[^:]{2,35}:)(.*)$/);
+                    if (match) {
+                        var prefix = match[1].replace(/^[•\-\*]\s*/, '').trim();
+                        var rest = match[2];
+
+                        var badge = document.createElement('span');
+                        badge.className = 'inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-100 text-indigo-900 border border-indigo-200 shrink-0 font-sans tracking-wide';
+                        badge.textContent = prefix;
+
+                        var textSpan = document.createElement('span');
+                        textSpan.className = 'leading-relaxed break-words font-medium';
+                        textSpan.textContent = rest.trim();
+
+                        row.appendChild(badge);
+                        row.appendChild(textSpan);
+                    } else {
+                        var bullet = document.createElement('span');
+                        bullet.className = 'text-indigo-600 font-bold select-none shrink-0';
+                        bullet.textContent = '•';
+
+                        var textSpan = document.createElement('span');
+                        textSpan.className = 'leading-relaxed break-words font-medium';
+                        textSpan.textContent = trimmed.replace(/^[•\-\*]\s*/, '').trim();
+
+                        row.appendChild(bullet);
+                        row.appendChild(textSpan);
+                    }
+                    stepsContainer.appendChild(row);
+                });
+            }
+        }
         document.getElementById('inspectBookTitle').innerText = getAttr('data-book', '');
         document.getElementById('inspectBookSub').innerText = getAttr('data-book-sub', '');
         document.getElementById('inspectAuthor').innerText = getAttr('data-author', '');
