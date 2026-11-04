@@ -111,10 +111,13 @@ public class Arrows {
                 .filter(a -> "TRONG".equalsIgnoreCase(a.getState()))
                 .map(a -> a.getLabel() + (a.isCompensatedByName() ? " (đã được hoá giải bởi tên riêng)" : ""))
                 .collect(Collectors.joining(", "));
-        return res.isEmpty() ? "Không có trục trống lớn" : res;
+        return res.isEmpty() ? "Không có trục trống lớn (Không có hàng/cột/chéo nào khuyết cả 3 ô cùng lúc)" : res;
     }
 
     public String getShortBadge() {
+        if (!presentArrows.isEmpty() && !emptyArrows.isEmpty()) {
+            return String.join(", ", presentArrows) + " • Trống " + String.join(", ", emptyArrows);
+        }
         if (!presentArrows.isEmpty()) {
             return String.join(", ", presentArrows);
         }

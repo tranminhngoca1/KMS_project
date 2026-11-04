@@ -228,7 +228,74 @@
                 <!-- Nạp tự động khi nhấn vào thông số hoặc lời giải -->
             </div>
 
-            <div id="inspectCalculationSteps" class="text-xs sm:text-sm text-slate-800 space-y-1.5 leading-relaxed bg-white p-3.5 rounded-xl border border-slate-200 font-medium">
+                        <!-- SƠ ĐỒ 3x3 MA TRẬN & MŨI TÊN (Chỉ hiển thị khi bấm vào Mũi tên hoặc Điểm khuyết) -->
+            <div id="inspectBirthChartBox" class="hidden p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white border border-indigo-500/40 shadow-xl space-y-4">
+                <!-- Header sơ đồ -->
+                <div class="flex items-center justify-between flex-wrap gap-2 border-b border-slate-700/60 pb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-table-cells"></i>
+                        </span>
+                        <div>
+                            <h4 class="text-sm font-bold text-white tracking-wide flex items-center gap-2">
+                                Biểu Đồ 3×3 Ngày Sinh &amp; Hệ Thống Mũi Tên
+                                <span class="text-[10px] font-normal px-2 py-0.5 rounded-full bg-teal-900/60 text-teal-300 border border-teal-700/50">Pythagoras</span>
+                            </h4>
+                            <p class="text-[11px] text-slate-400">
+                                Ma trận năng lượng bẩm sinh kết hợp con số bù trừ từ họ tên
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Chú thích ký hiệu màu sắc -->
+                    <div class="flex items-center gap-2 text-[10px] text-slate-300 flex-wrap">
+                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-mono">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Ngày sinh
+                        </span>
+                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-950/80 border border-amber-500/40 text-amber-300 font-mono">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> +Tên bù
+                        </span>
+                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-800/80 border border-dashed border-slate-600 text-slate-400">
+                            - Trống
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Lưới 3x3 Ngày sinh -->
+                <div class="max-w-md mx-auto">
+                    <div class="grid grid-cols-3 gap-2 text-center" id="birthMatrixGrid">
+                        <!-- JS renders 9 cells dynamically -->
+                    </div>
+                </div>
+
+                <!-- Thống kê mũi tên và điểm khuyết bẩm sinh -->
+                <div class="pt-2 border-t border-slate-700/60 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    <div class="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/80 flex items-start gap-2">
+                        <span class="text-emerald-400 font-bold shrink-0 mt-0.5">🟢</span>
+                        <div>
+                            <span class="text-[10px] text-slate-400 uppercase font-bold block">Mũi tên thực thể sở hữu (Thế mạnh):</span>
+                            <span id="chartPresentArrowsText" class="text-emerald-300 font-semibold block leading-tight">Đang tải...</span>
+                        </div>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/80 flex items-start gap-2">
+                        <span class="text-rose-400 font-bold shrink-0 mt-0.5">⚪</span>
+                        <div>
+                            <span class="text-[10px] text-slate-400 uppercase font-bold block">Mũi tên trống (Trục thiếu):</span>
+                            <span id="chartEmptyArrowsText" class="text-slate-300 font-semibold block leading-tight">Đang tải...</span>
+                        </div>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/80 flex items-start gap-2 sm:col-span-2">
+                        <span class="text-amber-400 font-bold shrink-0 mt-0.5">💡</span>
+                        <div class="flex-1">
+                            <span class="text-[10px] text-slate-400 uppercase font-bold block">Phân biệt Ô số khuyết đơn lẻ vs Trục trống:</span>
+                            <span id="chartMissingDigitsText" class="text-amber-200 block text-[11px] leading-relaxed">
+                                Đang tải thông tin số khuyết...
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<div id="inspectCalculationSteps" class="text-xs sm:text-sm text-slate-800 space-y-1.5 leading-relaxed bg-white p-3.5 rounded-xl border border-slate-200 font-medium">
                 <!-- Nạp tự động các bước tính trung gian -->
             </div>
         </div>
@@ -662,13 +729,167 @@
             }
         }
 
+                // Xử lý hiển thị Sơ đồ Ma trận 3x3 và Mũi tên cá tính
+        var isArrow = el.getAttribute('data-is-arrow') === 'true';
+        var chartBox = document.getElementById('inspectBirthChartBox');
+        if (chartBox) {
+            if (isArrow) {
+                chartBox.classList.remove('hidden');
+                var chartDataRaw = el.getAttribute('data-chart-matrix');
+                if (chartDataRaw) {
+                    try {
+                        var chartData = JSON.parse(chartDataRaw);
+                        renderBirthMatrixGrid(chartData);
+                    } catch (err) {
+                        console.error('Lỗi parse chart matrix:', err);
+                    }
+                }
+            } else {
+                chartBox.classList.add('hidden');
+            }
+        }
+
         var modal = document.getElementById('inspectorModal');
         if (modal) {
             modal.classList.remove('hidden');
         }
     }
 
-    function closeInspectorModal() {
+        function renderBirthMatrixGrid(data) {
+        var grid = document.getElementById('birthMatrixGrid');
+        if (!grid || !data) return;
+        grid.innerHTML = '';
+
+        var b = data.birth || [];
+        var n = data.name || [];
+
+        // Trật tự hiển thị lưới 3x3 Pythagoras:
+        // Hàng 1 (Trí não): 3, 6, 9
+        // Hàng 2 (Tâm hồn): 2, 5, 8
+        // Hàng 3 (Thể chất): 1, 4, 7
+        var cellDefs = [
+            { d: 3, label: 'Trí não' },
+            { d: 6, label: 'Sáng tạo' },
+            { d: 9, label: 'Lý tưởng' },
+            { d: 2, label: 'Trực giác' },
+            { d: 5, label: 'Tự do / Tâm' },
+            { d: 8, label: 'Trí tuệ' },
+            { d: 1, label: 'Bản ngã' },
+            { d: 4, label: 'Thực tế' },
+            { d: 7, label: 'Trải nghiệm' }
+        ];
+
+        cellDefs.forEach(function(item) {
+            var d = item.d;
+            var birthCount = b[d] || 0;
+            var nameCount = n[d] || 0;
+
+            var cell = document.createElement('div');
+            cell.className = 'relative p-2 sm:p-2.5 rounded-xl flex flex-col items-center justify-between min-h-[72px] sm:min-h-[80px] transition-all ';
+
+            var header = document.createElement('div');
+            header.className = 'w-full flex items-center justify-between text-[10px] text-slate-400 font-mono';
+            header.innerHTML = '<span class="opacity-70 font-bold">Ô ' + d + '</span><span class="text-[9px] text-slate-400">' + item.label + '</span>';
+            cell.appendChild(header);
+
+            var contentDiv = document.createElement('div');
+            contentDiv.className = 'my-auto text-center flex flex-col items-center justify-center';
+
+            if (birthCount > 0) {
+                cell.className += ' bg-slate-800/95 border border-emerald-500/50 shadow-md ring-1 ring-emerald-500/20';
+                var birthText = document.createElement('div');
+                birthText.className = 'text-emerald-400 font-black text-lg sm:text-xl font-mono tracking-widest drop-shadow';
+                birthText.textContent = String(d).repeat(birthCount);
+                contentDiv.appendChild(birthText);
+
+                if (nameCount > 0) {
+                    var nameBadge = document.createElement('span');
+                    nameBadge.className = 'text-[9px] px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-300 border border-amber-500/30 font-mono mt-0.5';
+                    nameBadge.textContent = '+' + String(d).repeat(nameCount) + ' (tên)';
+                    contentDiv.appendChild(nameBadge);
+                }
+            } else if (nameCount > 0) {
+                cell.className += ' bg-amber-950/30 border border-amber-500/40 shadow-xs';
+                var nameText = document.createElement('div');
+                nameText.className = 'text-amber-300 font-extrabold text-base sm:text-lg font-mono tracking-widest';
+                nameText.textContent = '+' + String(d).repeat(nameCount);
+                contentDiv.appendChild(nameText);
+
+                var compBadge = document.createElement('span');
+                compBadge.className = 'text-[9px] text-amber-400/90 font-medium';
+                compBadge.textContent = 'Tên bù';
+                contentDiv.appendChild(compBadge);
+            } else {
+                cell.className += ' bg-slate-900/50 border border-dashed border-slate-700/80 text-slate-600';
+                var emptyText = document.createElement('div');
+                emptyText.className = 'text-slate-600 text-sm font-mono';
+                emptyText.textContent = '—';
+                contentDiv.appendChild(emptyText);
+            }
+
+            cell.appendChild(contentDiv);
+            grid.appendChild(cell);
+        });
+
+        var presentEl = document.getElementById('chartPresentArrowsText');
+        var emptyEl = document.getElementById('chartEmptyArrowsText');
+        var missingEl = document.getElementById('chartMissingDigitsText');
+
+        var arrowNames = {
+            '1-5-9': 'Mũi tên Quyết tâm (1-5-9)',
+            '3-5-7': 'Mũi tên Tâm linh / Nhạy bén (3-5-7)',
+            '3-6-9': 'Mũi tên Trí tuệ / Trí nhớ (3-6-9)',
+            '2-5-8': 'Mũi tên Cân bằng cảm xúc (2-5-8)',
+            '1-4-7': 'Mũi tên Thực tế / Tháo vát (1-4-7)',
+            '1-2-3': 'Mũi tên Kế hoạch (1-2-3)',
+            '4-5-6': 'Mũi tên Ý chí (4-5-6)',
+            '7-8-9': 'Mũi tên Hoạt động (7-8-9)'
+        };
+        var emptyNames = {
+            '1-5-9': 'Mũi tên Trì hoãn (trống 1-5-9)',
+            '3-5-7': 'Mũi tên Hoài nghi (trống 3-5-7)',
+            '3-6-9': 'Mũi tên Trí nhớ ngắn hạn (trống 3-6-9)',
+            '2-5-8': 'Mũi tên Nhạy cảm tổn thương (trống 2-5-8)',
+            '1-4-7': 'Mũi tên Thiếu trật tự (trống 1-4-7)',
+            '4-5-6': 'Mũi tên Uất giận / Nản lòng (trống 4-5-6)',
+            '7-8-9': 'Mũi tên Thụ động (trống 7-8-9)'
+        };
+
+        if (presentEl) {
+            var pres = data.presentArrows || [];
+            if (pres.length > 0) {
+                presentEl.innerHTML = pres.map(function(code) {
+                    return '<span class="inline-block mr-2 font-bold">• ' + (arrowNames[code] || code) + '</span>';
+                }).join('');
+            } else {
+                presentEl.textContent = 'Không có trục đầy (Năng lượng phân bổ rải đều)';
+            }
+        }
+
+        if (emptyEl) {
+            var empt = data.emptyArrows || [];
+            if (empt.length > 0) {
+                emptyEl.innerHTML = empt.map(function(code) {
+                    var isComp = (data.compensated || []).indexOf(code) !== -1;
+                    return '<span class="inline-block text-rose-300 mr-2 font-bold">• ' + (emptyNames[code] || code) + (isComp ? ' <span class="text-amber-300 text-[10px]">(Đã được tên riêng bù phá thế)</span>' : '') + '</span>';
+                }).join('');
+            } else {
+                emptyEl.textContent = 'Không có trục trống lớn (Không có hàng/cột/chéo nào khuyết cả 3 số cùng lúc)';
+            }
+        }
+
+        if (missingEl) {
+            var miss = data.missingDigits || [];
+            if (miss.length > 0) {
+                missingEl.innerHTML = '<strong>Các ô số khuyết ngày sinh:</strong> Số ' + miss.join(', ') + '. ' +
+                    '<span class="text-slate-300 block mt-0.5"><em>Quy tắc Phillips / Quỳnh Hương:</em> Mũi tên trống (trục thiếu) chỉ hình thành khi <u>cả 3 ô trên cùng 1 trục</u> đều bị trống hoàn toàn. Bạn sở hữu các số trấn giữ rải đều nên không bị dính trục trống lớn nào.</span>';
+            } else {
+                missingEl.textContent = 'Biểu đồ của bạn tròn trịa, không khuyết con số nào bẩm sinh!';
+            }
+        }
+    }
+
+function closeInspectorModal() {
         var modal = document.getElementById('inspectorModal');
         if (modal) {
             modal.classList.add('hidden');

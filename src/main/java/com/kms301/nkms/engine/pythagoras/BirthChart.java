@@ -3,9 +3,11 @@ package com.kms301.nkms.engine.pythagoras;
 import com.kms301.nkms.engine.NameNormalizer;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -141,6 +143,83 @@ public class BirthChart {
 
     public String getSteps() {
         return steps;
+    }
+
+    public List<Integer> getMissingDigits() {
+        List<Integer> list = new ArrayList<>();
+        for (int d = 1; d <= 9; d++) {
+            if (birthCounts[d] == 0) {
+                list.add(d);
+            }
+        }
+        return list;
+    }
+
+    public String getMissingDigitsLabel() {
+        List<Integer> list = getMissingDigits();
+        if (list.isEmpty()) {
+            return "Không có số khuyết (Biểu đồ tròn trịa cả 9 số)";
+        }
+        StringBuilder sb = new StringBuilder("Số ");
+        for (int i = 0; i < list.size(); i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(list.get(i));
+        }
+        return sb.toString();
+    }
+
+    public String getCompensatedDigitsLabel() {
+        List<String> comp = new ArrayList<>();
+        for (int d = 1; d <= 9; d++) {
+            if (birthCounts[d] == 0 && nameCounts[d] > 0) {
+                comp.add("Số " + d + " (+" + nameCounts[d] + " từ tên)");
+            }
+        }
+        if (comp.isEmpty()) {
+            return "Chưa có ô số khuyết nào được tên riêng bù đắp";
+        }
+        return String.join(", ", comp);
+    }
+
+    public String getChartDataJson() {
+        StringBuilder sb = new StringBuilder("{");
+        sb.append("\"birth\":[");
+        for (int i = 0; i <= 9; i++) {
+            sb.append(birthCounts[i]).append(i < 9 ? "," : "");
+        }
+        sb.append("],\"name\":[");
+        for (int i = 0; i <= 9; i++) {
+            sb.append(nameCounts[i]).append(i < 9 ? "," : "");
+        }
+        sb.append("],\"presentArrows\":[");
+        boolean first = true;
+        for (String a : arrows.getPresentArrows()) {
+            if (!first) sb.append(",");
+            sb.append("\"").append(a).append("\"");
+            first = false;
+        }
+        sb.append("],\"emptyArrows\":[");
+        first = true;
+        for (String a : arrows.getEmptyArrows()) {
+            if (!first) sb.append(",");
+            sb.append("\"").append(a).append("\"");
+            first = false;
+        }
+        sb.append("],\"compensated\":[");
+        first = true;
+        for (String a : arrows.getCompensatedEmptyArrows()) {
+            if (!first) sb.append(",");
+            sb.append("\"").append(a).append("\"");
+            first = false;
+        }
+        sb.append("],\"missingDigits\":[");
+        List<Integer> missing = getMissingDigits();
+        for (int i = 0; i < missing.size(); i++) {
+            if (i > 0) sb.append(",");
+            sb.append(missing.get(i));
+        }
+        sb.append("]}");
+        return sb.toString();
     }
 }
 

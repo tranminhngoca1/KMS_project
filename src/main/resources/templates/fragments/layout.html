@@ -341,13 +341,15 @@
                         <span class="text-[10px] text-violet-600 font-sans font-semibold">Kabbalah</span>
                         <strong th:text="${hoSoSo.sepharial.soChiaKhoa.displayValue}">9</strong>
                     </span>
-                    <span onclick="inspectKnowledgeCard(this)"
+                                    <span onclick="inspectKnowledgeCard(this)"
+                          data-is-arrow="true"
                           th:attr="
                             data-title='Hệ Thống Mũi Tên Cá Tính &amp; Cấu Trúc Năng Lượng (Phillips / Quỳnh Hương)',
                             data-kms-tag='CT_QH_MUI_TEN • NGUYEN_LY_HETTIE',
                             data-domain='Trường phái Pythagoras (Biểu đồ 3x3 Ngày sinh)',
                             data-formula='Xét 8 tổ hợp trục số (1-5-9, 3-5-7, 3-6-9, 2-5-8, 1-4-7, 1-2-3, 4-5-6, 7-8-9) trên ma trận ngày sinh',
-                            data-steps='• Mũi tên năng lực sở hữu: ' + ${hoSoSo.qh.birthChart.arrows.presentArrowsLabel} + ' | • Trục trống bẩm sinh: ' + ${hoSoSo.qh.birthChart.arrows.emptyArrowsLabel} + ' | • Hoá giải tên riêng: Các chữ cái trong tên riêng giúp bù trừ các ô số còn thiếu trên biểu đồ ngày sinh',
+                            data-steps='• Mũi tên năng lực sở hữu: ' + ${hoSoSo.qh.birthChart.arrows.presentArrowsLabel} + ' | • Mũi tên trống (trục thiếu): ' + ${hoSoSo.qh.birthChart.arrows.emptyArrowsLabel} + ' | • Các ô số khuyết bẩm sinh: ' + ${hoSoSo.qh.birthChart.missingDigitsLabel} + ' | • Bù khuyết từ họ tên: ' + ${hoSoSo.qh.birthChart.compensatedDigitsLabel} + ' | • Phân bổ chữ số ngày sinh: ' + ${hoSoSo.qh.birthChart.steps},
+                            data-chart-matrix=${hoSoSo.qh.birthChart.chartDataJson},
                             data-book='The Complete Book of Numerology Và Thay Đổi Cuộc Sống Với Nhân Số Học',
                             data-book-sub='Xung đột #13: Hệ thống Mũi tên do bà Hettie Templeton khởi xướng thế kỷ 20, David A. Phillips và Lê Đỗ Quỳnh Hương kế thừa',
                             data-author='David A. Phillips (1992) Và Lê Đỗ Quỳnh Hương (2020)',
@@ -357,27 +359,7 @@
                             data-rationale='Chiếu rọi cấu trúc năng lượng, thế mạnh hành vi và các điểm khuyết tâm lý cần rèn luyện.'
                           "
                           class="cursor-pointer hover:shadow-md hover:scale-105 transition-all px-2.5 py-1 rounded-xl bg-teal-50 border border-teal-200 text-teal-900 text-xs font-bold font-mono shadow-xs flex items-center gap-1.5"
-                          title="Nhấn để xem công thức và nguồn sách gốc của sơ đồ mũi tên">
-                        <span class="text-[10px] text-teal-700 font-sans font-semibold">Mũi tên</span>
-                        <strong th:text="${hoSoSo.qh.birthChart.arrows.shortBadge}">1-5-9</strong>
-                    </span>
-                    <span onclick="inspectKnowledgeCard(this)"
-                          th:attr="
-                            data-title='Hệ Thống Mũi Tên Cá Tính &amp; Cấu Trúc Năng Lượng (Phillips / Quỳnh Hương)',
-                            data-kms-tag='CT_QH_MUI_TEN • NGUYEN_LY_HETTIE',
-                            data-domain='Trường phái Pythagoras (Biểu đồ 3x3 Ngày sinh)',
-                            data-formula='Xét 8 tổ hợp trục số (1-5-9, 3-5-7, 3-6-9, 2-5-8, 1-4-7, 1-2-3, 4-5-6, 7-8-9) trên ma trận ngày sinh',
-                            data-steps='• Mũi tên năng lực sở hữu: ' + ${hoSoSo.qh.birthChart.arrows.presentArrowsLabel} + ' | • Trục trống bẩm sinh: ' + ${hoSoSo.qh.birthChart.arrows.emptyArrowsLabel} + ' | • Hoá giải tên riêng: Các chữ cái trong tên riêng giúp bù trừ các ô số còn thiếu trên biểu đồ ngày sinh',
-                            data-book='The Complete Book of Numerology Và Thay Đổi Cuộc Sống Với Nhân Số Học',
-                            data-book-sub='Xung đột #13: Hệ thống Mũi tên do bà Hettie Templeton khởi xướng thế kỷ 20, David A. Phillips và Lê Đỗ Quỳnh Hương kế thừa',
-                            data-author='David A. Phillips (1992) Và Lê Đỗ Quỳnh Hương (2020)',
-                            data-publisher='Hay House / First News',
-                            data-chapter='Phillips Chương 6 (The Arrows, tr.51–98) • Quỳnh Hương Phần 6 (tr.123–208)',
-                            data-apa='Phillips, D. A. (2005). The Complete Book of Numerology (Ch. 6: The Arrows). Hay House.',
-                            data-rationale='Chiếu rọi cấu trúc năng lượng, thế mạnh hành vi và các điểm khuyết tâm lý cần rèn luyện.'
-                          "
-                          class="cursor-pointer hover:shadow-md hover:scale-105 transition-all px-2.5 py-1 rounded-xl bg-teal-50 border border-teal-200 text-teal-900 text-xs font-bold font-mono shadow-xs flex items-center gap-1.5"
-                          title="Nhấn để xem công thức và nguồn sách gốc của sơ đồ mũi tên">
+                          title="Nhấn để xem sơ đồ ma trận 3x3 và mũi tên của bạn">
                         <span class="text-[10px] text-teal-700 font-sans font-semibold">Mũi tên</span>
                         <strong th:text="${hoSoSo.qh.birthChart.arrows.shortBadge}">1-5-9</strong>
                     </span>
@@ -487,26 +469,6 @@
                         <span class="text-[10px] text-violet-700 font-sans font-semibold">Chu kỳ Kabbalah</span>
                         <strong th:text="${hoSoSo.sepharial.soChiaKhoa.displayValue}">9</strong>
                     </span>
-                    <span onclick="inspectKnowledgeCard(this)"
-                          th:attr="
-                            data-title='Hệ Thống Mũi Tên Cá Tính &amp; Cấu Trúc Năng Lượng (Phillips / Quỳnh Hương)',
-                            data-kms-tag='CT_QH_MUI_TEN • NGUYEN_LY_HETTIE',
-                            data-domain='Trường phái Pythagoras (Biểu đồ 3x3 Ngày sinh)',
-                            data-formula='Xét 8 tổ hợp trục số (1-5-9, 3-5-7, 3-6-9, 2-5-8, 1-4-7, 1-2-3, 4-5-6, 7-8-9) trên ma trận ngày sinh',
-                            data-steps='• Mũi tên năng lực sở hữu: ' + ${hoSoSo.qh.birthChart.arrows.presentArrowsLabel} + ' | • Trục trống bẩm sinh: ' + ${hoSoSo.qh.birthChart.arrows.emptyArrowsLabel} + ' | • Hoá giải tên riêng: Các chữ cái trong tên riêng giúp bù trừ các ô số còn thiếu trên biểu đồ ngày sinh',
-                            data-book='The Complete Book of Numerology Và Thay Đổi Cuộc Sống Với Nhân Số Học',
-                            data-book-sub='Xung đột #13: Hệ thống Mũi tên do bà Hettie Templeton khởi xướng thế kỷ 20, David A. Phillips và Lê Đỗ Quỳnh Hương kế thừa',
-                            data-author='David A. Phillips (1992) Và Lê Đỗ Quỳnh Hương (2020)',
-                            data-publisher='Hay House / First News',
-                            data-chapter='Phillips Chương 6 (The Arrows, tr.51–98) • Quỳnh Hương Phần 6 (tr.123–208)',
-                            data-apa='Phillips, D. A. (2005). The Complete Book of Numerology (Ch. 6: The Arrows). Hay House.',
-                            data-rationale='Chiếu rọi cấu trúc năng lượng, thế mạnh hành vi và các điểm khuyết tâm lý cần rèn luyện.'
-                          "
-                          class="cursor-pointer hover:shadow-md hover:scale-105 transition-all px-2.5 py-1 rounded-xl bg-teal-50 border border-teal-200 text-teal-900 text-xs font-bold font-mono shadow-xs flex items-center gap-1.5"
-                          title="Nhấn để xem công thức và nguồn sách gốc của sơ đồ mũi tên">
-                        <span class="text-[10px] text-teal-700 font-sans font-semibold">Mũi tên</span>
-                        <strong th:text="${hoSoSo.qh.birthChart.arrows.shortBadge}">1-5-9</strong>
-                    </span>
                 </div>
 
                 <!-- CÂU HỎI 3: TÔI NÊN ĐI THẾ NÀO? -->
@@ -593,12 +555,14 @@
                         <strong th:text="${hoSoSo.sepharial.hanhTinhChinh}">Sao Hoả</strong>
                     </span>
                     <span onclick="inspectKnowledgeCard(this)"
+                          data-is-arrow="true"
                           th:attr="
                             data-title='Điểm Khuyết Bẩm Sinh Và Trục Cần Rèn Luyện (Mũi Tên Trống)',
                             data-kms-tag='CT_QH_MUI_TEN_TRONG',
                             data-domain='Trường phái Pythagoras (Tu dưỡng &amp; Chuyển hoá)',
                             data-formula='Nhận diện các trục trống (Empty Arrows) để xây dựng kỷ luật và thói quen bù trừ',
-                            data-steps='• Trục trống cần rèn luyện: ' + ${hoSoSo.qh.birthChart.arrows.emptyArrowsLabel} + ' | • Thế mạnh nâng đỡ: ' + ${hoSoSo.qh.birthChart.arrows.presentArrowsLabel} + ' | • Chiến lược bù khuyết: Rèn luyện thói quen tự thân và tận dụng các con số từ Tên riêng để cân bằng biểu đồ',
+                            data-steps='• Trục trống cần rèn luyện: ' + ${hoSoSo.qh.birthChart.arrows.emptyArrowsLabel} + ' | • Thế mạnh nâng đỡ: ' + ${hoSoSo.qh.birthChart.arrows.presentArrowsLabel} + ' | • Các ô số khuyết bẩm sinh: ' + ${hoSoSo.qh.birthChart.missingDigitsLabel} + ' | • Bù khuyết từ họ tên: ' + ${hoSoSo.qh.birthChart.compensatedDigitsLabel} + ' | • Chiến lược bù khuyết: Rèn luyện thói quen tự thân và tận dụng các con số từ Tên riêng để cân bằng biểu đồ',
+                            data-chart-matrix=${hoSoSo.qh.birthChart.chartDataJson},
                             data-book='The Complete Book of Numerology Và Thay Đổi Cuộc Sống Với Nhân Số Học',
                             data-book-sub='Phương pháp hoá giải mũi tên trống và điền số ảo bằng trải nghiệm sống',
                             data-author='David A. Phillips Và Lê Đỗ Quỳnh Hương',
@@ -608,7 +572,7 @@
                             data-rationale='Giúp định vị điểm mù tâm lý để chủ động rèn luyện và hóa giải thách thức.'
                           "
                           class="cursor-pointer hover:shadow-md hover:scale-105 transition-all px-2.5 py-1 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 text-xs font-bold font-mono shadow-xs flex items-center gap-1.5"
-                          title="Nhấn để xem công thức và nguồn sách gốc của các điểm khuyết cần chuyển hoá">
+                          title="Nhấn để xem sơ đồ ma trận 3x3 và điểm khuyết cần rèn luyện">
                         <span class="text-[10px] text-rose-700 font-sans font-semibold">Điểm khuyết</span>
                         <strong th:text="${!hoSoSo.qh.birthChart.arrows.emptyArrows.isEmpty() ? ('Trống ' + T(java.lang.String).join(', ', hoSoSo.qh.birthChart.arrows.emptyArrows)) : 'Đã cân bằng'}">Trống 7-8-9</strong>
                     </span>
