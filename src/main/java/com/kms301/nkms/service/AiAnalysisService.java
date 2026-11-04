@@ -221,11 +221,15 @@ public class AiAnalysisService {
                 JsonNode q = objectMapper.readTree(rawText);
                 AiAnalysisDto.QuestionAiAnalysis qa = new AiAnalysisDto.QuestionAiAnalysis();
                 qa.setPhanTichTongHop(sanitizeGenderPronouns(q.path("phanTichTongHop").asText("")));
-                qa.setChanDung(sanitizeGenderPronouns(q.path("chanDung").asText("")));
-                qa.setTheManh(sanitizeGenderPronouns(q.path("theManh").asText("")));
-                qa.setVungToi(sanitizeGenderPronouns(q.path("vungToi").asText("")));
-                qa.setLoiKhuyen(sanitizeGenderPronouns(q.path("loiKhuyen").asText("")));
-                if (!qa.getChanDung().isBlank() && !qa.getLoiKhuyen().isBlank()) {
+                String t1 = q.has("the1") ? q.path("the1").asText("") : q.path("chanDung").asText("");
+                String t2 = q.has("the2") ? q.path("the2").asText("") : q.path("theManh").asText("");
+                String t3 = q.has("the3") ? q.path("the3").asText("") : q.path("vungToi").asText("");
+                String t4 = q.has("the4") ? q.path("the4").asText("") : q.path("loiKhuyen").asText("");
+                qa.setThe1(sanitizeGenderPronouns(t1));
+                qa.setThe2(sanitizeGenderPronouns(t2));
+                qa.setThe3(sanitizeGenderPronouns(t3));
+                qa.setThe4(sanitizeGenderPronouns(t4));
+                if (!qa.getThe1().isBlank() && !qa.getThe4().isBlank()) {
                     return qa;
                 }
             } catch (Exception ex) {
@@ -259,60 +263,64 @@ public class AiAnalysisService {
         if (emptyArrows.isEmpty()) emptyArrows = "Không có mũi tên trống";
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Bạn là Chuyên gia Khai vấn Tâm lý và Cuộc đời. Hãy viết luận giải cá nhân hoá ẤM ÁP, GẦN GŨI, THẤU CẢM nhưng CÔ ĐỌNG, SÚC TÍCH cho người có hồ sơ dưới đây (")
+        sb.append("Bạn là Chuyên gia Khai vấn Tâm lý và Cuộc đời theo Hệ Thống Quản Lý Tri Thức (KMS) Đa Trường Phái. Hãy viết luận giải cá nhân hoá ẤM ÁP, GẦN GŨI, THẤU CẢM nhưng CÔ ĐỌNG, SÚC TÍCH cho người có hồ sơ dưới đây (")
                 .append(hs.getTuoiHienTai()).append(" tuổi).\n\n");
 
         sb.append("QUY TẮC BẮT BUỘC:\n");
         sb.append("1. TRUNG TÍNH GIỚI TÍNH: Không đoán giới tính qua tên. Cấm dùng 'anh', 'chị', 'ông', 'bà', 'cô', 'chú', 'chàng trai', 'cô gái', 'nam', 'nữ'. Chỉ xưng 'tôi' và 'bạn' (hoặc 'bạn ")
                 .append(tenGoi).append("').\n");
-        sb.append("2. Không nhắc tên trường phái, sách hay tác giả (không viết 'theo Pythagoras', 'theo Vệ Đà', 'theo Kabbalah'...).\n");
+        sb.append("2. Không trích dẫn số trang hay văn phong hàn lâm khô khan, nhưng phải phản ánh sâu sắc bản chất thần số học của các chỉ số tương ứng.\n");
         sb.append("3. Chỉ dựa vào dữ liệu hồ sơ dưới đây. Tuyệt đối không dùng tri thức ngoài như cung hoàng đạo, Tarot, tử vi, phong thuỷ.\n");
-        sb.append("4. Không dịch máy móc từng con số; hãy diễn giải thành tính cách, cảm xúc, hành vi đời thực và liên kết các chỉ số với nhau.\n");
-        sb.append("5. Mỗi mục 80-110 từ (1-2 đoạn ngắn), đi thẳng vào trọng tâm.\n\n");
+        sb.append("4. Không dịch máy móc từng con số; hãy diễn giải thành tính cách, cảm xúc, hành vi đời thực và đối chiếu hài hòa các chỉ số với nhau.\n");
+        sb.append("5. Mỗi thẻ 80-110 từ (1-2 đoạn ngắn), đi thẳng vào trọng tâm chuyên biệt của thẻ đó, KHÔNG LẶP Ý GIỮA CÁC THẺ.\n\n");
 
-        sb.append("=== HỒ SƠ ===\n");
-        sb.append("- Tên gọi: ").append(tenGoi).append(" | Năm xét: ").append(hs.getNamHienTai()).append(", tháng ").append(hs.getThangHienTai()).append("\n");
-        sb.append("- Con số chủ đạo: ").append(qh.getConSoChuDao().getDisplayValue()).append(" (Đường đời: ").append(decoz.getSoDuongDoi().getDisplayValue()).append(")\n");
-        sb.append("- Ngày sinh: ").append(qh.getConSoNgaySinh().getDisplayValue())
-                .append(" | Linh hồn: ").append(qh.getConSoLinhHon().getDisplayValue())
-                .append(" | Biểu đạt: ").append(qh.getConSoBieuDat().getDisplayValue()).append("\n");
+        sb.append("=== HỒ SƠ CHỈ SỐ CỦA BẠN ===\n");
+        sb.append("- Tên gọi: ").append(tenGoi).append(" | Tuổi: ").append(hs.getTuoiHienTai()).append(" | Năm xét: ").append(hs.getNamHienTai()).append(", tháng ").append(hs.getThangHienTai()).append("\n");
+        sb.append("- Con số chủ đạo (Phillips/QH): ").append(qh.getConSoChuDao().getDisplayValue()).append(" | Số đường đời (Decoz): ").append(decoz.getSoDuongDoi().getDisplayValue()).append("\n");
+        sb.append("- Con số ngày sinh: ").append(qh.getConSoNgaySinh().getDisplayValue())
+                .append(" | Linh hồn (QH): ").append(qh.getConSoLinhHon().getDisplayValue())
+                .append(" | Khát vọng tâm hồn (Decoz): ").append(decoz.getKhatVongTamHon().getDisplayValue())
+                .append(" | Biểu đạt (QH): ").append(qh.getConSoBieuDat().getDisplayValue())
+                .append(" | Nhân cách (Decoz): ").append(decoz.getNhanCach().getDisplayValue())
+                .append(" | Biểu đạt toàn tên (Decoz): ").append(decoz.getSoBieuDat().getDisplayValue()).append("\n");
         sb.append("- Mũi tên năng lực: ").append(presentArrows).append(" | Mũi tên trống: ").append(emptyArrows).append("\n");
-        sb.append("- Năm cá nhân: ").append(qh.getNamCaNhan().getDisplayValue())
+        sb.append("- Cờ nợ nghiệp Decoz: ").append(decoz.getSoNoNghiep().isEmpty() ? "Không có" : decoz.getSoNoNghiep().toString()).append("\n");
+        sb.append("- Năm cá nhân 9 năm: ").append(qh.getNamCaNhan().getDisplayValue())
                 .append(" | Tháng cá nhân: ").append(qh.getThangCaNhan().getDisplayValue())
-                .append(" | Số năm (chu kỳ ngày sinh): ").append(johari.getSoNam().getDisplayValue()).append("\n");
+                .append(" | Số năm Vệ Đà (Johari): ").append(johari.getSoNam().getDisplayValue()).append("\n");
         sb.append("- Giai đoạn đỉnh cao hiện tại: ").append(qh.getKimTuThap().getCurrentPhaseName())
-                .append(" mang số ").append(qh.getKimTuThap().getCurrentPeak().getDisplayValue()).append("\n");
-        sb.append("- Số tâm hồn: ").append(johari.getSoTamHon().getDisplayValue()).append(" (").append(johari.getHanhTinhTamHon())
-                .append(") | Số định mệnh: ").append(johari.getSoDinhMenh().getDisplayValue()).append(" (").append(johari.getHanhTinhDinhMenh()).append(")\n");
-        sb.append("- Số chìa khoá: ").append(seph.getSoChiaKhoa().getDisplayValue()).append(" (").append(seph.getHanhTinhChinh())
-                .append(") | Tầng ưu thế: ").append(seph.getMagicSquare().getDominantPlane()).append("\n\n");
+                .append(" (Đỉnh mang số ").append(qh.getKimTuThap().getCurrentPeak().getDisplayValue()).append(" tại tuổi ").append(qh.getKimTuThap().getCurrentPeak().getAgeReached()).append(")\n");
+        sb.append("- Số tâm hồn (Psychic Johari): ").append(johari.getSoTamHon().getDisplayValue()).append(" (Hành tinh: ").append(johari.getHanhTinhTamHon()).append(")\n");
+        sb.append("- Số định mệnh (Destiny Johari): ").append(johari.getSoDinhMenh().getDisplayValue()).append(" (Hành tinh: ").append(johari.getHanhTinhDinhMenh()).append(")\n");
+        sb.append("- Số chìa khoá (Sepharial): ").append(seph.getSoChiaKhoa().getDisplayValue()).append(" (Hành tinh: ").append(seph.getHanhTinhChinh()).append(")\n");
+        sb.append("- Tầng ưu thế Kabbalah: ").append(seph.getMagicSquare().getDominantPlane()).append(" | Màu sắc tương hợp: ").append(seph.getMauSac()).append("\n\n");
 
         String question;
-        String chanDung;
-        String theManh;
-        String vungToi;
-        String loiKhuyen;
+        String the1Desc;
+        String the2Desc;
+        String the3Desc;
+        String the4Desc;
         switch (qKey) {
             case "GAP_GI" -> {
                 question = "Tôi đang gặp gì?";
-                chanDung = "bối cảnh năng lượng năm nay và biến chuyển tâm lý của bạn";
-                theManh = "cơ hội và đòn bẩy thuận lợi trong năm nay";
-                vungToi = "cạm bẫy tâm lý và điều cần tránh trong năm nay";
-                loiKhuyen = "bài học của giai đoạn tuổi " + hs.getTuoiHienTai();
+                the1Desc = "bối cảnh thời vận và nhịp năng lượng chủ đạo năm nay (kết hợp Năm cá nhân chu kỳ 9 năm và Số năm Vệ Đà)";
+                the2Desc = "nhịp điệu tâm lý, cảm xúc và biến chuyển ngắn hạn trong tháng hiện tại";
+                the3Desc = "ý nghĩa đại vận đỉnh cao cuộc đời và cột mốc trưởng thành ở độ tuổi hiện tại (Đỉnh Kim tự tháp Phillips / Pinnacle Decoz)";
+                the4Desc = "cạm bẫy tâm lý, vùng trũng năng lượng và thách thức giai đoạn cần cảnh giác đề phòng trong năm nay";
             }
             case "DI_THE_NAO" -> {
                 question = "Tôi nên đi thế nào?";
-                chanDung = "kim chỉ nam sống giúp bạn an nhiên, vững vàng";
-                theManh = "hành động cụ thể và kỷ luật tự thân nên bắt đầu";
-                vungToi = "thói quen và rào cản tư duy nên buông bỏ";
-                loiKhuyen = "chiến lược dài hạn để sống trọn vẹn";
+                the1Desc = "kim chỉ nam sống, nguyên lý tư duy dẫn đường và hệ giá trị cốt lõi giúp bạn vững vàng, an nhiên (vận dụng Con số chủ đạo & Hành tinh định mệnh)";
+                the2Desc = "hành động ưu tiên, kỷ luật tự thân hàng ngày và môi trường phù hợp để nuôi dưỡng năng lượng (theo Vệ Đà & Sepharial)";
+                the3Desc = "phương pháp chuyển hóa điểm khuyết, rào cản tư duy và thói quen cần buông bỏ (phá thế mũi tên trống, bài học nợ nghiệp Decoz nếu có)";
+                the4Desc = "chiến lược dài hạn, bước chuẩn bị cho đỉnh cao tiếp theo và định hướng sứ mệnh cuộc đời viên mãn";
             }
             default -> {
                 question = "Tôi là ai?";
-                chanDung = "bản ngã cốt lõi, sự kết hợp giữa vẻ ngoài và chiều sâu nội tâm";
-                theManh = "thế mạnh và năng lực bẩm sinh";
-                vungToi = "điểm mù và mâu thuẫn nội tâm";
-                loiKhuyen = "môi trường phát triển và lời khuyên thiết thực";
+                the1Desc = "bản ngã cốt lõi và con người thực sự khi lột bỏ mọi lớp vỏ bên ngoài (sự hòa hợp giữa Con số chủ đạo QH/Đường đời Decoz, Số định mệnh Vệ Đà và Hành tinh chính Sepharial)";
+                the2Desc = "thế giới nội tâm, khát vọng tinh thần sâu kín và động lực ngầm (phản chiếu từ Số linh hồn QH, Khát vọng tâm hồn Decoz và Số tâm hồn Psychic Vệ Đà)";
+                the3Desc = "khí chất giao tiếp, phong cách biểu đạt xã hội và ấn tượng ban đầu (phản chiếu từ Số biểu đạt QH, Số nhân cách Decoz và Con số ngày sinh)";
+                the4Desc = "cấu trúc năng lượng bẩm sinh, thế mạnh vượt trội và điểm khuyết/mũi tên trống (phân tích từ ma trận 3x3, mũi tên Phillips và tầng ưu thế ma phương Kabbalah; CHỈ MÔ TẢ ĐẶC TÍNH BẢN THỂ, TUYỆT ĐỐI KHÔNG ĐƯA LỜI KHUYÊN HÀNH ĐỘNG VÀO ĐÂY)";
             }
         }
 
@@ -320,10 +328,10 @@ public class AiAnalysisService {
         sb.append("Trả về ĐÚNG 1 JSON object (không markdown):\n");
         sb.append("{\n");
         sb.append("  \"phanTichTongHop\": \"50-70 từ: thông điệp đúc kết trả lời câu hỏi\",\n");
-        sb.append("  \"chanDung\": \"80-110 từ: ").append(chanDung).append("\",\n");
-        sb.append("  \"theManh\": \"80-110 từ: ").append(theManh).append("\",\n");
-        sb.append("  \"vungToi\": \"80-110 từ: ").append(vungToi).append("\",\n");
-        sb.append("  \"loiKhuyen\": \"80-110 từ: ").append(loiKhuyen).append("\"\n");
+        sb.append("  \"the1\": \"80-110 từ: ").append(the1Desc).append("\",\n");
+        sb.append("  \"the2\": \"80-110 từ: ").append(the2Desc).append("\",\n");
+        sb.append("  \"the3\": \"80-110 từ: ").append(the3Desc).append("\",\n");
+        sb.append("  \"the4\": \"80-110 từ: ").append(the4Desc).append("\"\n");
         sb.append("}");
         return sb.toString();
     }
@@ -353,13 +361,32 @@ public class AiAnalysisService {
     private AiAnalysisDto buildSynthesizedFallback(KhamPhaResult result) {
         HoSoSo hs = result.getHoSoSo();
         QhCalculator.QhProfile qh = hs.getQh();
+        DecozCalculator.DecozProfile decoz = hs.getDecoz();
         JohariCalculator.JohariProfile johari = hs.getJohari();
         SepharialCalculator.SepharialProfile seph = hs.getSepharial();
+        BirthChart bc = qh.getBirthChart();
 
         int chuDao = qh.getConSoChuDao().getNumericValue();
         int namCaNhanNum = qh.getNamCaNhan().getNumericValue();
+        int thangCaNhanNum = qh.getThangCaNhan().getNumericValue();
+        int linhHonNum = qh.getConSoLinhHon().getNumericValue();
+        int bieuDatNum = qh.getConSoBieuDat().getNumericValue();
+        int ngaySinhNum = qh.getConSoNgaySinh().getNumericValue();
+
         String tenGoi = (hs.getParsedName() != null && !hs.getParsedName().getTenGoi().isBlank())
                 ? hs.getParsedName().getTenGoi() : "bạn";
+
+        String presentArrows = bc.getArrows().getEvaluatedArrows().stream()
+                .filter(a -> "CO".equalsIgnoreCase(a.getState()))
+                .map(Arrows.EvaluatedArrow::getLabel)
+                .collect(Collectors.joining(", "));
+        if (presentArrows.isEmpty()) presentArrows = "Đang ở thế cân bằng";
+
+        String emptyArrows = bc.getArrows().getEvaluatedArrows().stream()
+                .filter(a -> "TRONG".equalsIgnoreCase(a.getState()))
+                .map(a -> a.getLabel() + (a.isCompensatedByName() ? " (đã được hoá giải bởi tên riêng)" : ""))
+                .collect(Collectors.joining(", "));
+        if (emptyArrows.isEmpty()) emptyArrows = "Không có trục trống lớn";
 
         AiAnalysisDto dto = new AiAnalysisDto();
         dto.setSuccess(true);
@@ -373,43 +400,55 @@ public class AiAnalysisService {
 
         Map<String, AiAnalysisDto.QuestionAiAnalysis> map = new HashMap<>();
 
-        // CÂU HỎI 1: TÔI LÀ AI?
+        // =====================================================================
+        // CÂU HỎI 1: TÔI LÀ AI? (Căn tính, Bản thể, Chiều sâu tâm hồn & Khí chất)
+        // =====================================================================
         AiAnalysisDto.QuestionAiAnalysis qaAi = new AiAnalysisDto.QuestionAiAnalysis();
         qaAi.setPhanTichTongHop(sanitizeGenderPronouns(String.format(
-                "Bạn mang tố chất của một người độc lập, kiên định và giàu trực giác. Bạn hành động quyết đoán nhưng luôn đòi hỏi sự chân thành và chiều sâu trong mọi việc.",
+                "Bạn mang bản sắc của một người sở hữu nội lực tự chủ, nhạy bén và giàu trực giác. Con người bạn là sự dung hòa giữa lý tưởng sống rõ ràng và chiều sâu nội tâm chân thành.",
                 tenGoi
         )));
-        qaAi.setChanDung(sanitizeGenderPronouns(getPersonalityPortrait(chuDao, tenGoi)));
-        qaAi.setTheManh(sanitizeGenderPronouns(getStrengthsPortrait(chuDao)));
-        qaAi.setVungToi(sanitizeGenderPronouns(getBlindspotsPortrait(chuDao)));
-        qaAi.setLoiKhuyen(sanitizeGenderPronouns(getCareerAndLifeAdvice(chuDao, tenGoi)));
+        qaAi.setThe1(sanitizeGenderPronouns(getPersonalityPortrait(chuDao, tenGoi)));
+        qaAi.setThe2(sanitizeGenderPronouns(getInnerSoulPortrait(linhHonNum, johari.getHanhTinhTamHon(), tenGoi)));
+        qaAi.setThe3(sanitizeGenderPronouns(getExpressionPortrait(bieuDatNum, ngaySinhNum, tenGoi)));
+        qaAi.setThe4(sanitizeGenderPronouns(getEnergyStructurePortrait(presentArrows, emptyArrows, seph.getMagicSquare().getDominantPlane(), tenGoi)));
         map.put("AI", qaAi);
 
-        // CÂU HỎI 2: TÔI ĐANG GẶP GÌ?
+        // =====================================================================
+        // CÂU HỎI 2: TÔI ĐANG GẶP GÌ? (Bối cảnh thời vận, Chu kỳ & Cột mốc hiện tại)
+        // =====================================================================
         AiAnalysisDto.QuestionAiAnalysis qaGap = new AiAnalysisDto.QuestionAiAnalysis();
         qaGap.setPhanTichTongHop(sanitizeGenderPronouns(String.format(
                 "Năm nay (%d, tuổi %d), bạn đang bước vào chu kỳ số %s: Thời điểm quan trọng để bạn điều chỉnh nhịp sống, củng cố nội lực và chuẩn bị cho những bước tiến lớn.",
                 hs.getNamHienTai(), hs.getTuoiHienTai(), qh.getNamCaNhan().getDisplayValue()
         )));
-        qaGap.setChanDung(sanitizeGenderPronouns(getYearEnergyPortrait(namCaNhanNum, hs.getTuoiHienTai(), tenGoi)));
-        qaGap.setTheManh(sanitizeGenderPronouns(getYearOpportunitiesPortrait(namCaNhanNum)));
-        qaGap.setVungToi(sanitizeGenderPronouns(getYearChallengesPortrait(namCaNhanNum)));
-        qaGap.setLoiKhuyen(sanitizeGenderPronouns(String.format("Ở tuổi %d, giai đoạn này nhắc nhở bạn cần giữ sự điềm tĩnh, lấy việc rèn luyện sự vững vàng làm gốc rễ thay vì nóng vội tìm kiếm thành quả trước mắt.",
-                hs.getTuoiHienTai())));
+        qaGap.setThe1(sanitizeGenderPronouns(getYearEnergyPortrait(namCaNhanNum, hs.getTuoiHienTai(), tenGoi)));
+        qaGap.setThe2(sanitizeGenderPronouns(getMonthEnergyPortrait(thangCaNhanNum, hs.getThangHienTai(), tenGoi)));
+        qaGap.setThe3(sanitizeGenderPronouns(getPinnaclePortrait(
+                qh.getKimTuThap().getCurrentPeak().getDisplayValue(),
+                qh.getKimTuThap().getCurrentPhaseName(),
+                hs.getTuoiHienTai(),
+                tenGoi
+        )));
+        qaGap.setThe4(sanitizeGenderPronouns(getYearChallengesPortrait(namCaNhanNum)));
         map.put("GAP_GI", qaGap);
 
-        // CÂU HỎI 3: TÔI NÊN ĐI THẾ NÀO?
+        // =====================================================================
+        // CÂU HỎI 3: TÔI NÊN ĐI THẾ NÀO? (Kim chỉ nam, Kỷ luật, Chuyển hóa & Chiến lược)
+        // =====================================================================
         AiAnalysisDto.QuestionAiAnalysis qaDi = new AiAnalysisDto.QuestionAiAnalysis();
         qaDi.setPhanTichTongHop(sanitizeGenderPronouns(String.format(
                 "Kim chỉ nam then chốt dành cho bạn là học cách cân bằng giữa hành động thực tế và sự bình yên nội tâm, kiên định với những giá trị cốt lõi.",
                 tenGoi
         )));
-        qaDi.setChanDung(sanitizeGenderPronouns(
-                "Thái độ sống quan trọng nhất là học cách tin tưởng vào trực giác và chấp nhận những điều chưa hoàn hảo. Đừng để nỗi sợ thất bại cản bước, nhưng hãy biết dành thời gian tĩnh lặng để tái tạo năng lượng."
-        ));
-        qaDi.setTheManh(sanitizeGenderPronouns("Hãy thiết lập kỷ luật cá nhân hàng ngày, tập trung hoàn thành dứt điểm từng mục tiêu trọng tâm và chủ động nuôi dưỡng các mối quan hệ có chiều sâu."));
-        qaDi.setVungToi(sanitizeGenderPronouns("Hãy buông bỏ thói quen trì hoãn do quá cầu toàn, bớt lo âu về những điều chưa xảy ra và học cách từ chối những việc làm tiêu hao năng lượng."));
-        qaDi.setLoiKhuyen(sanitizeGenderPronouns("Chiến lược dài hạn: Hãy kết hợp sự quyết đoán trong hành động với sự điềm tĩnh trong tâm thức để làm chủ cuộc đời mình một cách an nhiên."));
+        qaDi.setThe1(sanitizeGenderPronouns(getLifeGuidingCompass(chuDao, johari.getHanhTinhDinhMenh(), tenGoi)));
+        qaDi.setThe2(sanitizeGenderPronouns(getDailyDisciplineAdvice(johari.getHanhTinhDinhMenh(), seph.getMauSac(), tenGoi)));
+        qaDi.setThe3(sanitizeGenderPronouns(getTransformationAdvice(emptyArrows, decoz.getSoNoNghiep(), tenGoi)));
+        qaDi.setThe4(sanitizeGenderPronouns(getLongTermStrategy(
+                qh.getKimTuThap().getNextPeak() != null ? qh.getKimTuThap().getNextPeak().getDisplayValue() : qh.getKimTuThap().getCurrentPeak().getDisplayValue(),
+                chuDao,
+                tenGoi
+        )));
         map.put("DI_THE_NAO", qaDi);
 
         dto.setCauHoi(map);
@@ -464,41 +503,22 @@ public class AiAnalysisService {
         };
     }
 
-    private String getStrengthsPortrait(int chuDao) {
-        return switch (chuDao) {
-            case 3 -> "Thế mạnh vượt trội của bạn là khả năng biểu đạt ngôn từ sinh động, tư duy sáng tạo linh hoạt và năng khiếu kết nối mọi người một cách tự nhiên. Bạn dễ dàng truyền cảm hứng và tạo bầu không khí tích cực cho tập thể.";
-            case 4 -> "Năng lực bẩm sinh của bạn là khả năng phân tích tỉ mỉ, tổ chức công việc khoa học và sự kiên trì bền bỉ. Bạn rất giỏi trong việc thiết lập hệ thống, quản lý vận hành và xử lý các vấn đề đòi hỏi tính chi tiết cao.";
-            case 5 -> "Điểm mạnh nổi bật là sự nhanh nhạy trước thời cuộc, tài xoay xở linh hoạt trong tình huống bất ngờ và năng lực kết nối đa dạng các mối quan hệ xã hội. Bạn luôn tìm ra hướng đi mới khi mọi thứ bế tắc.";
-            case 6 -> "Bạn sở hữu năng khiếu thẩm mỹ tự nhiên, khả năng gắn kết tập thể và sự đồng cảm sâu sắc. Bạn rất giỏi trong việc lắng nghe, thấu hiểu và xoa dịu những căng thẳng xung quanh.";
-            case 7 -> "Thế mạnh thiên bẩm là năng lực quan sát thấu suốt bản chất sự việc, trực giác phán đoán chuẩn xác và khả năng tự học chuyên sâu. Bạn có tố chất trở thành chuyên gia trong lĩnh vực mình đam mê.";
-            case 8 -> "Năng lực lãnh đạo quyết đoán, trực giác kinh doanh sắc sảo và khả năng tối ưu hóa nguồn lực giúp bạn luôn nổi bật ở các vị trí điều hành hoặc kinh doanh độc lập.";
-            case 9 -> "Sức mạnh lớn nhất của bạn là tầm nhìn rộng mở, khả năng quy tụ lòng người và năng khiếu giảng dạy, cố vấn hoặc hoạt động xã hội. Lời nói của bạn luôn mang trọng lượng và sự tin cậy.";
-            default -> "Bạn có khả năng tự nhận thức cao, tư duy độc lập và năng lực thích ứng linh hoạt trong môi trường làm việc đa dạng.";
-        };
+    private String getInnerSoulPortrait(int linhHon, String hanhTinhTamHon, String tenGoi) {
+        return String.format(
+                "Sâu thẳm bên trong, tâm hồn bạn mang rung động số %d kết hợp sự dẫn dắt của %s. Bạn luôn tìm kiếm cảm giác an yên thực chất thay vì những hào nhoáng bên ngoài. Động lực ngầm lớn nhất thúc đẩy bạn không phải là danh lợi nhất thời, mà là sự thỏa mãn khi được sống đúng với những giá trị đạo đức và chiều sâu tâm thức mà bản thân trân quý.",
+                linhHon, hanhTinhTamHon);
     }
 
-    private String getBlindspotsPortrait(int chuDao) {
-        return switch (chuDao) {
-            case 3 -> "Điểm mù lớn nhất là sự mất kiên nhẫn khi phải làm những việc lặp đi lặp lại và dễ để cảm xúc chi phối quyết định. Đôi khi bạn phân tán năng lượng vào quá nhiều việc cùng lúc mà không hoàn thành trọn vẹn.";
-            case 4 -> "Góc khuất tâm lý là sự quá cầu toàn, ngại đổi mới và có xu hướng lo lắng thái quá. Bạn dễ bỏ lỡ các cơ hội đột phá chỉ vì chúng chưa có lộ trình an toàn 100%.";
-            case 5 -> "Mâu thuẫn nội tâm nằm ở sự thèm muốn tự do quá mức, dẫn đến trạng thái dễ cả thèm chóng chán. Bạn dễ bị thu hút bởi những điều mới lạ mà xao nhãng mục tiêu trọng tâm dài hạn.";
-            case 6 -> "Cạm bẫy cảm xúc là sự bao bọc thái quá và hay lo lắng thay cho người khác. Bạn thường đặt kỳ vọng quá cao vào sự hồi đáp để rồi dễ cảm thấy thất vọng hoặc kiệt sức.";
-            case 7 -> "Điểm mù là xu hướng tự cô lập bản thân, khép kín và khó bộc bạch cảm xúc thật. Sự khắt khe đôi khi khiến bạn trở nên xa cách hoặc phán xét người khác theo tiêu chuẩn quá cao của mình.";
-            case 8 -> "Cạm bẫy là tính độc đoán, kiểm soát và dễ bị cuốn vào guồng quay công việc mà lãng quên sức khoẻ cũng như cảm xúc của những người thân cận.";
-            default -> "Cần cảnh giác với sự giằng xé giữa khát vọng cá nhân và áp lực từ kỳ vọng của những người xung quanh.";
-        };
+    private String getExpressionPortrait(int bieuDat, int ngaySinh, String tenGoi) {
+        return String.format(
+                "Khí chất toát ra bên ngoài của bạn mang dấu ấn của số biểu đạt %d và năng lượng ngày sinh %d. Trong các mối quan hệ xã hội, bạn tạo ấn tượng về một người có phong cách giao tiếp rõ ràng, đáng tin cậy và đĩnh đạc. Bạn thể hiện sự tôn trọng chuẩn mực nhưng vẫn giữ được nét cá tính độc bản trong từng cử chỉ và lời nói.",
+                bieuDat, ngaySinh);
     }
 
-    private String getCareerAndLifeAdvice(int chuDao, String tenGoi) {
-        return switch (chuDao) {
-            case 3 -> "Môi trường lý tưởng: Truyền thông, sáng tạo nội dung, nghệ thuật, giảng dạy hoặc tư vấn. Lời khuyên: Hãy rèn luyện thói quen kiên trì theo đuổi từng mục tiêu đến cùng trước khi bắt đầu cái mới.";
-            case 4 -> "Môi trường phù hợp: Quản trị vận hành, kỹ thuật, tài chính kế toán, luật pháp hoặc kiến trúc. Lời khuyên: Hãy học cách mở lòng đón nhận phương pháp mới và cho phép bản thân nghỉ ngơi nhiều hơn.";
-            case 5 -> "Môi trường lý tưởng: Kinh doanh tự do, du lịch, truyền thông sự kiện hoặc các công việc di chuyển. Lời khuyên: Hãy xây dựng tính kỷ luật tự giác để sự tự do mang lại thành quả thực chất.";
-            case 6 -> "Môi trường phù hợp: Giáo dục, y tế, tâm lý, thiết kế hoặc quản trị nhân sự. Lời khuyên: Hãy học cách yêu thương chính mình trước tiên và biết từ chối những yêu cầu vượt quá khả năng.";
-            case 7 -> "Môi trường lý tưởng: Nghiên cứu, phân tích dữ liệu, giảng dạy đại học hoặc công nghệ cao. Lời khuyên: Hãy chia sẻ tri thức bạn tích lũy được ra cộng đồng thay vì giữ kín cho riêng mình.";
-            case 8 -> "Môi trường phù hợp: Quản trị doanh nghiệp, đầu tư tài chính, bất động sản hoặc điều hành cấp cao. Lời khuyên: Hãy luôn gắn mục tiêu tài chính với đời sống tinh thần và lắng nghe ý kiến cộng sự.";
-            default -> "Hãy kiên định với thế mạnh độc bản của bạn và tìm kiếm một môi trường cho phép bạn tự chủ phát huy năng lực.";
-        };
+    private String getEnergyStructurePortrait(String presentArrows, String emptyArrows, String dominantPlane, String tenGoi) {
+        return String.format(
+                "Về cấu trúc năng lượng bẩm sinh, biểu đồ của bạn ghi nhận: Trục năng lực nổi trội: [%s]; Trục khuyết thiếu: [%s]. Ma trận năng lượng của bạn thiên về tầng %s. Đây là cấu trúc phản ánh thiên hướng tự nhiên trong việc tiếp nhận thông tin và xử lý cảm xúc, không phải là sự giới hạn mà là bản đồ tiềm năng ban đầu của bạn.",
+                presentArrows, emptyArrows, dominantPlane);
     }
 
     private String getYearEnergyPortrait(int namCaNhan, int tuoi, String tenGoi) {
@@ -531,28 +551,59 @@ public class AiAnalysisService {
                     "Năm nay là Năm số 9 – Năm của sự khép lại một chu kỳ để chuẩn bị cho khởi đầu mới. Hãy mạnh dạn buông bỏ những điều không còn phù hợp để đón nhận những cơ hội mới.",
                     tuoi);
             default -> String.format(
-                    "Năm nay là thời điểm quan trọng để bạn tái định vị bản thân và tích luỹ thêm các giá trị bền vững.",
+                    "Năm nay là thời điểm quan trọng để bạn tái định vị bản thân và tích luỹ thêm các giá trị bền vững ở tuổi %d.",
                     tuoi);
         };
     }
 
-    private String getYearOpportunitiesPortrait(int namCaNhan) {
-        return switch (namCaNhan) {
-            case 1, 3, 5, 8 -> "Thời cơ vàng để bạn chủ động hành động, ra mắt ý tưởng mới, tìm kiếm đối tác hoặc mở rộng quy mô công việc. Đừng ngần ngại nắm bắt quyền chủ động.";
-            case 2, 4, 6, 7 -> "Đòn bẩy tốt nhất năm nay nằm ở việc hoàn thiện chuyên môn, nâng cấp kỹ năng mềm và xây dựng mạng lưới quan hệ chất lượng, bền vững.";
-            default -> "Cơ hội đến từ sự chủ động học hỏi và thích ứng linh hoạt trước những thay đổi xung quanh.";
-        };
+    private String getMonthEnergyPortrait(int thangCaNhan, int thang, String tenGoi) {
+        return String.format(
+                "Trong tháng %d này, nhịp năng lượng ngắn hạn của bạn mang số rung động %d. Đây là giai đoạn đòi hỏi sự chú tâm vào các chi tiết thực tế, giữ nhịp độ làm việc ổn định và khéo léo trong cách ứng xử thường nhật để duy trì trạng thái cân bằng.",
+                thang, thangCaNhan);
+    }
+
+    private String getPinnaclePortrait(String peakVal, String phaseName, int tuoi, String tenGoi) {
+        return String.format(
+                "Ở giai đoạn tuổi %d hiện tại, bạn đang chịu ảnh hưởng từ %s mang con số đỉnh cao %s. Đây là cột mốc phát triển quan trọng đánh dấu sự trưởng thành về nhận thức và năng lực hành động, mở ra cơ hội để bạn đạt được những thành tựu có ý nghĩa dài hạn.",
+                tuoi, phaseName, peakVal);
     }
 
     private String getYearChallengesPortrait(int namCaNhan) {
         return switch (namCaNhan) {
-            case 1, 5 -> "Tránh sự nóng vội, bốc đồng hoặc đưa ra các quyết định liều lĩnh khi chưa nghiên cứu kỹ rủi ro.";
-            case 2, 6 -> "Cần tránh sự cả nể, lo lắng thái quá hoặc để cảm xúc tiêu cực của người khác ảnh hưởng đến mình.";
-            case 4, 7 -> "Tránh suy nghĩ bi quan, khép kín hoặc tự tạo áp lực cầu toàn quá mức khiến bản thân kiệt sức.";
-            case 8 -> "Cảnh giác với cái tôi quá lớn hoặc sự chi tiêu tài chính thiếu kế hoạch kiểm soát chặt chẽ.";
-            case 9 -> "Đừng níu kéo những điều đã qua; sự chần chừ buông bỏ sẽ chỉ làm bạn lãng phí thời gian quý báu.";
-            default -> "Hãy duy trì sự tỉnh táo và bình tĩnh trước mọi biến động ngoại cảnh.";
+            case 1, 5 -> "Cạm bẫy lớn nhất trong năm nay là sự nóng vội, bốc đồng hoặc đưa ra các quyết định liều lĩnh khi chưa lường hết các rủi ro. Hãy kiên nhẫn kiểm tra kỹ lưỡng trước khi hành động.";
+            case 2, 6 -> "Cần tránh tâm lý cả nể, lo lắng thái quá cho người khác mà quên chăm sóc chính mình; hãy bảo vệ ranh giới cảm xúc lành mạnh để không bị hao tổn tâm lực.";
+            case 4, 7 -> "Cạm bẫy là sự bi quan, khép kín hoặc tự đặt ra những tiêu chuẩn quá khắt khe khiến bản thân rơi vào trạng thái căng thẳng mệt mỏi.";
+            case 8 -> "Cảnh giác với cái tôi độc đoán hoặc xu hướng quá mải mê với thành quả vật chất mà xem nhẹ các giá trị tinh thần cốt lõi.";
+            case 9 -> "Thách thức nằm ở sự níu kéo quá khứ; hãy dũng cảm khép lại những mục tiêu đã lỗi thời để nhường chỗ cho những điều mới mẻ.";
+            default -> "Hãy duy trì sự tỉnh táo, tránh bị cuốn theo cảm xúc bộc phát trước những biến động ngoại cảnh.";
         };
+    }
+
+    private String getLifeGuidingCompass(int chuDao, String hanhTinhDinhMenh, String tenGoi) {
+        return String.format(
+                "Kim chỉ nam sống bền vững nhất dành cho bạn là lấy năng lượng tự chủ của con số %d và sự bảo trợ của %s làm điểm tựa tinh thần. Trong mọi quyết định, hãy giữ vững nguyên tắc: Hành động quyết liệt nhưng tâm thế an nhiên; tôn trọng sự thật và kiên định với giá trị cốt lõi.",
+                chuDao, hanhTinhDinhMenh);
+    }
+
+    private String getDailyDisciplineAdvice(String hanhTinhDinhMenh, String mauSac, String tenGoi) {
+        return String.format(
+                "Kỷ luật tự thân hàng ngày: Hãy thiết lập thói quen tĩnh tâm đầu ngày, sắp xếp công việc theo thứ tự ưu tiên rõ ràng và kết nối với thiên nhiên. Tương hợp với năng lượng %s và gam màu %s, môi trường làm việc ngăn nắp, thoáng đãng và minh bạch sẽ là đòn bẩy tốt nhất để nuôi dưỡng năng lượng sáng tạo của bạn.",
+                hanhTinhDinhMenh, mauSac);
+    }
+
+    private String getTransformationAdvice(String emptyArrows, Set<Integer> noNghiep, String tenGoi) {
+        String debtNote = (noNghiep != null && !noNghiep.isEmpty())
+                ? ("Điểm cần chuyển hoá đặc biệt: Các bài học từ cờ nợ nghiệp " + noNghiep + " nhắc nhở bạn cần kiên trì hơn với mục tiêu dài hạn. ")
+                : "";
+        return String.format(
+                "%sĐối với trục năng lượng khuyết [%s]: Hãy chủ động bồi đắp bằng việc rèn luyện tính kiên nhẫn, học cách lắng nghe phản hồi từ người xung quanh và buông bỏ thói quen phán xét quá nhanh khi sự việc không như ý.",
+                debtNote, emptyArrows);
+    }
+
+    private String getLongTermStrategy(String nextPeakVal, int chuDao, String tenGoi) {
+        return String.format(
+                "Chiến lược dài hạn hướng tới đỉnh cao số %s: Hãy xem cuộc đời là một hành trình rèn giũa bản lĩnh và phụng sự. Bằng cách tích luỹ tri thức liên tục, xây dựng các mối quan hệ dựa trên sự chân thành và không ngừng nâng cao chất lượng công việc, bạn sẽ từng bước hiện thực hoá sứ mệnh cuộc đời một cách viên mãn.",
+                nextPeakVal);
     }
 
     private String buildAnonymousFingerprint(HoSoSo hs) {

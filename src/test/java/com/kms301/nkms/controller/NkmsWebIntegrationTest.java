@@ -40,8 +40,9 @@ class NkmsWebIntegrationTest {
         mockMvc.perform(get("/nguon"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("PHILLIPS")))
-                .andExpect(content().string(containsString("BPHS")))
-                .andExpect(content().string(containsString("Sefer Yetzirah")));
+                .andExpect(content().string(containsString("DECOZ")))
+                .andExpect(content().string(containsString("JOHARI")))
+                .andExpect(content().string(containsString("SEPHARIAL")));
 
         mockMvc.perform(get("/xung-dot"))
                 .andExpect(status().isOk())
@@ -80,11 +81,11 @@ class NkmsWebIntegrationTest {
                             .param("ngaySinh", tc[1]))
                     .andExpect(status().isOk())
                     .andExpect(content().string(containsString("Khám Phá Bản Thể Qua Thần Số Học")))
-                    .andExpect(content().string(containsString("Phân Tích Tâm Lý &amp; Luận Giải Độc Bản")))
-                    .andExpect(content().string(containsString("Bản Ngã Cốt Lõi &amp; Chân Dung Tâm Lý")))
-                    .andExpect(content().string(containsString("Thế Mạnh Vượt Trội &amp; Năng Lực Bẩm Sinh")))
-                    .andExpect(content().string(containsString("Điểm Mù &amp; Mâu Thuẫn Cần Gỡ Bỏ")))
-                    .andExpect(content().string(containsString("Định Hướng Hành Động &amp; Lời Khuyên Khai Vấn")))
+                    .andExpect(content().string(containsString("Phân Tích Tâm Lý Và Luận Giải Độc Bản")))
+                    .andExpect(content().string(containsString("Bản Ngã Cốt Lõi Và Con Người Thực Sự")))
+                    .andExpect(content().string(containsString("Thế Giới Nội Tâm Và Khát Vọng Linh Hồn")))
+                    .andExpect(content().string(containsString("Khí Chất Giao Tiếp Và Phong Cách Biểu Đạt")))
+                    .andExpect(content().string(containsString("Cấu Trúc Năng Lượng Và Điểm Khuyết Bẩm Sinh")))
                     .andReturn();
 
             String html = res.getResponse().getContentAsString();
