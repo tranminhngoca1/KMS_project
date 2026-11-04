@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Mũi tên cá tính trên Biểu đồ ngày sinh (QH phần 7; PHILLIPS ch.6).
@@ -95,6 +96,32 @@ public class Arrows {
 
     public boolean isCompensatedByName(String code) {
         return compensatedEmptyArrows.contains(code);
+    }
+
+    public String getPresentArrowsLabel() {
+        String res = evaluatedArrows.stream()
+                .filter(a -> "CO".equalsIgnoreCase(a.getState()))
+                .map(EvaluatedArrow::getLabel)
+                .collect(Collectors.joining(", "));
+        return res.isEmpty() ? "Không có trục đầy (năng lượng phân bổ cân bằng)" : res;
+    }
+
+    public String getEmptyArrowsLabel() {
+        String res = evaluatedArrows.stream()
+                .filter(a -> "TRONG".equalsIgnoreCase(a.getState()))
+                .map(a -> a.getLabel() + (a.isCompensatedByName() ? " (đã được hoá giải bởi tên riêng)" : ""))
+                .collect(Collectors.joining(", "));
+        return res.isEmpty() ? "Không có trục trống lớn" : res;
+    }
+
+    public String getShortBadge() {
+        if (!presentArrows.isEmpty()) {
+            return String.join(", ", presentArrows);
+        }
+        if (!emptyArrows.isEmpty()) {
+            return "Trống " + String.join(", ", emptyArrows);
+        }
+        return "Cân bằng";
     }
 
     public static class ArrowDef {
